@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "rich_poc"
+version = "0.1.0"
+description = "A little PoC of NSS CLI using Python, Poetry and Rich."
+authors = ["Geoffrey JOUNT <gjount@scaleway.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+rich = "^10.14.0"
+click = "^8.0.3"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
