@@ -55,8 +55,24 @@ func potionRappel() {
 	doubleClick()
 }
 
+func Astrub() {
+	return
+}
+
+func Amakna() {
+	return
+}
+
+func Almanax() {
+	return
+}
+
 func main() {
 	potionRappel()
-	// changeMap("DOWN")
-	return
+	// Zaap to Astrub
+	Astrub()
+	// Zaap to Almanax
+	Almanax()
+	// Zaap to Amakna()
+	Amakna()
 }
