@@ -4,7 +4,11 @@ import (
 	"github.com/go-vgo/robotgo"
 )
 
-func changeMap(direction string, screenCenterX int, screenCenterY int) {
+var sx, sy = robotgo.GetScreenSize()
+var screenCenterX = int(sx / 2)
+var screenCenterY = int(sy / 2)
+
+func changeMap(direction string) {
 	robotgo.Move(screenCenterX, screenCenterY)
 	dragLength := 200
 	xMove := 0
@@ -28,9 +32,6 @@ func changeMap(direction string, screenCenterX int, screenCenterY int) {
 }
 
 func main() {
-	sx, sy := robotgo.GetScreenSize()
-	centerX := int(sx / 2)
-	centerY := int(sy / 2)
-	changeMap("UP", centerX, centerY)
+	changeMap("UP")
 	return
 }
