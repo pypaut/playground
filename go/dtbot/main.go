@@ -17,6 +17,11 @@ func simpleClick() {
 	robotgo.MilliSleep(100)
 }
 
+func doubleClick() {
+	simpleClick()
+	simpleClick()
+}
+
 func changeMap(direction string) {
 	robotgo.Move(screenCenterX, screenCenterY)
 	dragLength := 200
@@ -42,8 +47,7 @@ func changeMap(direction string) {
 
 func potionRappel() {
 	robotgo.MoveSmooth(potionX, potionY+5)
-	simpleClick()
-	simpleClick()
+	doubleClick()
 }
 
 func main() {
