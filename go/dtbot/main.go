@@ -8,7 +8,7 @@ var sx, sy = robotgo.GetScreenSize()
 var screenCenterX = int(sx / 2)
 var screenCenterY = int(sy / 2)
 
-var potionX, potionY = screenCenterX, 0
+var potionX, potionY = screenCenterX, 5
 
 func simpleClick() {
 	robotgo.Toggle("left")
@@ -22,9 +22,16 @@ func doubleClick() {
 	simpleClick()
 }
 
+func dragTowards(xMove int, yMove int) {
+	robotgo.Toggle("left")
+	robotgo.MoveRelative(xMove, yMove)
+	robotgo.Toggle("left", "up")
+}
+
 func changeMap(direction string) {
-	robotgo.Move(screenCenterX, screenCenterY)
 	dragLength := 200
+	robotgo.Move(screenCenterX, screenCenterY)
+
 	xMove := 0
 	yMove := 0
 	switch direction {
@@ -40,17 +47,16 @@ func changeMap(direction string) {
 		xMove, yMove = 0, 0
 	}
 
-	robotgo.Toggle("left")
-	robotgo.MoveRelative(xMove, yMove)
-	robotgo.Toggle("left", "up")
+	dragTowards(xMove, yMove)
 }
 
 func potionRappel() {
-	robotgo.MoveSmooth(potionX, potionY+5)
+	robotgo.MoveSmooth(potionX, potionY)
 	doubleClick()
 }
 
 func main() {
 	potionRappel()
+	// changeMap("DOWN")
 	return
 }
