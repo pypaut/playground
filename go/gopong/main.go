@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "github.com/veandco/go-sdl2/sdl"
+    "gopong/src/game"
 )
 
 const (
@@ -13,41 +14,21 @@ const (
 )
 
 func main() {
+    // Init SDL
     if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
         fmt.Println("SDL initialization:", err)
         return
     }
 
-    window, err := sdl.CreateWindow(
-        "GoPong",
-        sdl.WINDOWPOS_UNDEFINED,
-        sdl.WINDOWPOS_UNDEFINED,
-        screenWidth,
-        screenHeight,
-        sdl.WINDOW_OPENGL,
-    )
+    // Create window
+    window, renderer, err := sdl.CreateWindowAndRenderer(screenWidth, screenHeight, sdl.WINDOW_SHOWN)
     if err != nil {
-        fmt.Println("Window initialization:", err)
-        return
+        fmt.Printf("Could not create window %v\n", err)
     }
-    defer func(window *sdl.Window) {
-        err := window.Destroy()
-        if err != nil {
-            return
-        }
-    }(window)
+    defer DeleteRenderer(renderer)
+    defer DeleteWindow(window)
 
-    renderer, err := sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
-    if err != nil {
-        fmt.Println("Renderer initialization:", err)
-        return
-    }
-    defer func(renderer *sdl.Renderer) {
-        err := renderer.Destroy()
-        if err != nil {
-            return
-        }
-    }(renderer)
+    g := game.Game{Window: window, Renderer: renderer}
 
     playerY := float64(screenHeight / 2 - 50)
     p1PosY := playerY
@@ -100,6 +81,7 @@ func main() {
         /*
         * COLLISIONS
         */
+
         // Player collision
         p1Collision := ballRect.HasIntersection(&p1Rect)
         p2Collision := ballRect.HasIntersection(&p2Rect)
@@ -141,46 +123,24 @@ func main() {
         * DRAW
         */
 
-        // Background
-        err := renderer.SetDrawColor(0, 0, 0, 255)
+        err = g.Draw(p1Rect, p2Rect, ballRect)
         if err != nil {
+            fmt.Println("Draw", err)
             return
         }
-        err = renderer.Clear()
-        if err != nil {
-            return
-        }
+    }
+}
 
-        // Player 1
-        err = renderer.SetDrawColor(150, 0, 150, 255)
-        if err != nil {
-            return
-        }
-        err = renderer.FillRect(&p1Rect)
-        if err != nil {
-            return
-        }
+func DeleteWindow(window *sdl.Window) {
+    err := window.Destroy()
+    if err != nil {
+        fmt.Println("Could not delete window")
+    }
+}
 
-        // Player 2
-        err = renderer.SetDrawColor(150, 0, 150, 255)
-        if err != nil {
-            return
-        }
-        err = renderer.FillRect(&p2Rect)
-        if err != nil {
-            return
-        }
-
-        // Ball
-        err = renderer.SetDrawColor(150, 0, 150, 255)
-        if err != nil {
-            return
-        }
-        err = renderer.FillRect(&ballRect)
-        if err != nil {
-            return
-        }
-
-        renderer.Present()
+func DeleteRenderer(renderer *sdl.Renderer) {
+    err := renderer.Destroy()
+    if err != nil {
+        fmt.Println("Could not delete renderer")
     }
 }

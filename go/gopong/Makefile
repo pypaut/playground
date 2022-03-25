@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 all:
-	go build .
+	go build
 
 install_dependencies:
 	sudo apt install libsdl2{,-image,-mixer,-ttf,-gfx}-dev
