@@ -1,0 +1,4 @@
+W = 1000
+H = 800
+FPS = 60.0
+NB_FRAMES_ANIM = 5
