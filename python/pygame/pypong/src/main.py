@@ -1,12 +1,12 @@
 import pygame
 
+from ball import Ball
 from game import Game
 from player import Player, ControlType
 
 
 def main():
     game = Game(1000, 800)
-
     player1 = Player(
         pygame.Rect(100, game.H / 2 - 50, 10, 100),
         pygame.Color(150, 0, 150),
@@ -16,6 +16,10 @@ def main():
         pygame.Rect(game.W - 100, game.H / 2 - 50, 10, 100),
         pygame.Color(150, 0, 150),
         ControlType.PLAYER2,
+    )
+    ball = Ball(
+        pygame.Rect(game.W / 2 - 5, game.H / 2 - 5, 10, 10),
+        pygame.Color(255, 255, 255),
     )
 
     while True:
@@ -38,6 +42,7 @@ def main():
         game.window.fill((0, 0, 0))
         player1.draw(game.window)
         player2.draw(game.window)
+        ball.draw(game.window)
         pygame.display.flip()
 
 
