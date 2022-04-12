@@ -9,10 +9,12 @@ def main():
 
     player1 = Player(
         pygame.Rect(100, game.H / 2 - 50, 10, 100),
+        pygame.Color(150, 0, 150),
         ControlType.PLAYER1,
     )
     player2 = Player(
         pygame.Rect(game.W - 100, game.H / 2 - 50, 10, 100),
+        pygame.Color(150, 0, 150),
         ControlType.PLAYER2,
     )
 
@@ -34,8 +36,8 @@ def main():
 
         # Draw
         game.window.fill((0, 0, 0))
-        pygame.draw.rect(game.window, (150, 0, 150), player1.rect)
-        pygame.draw.rect(game.window, (150, 0, 150), player2.rect)
+        player1.draw(game.window)
+        player2.draw(game.window)
         pygame.display.flip()
 
 
