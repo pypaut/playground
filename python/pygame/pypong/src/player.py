@@ -2,9 +2,11 @@ import pygame
 
 from enum import Enum
 
+
 class ControlType(Enum):
     PLAYER1 = 0
     PLAYER2 = 1
+
 
 class Player:
     def __init__(self, rect, controls):
@@ -28,4 +30,3 @@ class Player:
         elif controls == ControlType.PLAYER2:
             self.K_UP = pygame.K_UP
             self.K_DOWN = pygame.K_DOWN
-
