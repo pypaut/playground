@@ -20,6 +20,7 @@ def main():
     ball = Ball(
         pygame.Rect(game.W / 2 - 5, game.H / 2 - 5, 10, 10),
         pygame.Color(255, 255, 255),
+        pygame.Rect(0, 0, game.W, game.H),
     )
 
     while True:
@@ -41,7 +42,8 @@ def main():
         dt = game.clock.tick(60)
         player1.update(keys, dt, game.W, game.H)
         player2.update(keys, dt, game.W, game.H)
-        ball.update(dt)
+        if not ball.update(dt):
+            return
 
         # Draw
         game.window.fill((0, 0, 0))
