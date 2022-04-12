@@ -46,11 +46,7 @@ def main():
             return
 
         # Draw
-        game.window.fill((0, 0, 0))
-        player1.draw(game.window)
-        player2.draw(game.window)
-        ball.draw(game.window)
-        pygame.display.flip()
+        game.draw(player1, player2, ball)
 
 
 if __name__ == "__main__":
