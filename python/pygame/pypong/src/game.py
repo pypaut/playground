@@ -9,3 +9,4 @@ class Game:
         self.window = pygame.display.set_mode((width, height))
         self.clock = pygame.time.Clock()
         self.W, self.H = width, height
+        self.is_running = False

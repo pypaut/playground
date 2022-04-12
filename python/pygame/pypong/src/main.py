@@ -33,10 +33,15 @@ def main():
         if keys[pygame.K_ESCAPE]:
             return
 
+        if not game.is_running and keys[pygame.K_SPACE]:
+            ball.dir_y = ball.speed
+            game.is_running = True
+
         # Update
         dt = game.clock.tick(60)
         player1.update(keys, dt, game.W, game.H)
         player2.update(keys, dt, game.W, game.H)
+        ball.update(dt)
 
         # Draw
         game.window.fill((0, 0, 0))
