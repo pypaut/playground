@@ -11,7 +11,7 @@ class ControlType(Enum):
 class Player:
     def __init__(self, rect, color, controls):
         self.rect = rect
-        self.speed = 1
+        self.speed = 0.8
         self.set_control_keys(controls)
         self.color = color
 

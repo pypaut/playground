@@ -4,7 +4,7 @@ import pygame
 class Ball:
     def __init__(self, rect, color, boundary):
         self.rect = rect
-        self.speed = 0.5
+        self.speed = 0.4
         self.color = color
         self.dir_x = 0.0
         self.dir_y = 0.0
@@ -31,11 +31,17 @@ class Ball:
 
             self.dir_x, self.dir_y = self.get_normalized_dir()
 
+        # Handle wall collision
+        if self.rect.top < 0 or self.rect.top + self.rect.height > self.boundary.height:
+            self.dir_y *= -1
+
+        elif self.rect.left < 0 or self.rect.left > self.boundary.width:
+            return False
+
         # Update position
         self.rect.left += self.dir_x * dt
         self.rect.top += self.dir_y * dt
-        print(self.dir_x, self.dir_y)
-        return self.boundary.contains(self.rect)
+        return True
 
     def get_normalized_dir(self):
         norm = (self.dir_x**2 + self.dir_y**2) ** (1 / 2)
