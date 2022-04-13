@@ -35,14 +35,14 @@ def main():
             return
 
         if not game.is_running and keys[pygame.K_SPACE]:
-            ball.dir_y = ball.speed
+            ball.dir_x = ball.speed
             game.is_running = True
 
         # Update
         dt = game.clock.tick(60)
         player1.update(keys, dt, game.W, game.H)
         player2.update(keys, dt, game.W, game.H)
-        if not ball.update(dt):
+        if not ball.update(player1, player2, dt):
             return
 
         # Draw
