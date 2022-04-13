@@ -11,7 +11,19 @@ class Ball:
         self.boundary = boundary
 
     def update(self, p1, p2, dt):
-        # Handle player collision
+        self.handle_player_collision(p1, p2, dt)
+
+        if not self.handle_wall_collision():
+            return False
+
+        self.update_position(dt)
+        return True
+
+    def update_position(self, dt):
+        self.rect.left += self.dir_x * dt
+        self.rect.top += self.dir_y * dt
+
+    def handle_player_collision(self, p1, p2, dt):
         p1_collides = self.rect.colliderect(p1.rect)
         p2_collides = self.rect.colliderect(p2.rect)
 
@@ -31,17 +43,15 @@ class Ball:
 
             self.dir_x, self.dir_y = self.get_normalized_dir()
 
-        # Handle wall collision
+    def handle_wall_collision(self):
         if self.rect.top < 0 or self.rect.top + self.rect.height > self.boundary.height:
             self.dir_y *= -1
 
-        elif self.rect.left < 0 or self.rect.left > self.boundary.width:
+        elif self.rect.left < 0 or self.rect.left + self.rect.width > self.boundary.width:
             return False
 
-        # Update position
-        self.rect.left += self.dir_x * dt
-        self.rect.top += self.dir_y * dt
         return True
+
 
     def get_normalized_dir(self):
         norm = (self.dir_x**2 + self.dir_y**2) ** (1 / 2)
