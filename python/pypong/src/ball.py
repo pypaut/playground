@@ -29,7 +29,6 @@ class Ball:
 
         if p1_collides or p2_collides:
             self.dir_x *= -1
-            self.dir_y *= -1
 
             ball_middle_y = self.rect.top + self.rect.height // 2
 
@@ -39,7 +38,7 @@ class Ball:
                 player_middle_y = p2.rect.top + p2.rect.height // 2
 
             player_collision_y = ball_middle_y - player_middle_y
-            self.dir_y += 0.005 * player_collision_y
+            self.dir_y = 0.005 * player_collision_y
 
             self.dir_x, self.dir_y = self.get_normalized_dir()
 
