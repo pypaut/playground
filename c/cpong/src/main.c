@@ -54,6 +54,14 @@ int main() {
 
         update_player(p1, keys, H);
         update_player(p2, keys, H);
+        if (!has_started && keys[SDL_SCANCODE_SPACE]) {
+            has_started = 1;
+            b->dir_x = 1;
+        }
+
+        if (has_started && update_ball(b, p1, p2, H, W)) {
+            is_running = 0;
+        }
 
         // Draw
         if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)) {
