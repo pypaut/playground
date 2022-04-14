@@ -1,4 +1,5 @@
 #include <player.h>
+#include <ball.h>
 
 
 int main() {
@@ -20,6 +21,9 @@ int main() {
 
     player *p2 = new_player(W - 110, H/2 - 50, 10, 100);
     set_player_color(p2, 150, 0, 150, 255);
+
+    ball *b = new_ball(W/2 - 5, H/2 - 5, 10, 10);
+    set_ball_color(b, 255, 255, 255, 255);
 
     int is_running = 1;
     int error = 0;
@@ -46,11 +50,11 @@ int main() {
             return 1;
         }
 
-        if (draw_player(p1, renderer)) {
+        if (draw_player(p1, renderer) || draw_player(p2, renderer)) {
             error = 1;
         }
 
-        if (draw_player(p2, renderer)) {
+        if (draw_ball(b, renderer)) {
             error = 1;
         }
         
