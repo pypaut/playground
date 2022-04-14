@@ -16,10 +16,10 @@ int main() {
         return 1;
     }
 
-    player *p1 = new_player(100, H/2 - 50, 10, 100);
+    player *p1 = new_player(100, H/2 - 50, 10, 100, 1);
     set_player_color(p1, 150, 0, 150, 255);
 
-    player *p2 = new_player(W - 110, H/2 - 50, 10, 100);
+    player *p2 = new_player(W - 110, H/2 - 50, 10, 100, 2);
     set_player_color(p2, 150, 0, 150, 255);
 
     ball *b = new_ball(W/2 - 5, H/2 - 5, 10, 10);
@@ -27,6 +27,11 @@ int main() {
 
     int is_running = 1;
     int error = 0;
+    int has_started = 0;
+
+    Uint64 last = 0;
+    Uint64 now = 0;
+    Uint64 dt = 0;
 
     while (is_running && !error) {
         // Events
@@ -37,7 +42,18 @@ int main() {
             }
         }
 
+        const Uint8 *keys = SDL_GetKeyboardState(NULL);
+
         // Update
+        last = now;
+        now = SDL_GetTicks();
+        dt = now - last;
+        if (dt < 1000 / 60) {
+            SDL_Delay(1000 / 60 - dt);
+        }
+
+        update_player(p1, keys, H);
+        update_player(p2, keys, H);
 
         // Draw
         if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)) {
