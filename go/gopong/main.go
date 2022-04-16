@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/veandco/go-sdl2/sdl"
 	"gopong/src/game"
+	. "gopong/src/player"
 )
 
 const (
@@ -32,9 +33,19 @@ func main() {
 
 	playerY := float64(screenHeight/2 - 50)
 	p1PosY := playerY
-	p1Rect := sdl.Rect{X: 100, Y: int32(p1PosY), W: 10, H: 100}
+
+	p1 := Player{
+		Rect: sdl.Rect{X: 100, Y: int32(p1PosY), W: 10, H: 100},
+		Color: sdl.Color{R: 150, G: 0, B: 150, A: 255},
+	}
+
 	p2PosY := playerY
-	p2Rect := sdl.Rect{X: screenWidth - 100, Y: int32(playerY), W: 10, H: 100}
+
+	p2 := Player{
+		Rect: sdl.Rect{X: screenWidth - 100, Y: int32(playerY), W: 10, H: 100},
+		Color: sdl.Color{R: 150, G: 0, B: 150, A: 255},
+	}
+
 	ballPosX := float64(screenWidth / 2)
 	ballPosY := float64(screenHeight / 2)
 	ballRect := sdl.Rect{X: int32(ballPosX), Y: int32(ballPosY), W: 10, H: 10}
@@ -55,22 +66,22 @@ func main() {
 		keys := sdl.GetKeyboardState()
 
 		// Player 1
-		if keys[sdl.SCANCODE_W] == 1 && p1Rect.Y > 0 {
+		if keys[sdl.SCANCODE_W] == 1 && p1.Rect.Y > 0 {
 			p1PosY -= playerSpeed
 		}
-		if keys[sdl.SCANCODE_S] == 1 && p1Rect.Y+100 < screenHeight {
+		if keys[sdl.SCANCODE_S] == 1 && p1.Rect.Y+100 < screenHeight {
 			p1PosY += playerSpeed
 		}
-		p1Rect.Y = int32(p1PosY)
+		p1.Rect.Y = int32(p1PosY)
 
 		// Player 2
-		if keys[sdl.SCANCODE_UP] == 1 && p2Rect.Y > 0 {
+		if keys[sdl.SCANCODE_UP] == 1 && p2.Rect.Y > 0 {
 			p2PosY -= playerSpeed
 		}
-		if keys[sdl.SCANCODE_DOWN] == 1 && p2Rect.Y+100 < screenHeight {
+		if keys[sdl.SCANCODE_DOWN] == 1 && p2.Rect.Y+100 < screenHeight {
 			p2PosY += playerSpeed
 		}
-		p2Rect.Y = int32(p2PosY)
+		p2.Rect.Y = int32(p2PosY)
 
 		// Ball
 		if keys[sdl.SCANCODE_SPACE] == 1 && !isRunning {
@@ -83,8 +94,8 @@ func main() {
 		 */
 
 		// Player collision
-		p1Collision := ballRect.HasIntersection(&p1Rect)
-		p2Collision := ballRect.HasIntersection(&p2Rect)
+		p1Collision := ballRect.HasIntersection(&p1.Rect)
+		p2Collision := ballRect.HasIntersection(&p2.Rect)
 		if p1Collision || p2Collision {
 			ballDirX *= -1
 			ballDirY *= -1
@@ -93,15 +104,15 @@ func main() {
 			yPlayerMiddle := 0.0
 
 			if p1Collision {
-				yPlayerMiddle = p1PosY + float64(p1Rect.H/2)
+				yPlayerMiddle = p1PosY + float64(p1.Rect.H/2)
 			}
 
 			if p2Collision {
-				yPlayerMiddle = p2PosY + float64(p2Rect.H/2)
+				yPlayerMiddle = p2PosY + float64(p2.Rect.H/2)
 			}
 
 			yPlayerCollision := yBallMiddle - yPlayerMiddle
-			ballDirY += 0.002 * yPlayerCollision
+			ballDirY = 0.002 * yPlayerCollision
 		}
 
 		// Wall collision
@@ -123,7 +134,7 @@ func main() {
 		 * DRAW
 		 */
 
-		err = g.Draw(p1Rect, p2Rect, ballRect)
+		err = g.Draw(p1.Rect, p2.Rect, ballRect)
 		if err != nil {
 			fmt.Println("Draw", err)
 			return
