@@ -1,20 +1,13 @@
 #include <player.h>
 #include <ball.h>
+#include <game.h>
 
 
 int main() {
     int W = 1000;
     int H = 800;
 
-    SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
-
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-
-    if (SDL_CreateWindowAndRenderer(W, H, 0, &window, &renderer)) {
-        fprintf(stderr, "%s\n", "Error on Window/Renderer creation\0");
-        return 1;
-    }
+    game *g = init_game(W, H);
 
     player *p1 = new_player(100, H/2 - 50, 10, 100, 1);
     set_player_color(p1, 150, 0, 150, 255);
@@ -64,30 +57,32 @@ int main() {
         }
 
         // Draw
-        if (SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255)) {
+        if (SDL_SetRenderDrawColor(*g->renderer, 0, 0, 0, 255)) {
             fprintf(stderr, "%s\n", "Error Renderer.SetRendererDrawColor\0");
             return 1;
         }
 
-        if (SDL_RenderClear(renderer)) {
+        if (SDL_RenderClear(*g->renderer)) {
             fprintf(stderr, "%s\n", "Error Renderer.RenderClear\0");
             return 1;
         }
 
-        if (draw_player(p1, renderer) || draw_player(p2, renderer)) {
+        if (draw_player(p1, *g->renderer) || draw_player(p2, *g->renderer)) {
             error = 1;
         }
 
-        if (draw_ball(b, renderer)) {
+        if (draw_ball(b, *g->renderer)) {
             error = 1;
         }
         
-        SDL_RenderPresent(renderer);
+        SDL_RenderPresent(*g->renderer);
     }
 
     destroy_player(p1);
     destroy_player(p2);
+    destroy_ball(b);
+    destroy_game(g);
 
-    SDL_Quit();
+    // SDL_Quit();
     return 0;
 }
