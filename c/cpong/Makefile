@@ -4,7 +4,8 @@ LIBS = -lSDL2 -lm
 OBJS = src/main.c \
 	   src/player.c \
 	   src/ball.c \
-	   src/game.c
+	   src/game.c \
+	   src/clock.c
 BIN = bin
 
 all: build

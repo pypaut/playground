@@ -11,6 +11,8 @@ game *init_game(int W, int H) {
     g->window = calloc(1, 8);
     g->renderer = calloc(1, 8);
 
+    g->c = new_clock();
+
     g->is_running = 1;
     g->error = 0;
     g->has_started = 0;
@@ -33,6 +35,7 @@ game *init_game(int W, int H) {
 }
 
 void update_game(game *g, const Uint8 *keys) {
+    tick(g->c);
     update_player(g->p1, keys, g->H);
     update_player(g->p2, keys, g->H);
     if (!g->has_started && keys[SDL_SCANCODE_SPACE]) {
@@ -79,6 +82,7 @@ void handle_quit_event(game *g) {
 void destroy_game(game *g) {
     free(g->window);
     free(g->renderer);
+    destroy_clock(g->c);
     destroy_player(g->p1);
     destroy_player(g->p2);
     destroy_ball(g->b);

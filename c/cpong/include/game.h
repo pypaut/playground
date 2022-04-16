@@ -1,12 +1,14 @@
 #pragma once
 
-#include <SDL2/SDL.h>
 #include <ball.h>
 #include <player.h>
+#include <clock.h>
 
 typedef struct game {
     SDL_Window **window;
     SDL_Renderer **renderer;
+
+    clock *c;
 
     player *p1;
     player *p2;
