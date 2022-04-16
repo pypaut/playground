@@ -9,15 +9,6 @@ int main() {
 
     game *g = init_game(W, H);
 
-    player *p1 = new_player(100, H/2 - 50, 10, 100, 1);
-    set_player_color(p1, 150, 0, 150, 255);
-
-    player *p2 = new_player(W - 110, H/2 - 50, 10, 100, 2);
-    set_player_color(p2, 150, 0, 150, 255);
-
-    ball *b = new_ball(W/2 - 5, H/2 - 5, 10, 10);
-    set_ball_color(b, 255, 255, 255, 255);
-
     int is_running = 1;
     int error = 0;
     int has_started = 0;
@@ -45,14 +36,13 @@ int main() {
             SDL_Delay(1000 / 60 - dt);
         }
 
-        update_player(p1, keys, H);
-        update_player(p2, keys, H);
+        update_game(g, keys);
         if (!has_started && keys[SDL_SCANCODE_SPACE]) {
             has_started = 1;
-            b->dir_x = 1;
+            g->b->dir_x = 1;
         }
 
-        if (has_started && update_ball(b, p1, p2, H, W)) {
+        if (has_started && update_ball(g->b, g->p1, g->p2, g->H, g->W)) {
             is_running = 0;
         }
 
@@ -67,20 +57,17 @@ int main() {
             return 1;
         }
 
-        if (draw_player(p1, *g->renderer) || draw_player(p2, *g->renderer)) {
+        if (draw_player(g->p1, *g->renderer) || draw_player(g->p2, *g->renderer)) {
             error = 1;
         }
 
-        if (draw_ball(b, *g->renderer)) {
+        if (draw_ball(g->b, *g->renderer)) {
             error = 1;
         }
         
         SDL_RenderPresent(*g->renderer);
     }
 
-    destroy_player(p1);
-    destroy_player(p2);
-    destroy_ball(b);
     destroy_game(g);
 
     // SDL_Quit();

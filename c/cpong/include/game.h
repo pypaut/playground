@@ -7,7 +7,13 @@
 typedef struct game {
     SDL_Window **window;
     SDL_Renderer **renderer;
+    player *p1;
+    player *p2;
+    ball *b;
+    int H;
+    int W;
 } game;
 
 game *init_game(int W, int H);
 void destroy_game(game *g);
+void update_game(game *g, const Uint8 *keys);
