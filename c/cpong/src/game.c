@@ -67,6 +67,15 @@ void draw_game(game *g) {
     SDL_RenderPresent(*g->renderer);
 }
 
+void handle_quit_event(game *g) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            g->is_running = 0;
+        }
+    }
+}
+
 void destroy_game(game *g) {
     free(g->window);
     free(g->renderer);

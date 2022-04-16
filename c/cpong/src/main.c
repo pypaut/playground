@@ -1,5 +1,3 @@
-#include <player.h>
-#include <ball.h>
 #include <game.h>
 
 
@@ -14,15 +12,7 @@ int main() {
     Uint64 dt = 0;
 
     while (g->is_running && !g->error) {
-        // Events
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                g->is_running = 0;
-            }
-        }
-
-        const Uint8 *keys = SDL_GetKeyboardState(NULL);
+        handle_quit_event(g);
 
         // Clock
         last = now;
@@ -32,12 +22,11 @@ int main() {
             SDL_Delay(1000 / 60 - dt);
         }
 
+        const Uint8 *keys = SDL_GetKeyboardState(NULL);
         update_game(g, keys);
         draw_game(g);
     }
 
     destroy_game(g);
-
-    // SDL_Quit();
     return 0;
 }
