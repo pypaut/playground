@@ -38,9 +38,6 @@ int draw_ball(ball *b, SDL_Renderer *renderer) {
 }
 
 int update_ball(ball *b, player *p1, player *p2, int H, int W) {
-    H = H;
-    W = W;
-
     // Update position
     int old_x = b->rect->x;
     int old_y = b->rect->y;
@@ -68,6 +65,17 @@ int update_ball(ball *b, player *p1, player *p2, int H, int W) {
 
         float deviation = 0.005 * (ball_middle - player_middle);
         b->dir_y = deviation;
+    }
+
+    // Handle top/bot walls collision
+    if (b->rect->y < 0 || b->rect->y + b->rect->h > H) {
+        b->rect->y = old_y;
+        b->dir_y = -b->dir_y;
+    }
+
+    // Handle left/right walls collision
+    if (b->rect->x < 0 || b->rect->x + b->rect->w > W) {
+        return 1;
     }
 
     // Normalize dir vector to speed
