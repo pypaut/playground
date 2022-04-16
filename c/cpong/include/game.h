@@ -23,3 +23,4 @@ typedef struct game {
 game *init_game(int W, int H);
 void destroy_game(game *g);
 void update_game(game *g, const Uint8 *keys);
+void draw_game(game *g);

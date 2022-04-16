@@ -45,6 +45,28 @@ void update_game(game *g, const Uint8 *keys) {
     }
 }
 
+void draw_game(game *g) {
+    if (SDL_SetRenderDrawColor(*g->renderer, 0, 0, 0, 255)) {
+        fprintf(stderr, "%s\n", "Error Renderer.SetRendererDrawColor\0");
+        g->error = 1;
+    }
+
+    if (SDL_RenderClear(*g->renderer)) {
+        fprintf(stderr, "%s\n", "Error Renderer.RenderClear\0");
+        g->error = 1;
+    }
+
+    if (draw_player(g->p1, *g->renderer) || draw_player(g->p2, *g->renderer)) {
+        g->error = 1;
+    }
+
+    if (draw_ball(g->b, *g->renderer)) {
+        g->error = 1;
+    }
+
+    SDL_RenderPresent(*g->renderer);
+}
+
 void destroy_game(game *g) {
     free(g->window);
     free(g->renderer);
