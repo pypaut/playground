@@ -11,6 +11,10 @@ game *init_game(int W, int H) {
     g->window = calloc(1, 8);
     g->renderer = calloc(1, 8);
 
+    g->is_running = 1;
+    g->error = 0;
+    g->has_started = 0;
+
     g->p1 = new_player(100, H/2 - 50, 10, 100, 1);
     set_player_color(g->p1, 150, 0, 150, 255);
 
@@ -31,6 +35,14 @@ game *init_game(int W, int H) {
 void update_game(game *g, const Uint8 *keys) {
     update_player(g->p1, keys, g->H);
     update_player(g->p2, keys, g->H);
+    if (!g->has_started && keys[SDL_SCANCODE_SPACE]) {
+        g->has_started = 1;
+        g->b->dir_x = 1;
+    }
+
+    if (g->has_started && update_ball(g->b, g->p1, g->p2, g->H, g->W)) {
+        g->is_running = 0;
+    }
 }
 
 void destroy_game(game *g) {

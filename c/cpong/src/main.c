@@ -9,20 +9,16 @@ int main() {
 
     game *g = init_game(W, H);
 
-    int is_running = 1;
-    int error = 0;
-    int has_started = 0;
-
     Uint64 last = 0;
     Uint64 now = 0;
     Uint64 dt = 0;
 
-    while (is_running && !error) {
+    while (g->is_running && !g->error) {
         // Events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
-                is_running = 0;
+                g->is_running = 0;
             }
         }
 
@@ -37,14 +33,6 @@ int main() {
         }
 
         update_game(g, keys);
-        if (!has_started && keys[SDL_SCANCODE_SPACE]) {
-            has_started = 1;
-            g->b->dir_x = 1;
-        }
-
-        if (has_started && update_ball(g->b, g->p1, g->p2, g->H, g->W)) {
-            is_running = 0;
-        }
 
         // Draw
         if (SDL_SetRenderDrawColor(*g->renderer, 0, 0, 0, 255)) {
@@ -58,11 +46,11 @@ int main() {
         }
 
         if (draw_player(g->p1, *g->renderer) || draw_player(g->p2, *g->renderer)) {
-            error = 1;
+            g->error = 1;
         }
 
         if (draw_ball(g->b, *g->renderer)) {
-            error = 1;
+            g->error = 1;
         }
         
         SDL_RenderPresent(*g->renderer);
