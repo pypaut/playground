@@ -10,9 +10,7 @@ int main() {
 
     while (g->is_running && !g->error) {
         handle_quit_event(g);
-
-        const Uint8 *keys = SDL_GetKeyboardState(NULL);
-        update_game(g, keys);
+        update_game(g);
         draw_game(g);
     }
 

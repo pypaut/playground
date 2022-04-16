@@ -24,6 +24,6 @@ typedef struct game {
 
 game *init_game(int W, int H);
 void destroy_game(game *g);
-void update_game(game *g, const Uint8 *keys);
+void update_game(game *g);
 void draw_game(game *g);
 void handle_quit_event(game *g);

@@ -34,10 +34,13 @@ game *init_game(int W, int H) {
     return g;
 }
 
-void update_game(game *g, const Uint8 *keys) {
+void update_game(game *g) {
     tick(g->c);
+
+    const Uint8 *keys = SDL_GetKeyboardState(NULL);
     update_player(g->p1, keys, g->H);
     update_player(g->p2, keys, g->H);
+
     if (!g->has_started && keys[SDL_SCANCODE_SPACE]) {
         g->has_started = 1;
         g->b->dir_x = 1;
