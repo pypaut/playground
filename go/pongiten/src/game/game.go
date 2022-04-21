@@ -1,17 +1,23 @@
 package game
 
 import (
+	"errors"
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
 
+	"pongiten/src/ball"
 	"pongiten/src/player"
 )
 
 // Game implements ebiten.Game interface.
 type Game struct {
-	Width   int
-	Height  int
-	Player1 *player.Player
+	Width      int
+	Height     int
+	Player1    *player.Player
+	Player2    *player.Player
+	Ball       *ball.Ball
+	HasStarted bool
+	IsRunning  bool
 }
 
 func NewGame() *Game {
@@ -28,13 +34,38 @@ func NewGame() *Game {
 		1,
 	)
 
-	return &Game{Width: width, Height: height, Player1: player1}
+	player2 := player.NewPlayer(
+		float64(width)-100,
+		float64(height)/2-50,
+		10.0,
+		100.0,
+		10,
+		color.RGBA{150, 0, 150, 255},
+		2,
+	)
+
+	ball := ball.NewBall(float64(width), float64(height))
+
+	return &Game{
+		Width:      width,
+		Height:     height,
+		Player1:    player1,
+		Player2:    player2,
+		Ball:       ball,
+		HasStarted: false,
+		IsRunning:  true,
+	}
 }
 
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
 func (g *Game) Update() error {
 	g.Player1.Update(float64(g.Width), float64(g.Height))
+	g.Player2.Update(float64(g.Width), float64(g.Height))
+	g.HasStarted, g.IsRunning = g.Ball.Update(float64(g.Width), float64(g.Height), false, false)
+	if !g.IsRunning {
+		return errors.New("Game's done")
+	}
 	return nil
 }
 
@@ -42,6 +73,8 @@ func (g *Game) Update() error {
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.Player1.Draw(screen)
+	g.Player2.Draw(screen)
+	g.Ball.Draw(screen)
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.

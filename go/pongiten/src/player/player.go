@@ -26,8 +26,8 @@ func NewPlayer(posX, posY, width, height, speed float64, clr color.Color, contro
 		upKey = ebiten.KeyW
 		downKey = ebiten.KeyS
 	} else {
-		upKey = ebiten.KeyW
-		downKey = ebiten.KeyS
+		upKey = ebiten.KeyI
+		downKey = ebiten.KeyK
 	}
 
 	return &Player{
