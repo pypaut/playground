@@ -11,21 +11,22 @@ import (
 type Game struct {
 	Width   int
 	Height  int
-	Player1 player.Player
+	Player1 *player.Player
 }
 
 func NewGame() *Game {
 	width := 1000
 	height := 800
 
-	player1 := player.Player{
-		PosX:   100.0,
-		PosY:   float64(height)/2 - 50,
-		Width:  10.0,
-		Height: 100.0,
-		Speed:  10,
-		Color:  color.RGBA{150, 0, 150, 255},
-	}
+	player1 := player.NewPlayer(
+		100.0,
+		float64(height)/2-50,
+		10.0,
+		100.0,
+		10,
+		color.RGBA{150, 0, 150, 255},
+		1,
+	)
 
 	return &Game{Width: width, Height: height, Player1: player1}
 }
