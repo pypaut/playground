@@ -23,6 +23,7 @@ func NewGame() *Game {
 		PosY:   float64(height)/2 - 50,
 		Width:  10.0,
 		Height: 100.0,
+		Speed:  10,
 		Color:  color.RGBA{150, 0, 150, 255},
 	}
 
@@ -32,6 +33,7 @@ func NewGame() *Game {
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
 func (g *Game) Update() error {
+	g.Player1.Update(float64(g.Width), float64(g.Height))
 	return nil
 }
 
