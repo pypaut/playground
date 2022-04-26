@@ -11,7 +11,7 @@ func TestNewGenesisBlockHasIndex0(t *testing.T) {
 
 func TestGenesisBlockShaCorresponds(t *testing.T) {
 	b := NewGenesisBlock("my_data")
-	if b.hash != b.GetHash() {
+	if b.hash != b.ComputeHash() {
 		t.Fatal("New genesis block has a broken hash!")
 	}
 }

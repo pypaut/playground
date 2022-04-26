@@ -23,7 +23,7 @@ func NewGenesisBlock(data string) *Block {
 		previousHash: []byte{byte('0')},
 	}
 
-	newBlock.hash = newBlock.GetHash()
+	newBlock.hash = newBlock.ComputeHash()
 	return newBlock
 }
 
@@ -31,7 +31,7 @@ func (b *Block) GetIndex() int {
 	return b.index
 }
 
-func (b *Block) GetHash() [32]byte {
+func (b *Block) ComputeHash() [32]byte {
 	stringToConvert := fmt.Sprintf("%d%x%d%s", b.index, b.previousHash, b.timestamp, b.data)
 	return sha256.Sum256([]byte(stringToConvert))
 }
