@@ -28,3 +28,21 @@ func (bc *Blockchain) Dump() {
 		b.Dump()
 	}
 }
+
+func (bc *Blockchain) IsValid() (bool, string) {
+	for i, b := range bc.chain {
+		if i != b.GetIndex() {
+			return false, "Wrong index"
+		}
+
+		if b.GetHash() != b.ComputeHash() {
+			return false, "Wrong hash"
+		}
+
+		if i > 0 && b.GetPreviousHash() != bc.chain[i-1].ComputeHash() {
+			return false, "Wrong previous hash"
+		}
+	}
+
+	return true, ""
+}

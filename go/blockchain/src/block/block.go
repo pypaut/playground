@@ -51,6 +51,10 @@ func (b *Block) GetHash() [32]byte {
 	return b.hash
 }
 
+func (b *Block) GetPreviousHash() [32]byte {
+	return b.previousHash
+}
+
 func (b *Block) ComputeHash() [32]byte {
 	stringToConvert := fmt.Sprintf("%d%x%d%s", b.index, b.previousHash, b.timestamp, b.data)
 	return sha256.Sum256([]byte(stringToConvert))
