@@ -13,6 +13,7 @@ type Block struct {
 	data         string
 	hash         [32]byte
 	previousHash [32]byte
+	nonce        int
 }
 
 func NewGenesisBlock(data string) *Block {
@@ -56,7 +57,7 @@ func (b *Block) GetPreviousHash() [32]byte {
 }
 
 func (b *Block) ComputeHash() [32]byte {
-	stringToConvert := fmt.Sprintf("%d%x%d%s", b.index, b.previousHash, b.timestamp, b.data)
+	stringToConvert := fmt.Sprintf("%d%x%d%s%d", b.index, b.previousHash, b.timestamp, b.data, b.nonce)
 	return sha256.Sum256([]byte(stringToConvert))
 }
 
@@ -68,4 +69,23 @@ func (b *Block) Dump() {
 	fmt.Printf("    Hash: %x\n", b.hash)
 	fmt.Printf("    PreviousHash: %x\n", b.previousHash)
 	fmt.Printf("}\n")
+}
+
+func (b *Block) Mine(difficulty int64) {
+	newHash := b.ComputeHash()
+	for amountOfZerosAtBeginning(newHash) < difficulty {
+		b.nonce++
+		newHash = b.ComputeHash()
+	}
+
+	b.hash = newHash
+}
+
+func amountOfZerosAtBeginning(hash [32]byte) int64 {
+	var res int64
+	for hash[res] == 0 {
+		res++
+	}
+
+	return res
 }
