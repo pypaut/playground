@@ -6,8 +6,9 @@ import (
 )
 
 type Blockchain struct {
-	chain      []*block.Block
-	difficulty int64
+	chain               []*block.Block
+	difficulty          int64
+	pendingTransactions []*transaction.Transaction
 }
 
 func NewBlockchain(difficulty int64) *Blockchain {
@@ -44,4 +45,26 @@ func (bc *Blockchain) IsValid() (bool, string) {
 	}
 
 	return true, ""
+}
+
+func (bc *Blockchain) CreateTransaction(t *transaction.Transaction) {
+	bc.pendingTransactions = append(bc.pendingTransactions, t)
+}
+
+func (bc *Blockchain) GetBalance(address string) (balance int64) {
+	for _, b := range bc.chain {
+		for _, t := range b.GetTransactions() {
+			if address == t.GetFromAddress() {
+				balance -= t.GetAmount()
+			} else if address == t.GetToAddress() {
+				balance += t.GetAmount()
+			}
+		}
+	}
+
+	return balance
+}
+
+func (bc *Blockchain) MinePendingTransactions() {
+	bc.AddNewBlock(bc.pendingTransactions)
 }
