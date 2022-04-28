@@ -9,7 +9,6 @@ import (
 )
 
 type Block struct {
-	index        int
 	timestamp    int64
 	transactions []*transaction.Transaction
 	hash         [32]byte
@@ -19,7 +18,6 @@ type Block struct {
 
 func NewGenesisBlock(transactions []*transaction.Transaction) *Block {
 	newBlock := &Block{
-		index:        0,
 		timestamp:    time.Now().Unix(),
 		transactions: transactions,
 		previousHash: [32]byte{},
@@ -31,7 +29,6 @@ func NewGenesisBlock(transactions []*transaction.Transaction) *Block {
 
 func NewBlock(transactions []*transaction.Transaction, difficulty int64, previousBlock *Block) *Block {
 	newBlock := &Block{
-		index:        previousBlock.GetIndex() + 1,
 		timestamp:    time.Now().Unix(),
 		transactions: transactions,
 		previousHash: previousBlock.GetHash(),
@@ -39,10 +36,6 @@ func NewBlock(transactions []*transaction.Transaction, difficulty int64, previou
 
 	newBlock.Mine(difficulty)
 	return newBlock
-}
-
-func (b *Block) GetIndex() int {
-	return b.index
 }
 
 func (b *Block) GetTransactions() []*transaction.Transaction {
@@ -58,7 +51,7 @@ func (b *Block) GetPreviousHash() [32]byte {
 }
 
 func (b *Block) ComputeHash() [32]byte {
-	stringToConvert := fmt.Sprintf("%d%x%d%d", b.index, b.previousHash, b.timestamp, b.nonce)
+	stringToConvert := fmt.Sprintf("%x%d%d", b.previousHash, b.timestamp, b.nonce)
 	for _, t := range b.transactions {
 		stringToConvert += fmt.Sprintf("%s%s%d", t.GetFromAddress(), t.GetToAddress(), t.GetAmount())
 	}
@@ -67,7 +60,6 @@ func (b *Block) ComputeHash() [32]byte {
 
 func (b *Block) Dump() {
 	fmt.Printf("{\n")
-	fmt.Printf("    Index: %d\n", b.index)
 	fmt.Printf("    Timestamp: %d\n", b.timestamp)
 	fmt.Printf("    Transactions: %v\n", b.transactions)
 	fmt.Printf("    Hash: %x\n", b.hash)

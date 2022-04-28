@@ -34,10 +34,6 @@ func (bc *Blockchain) Dump() {
 
 func (bc *Blockchain) IsValid() (bool, string) {
 	for i, b := range bc.chain {
-		if i != b.GetIndex() {
-			return false, "Wrong index"
-		}
-
 		if b.GetHash() != b.ComputeHash() {
 			return false, "Wrong hash"
 		}

@@ -7,13 +7,6 @@ import (
 	"blockchain/src/transaction"
 )
 
-func TestNewGenesisBlockHasIndex0(t *testing.T) {
-	b := NewGenesisBlock([]*transaction.Transaction{})
-	if b.GetIndex() != 0 {
-		t.Fatalf("New genesis block should have index 0, but has %d\n", b.GetIndex())
-	}
-}
-
 func TestGenesisBlockShaCorresponds(t *testing.T) {
 	b := NewGenesisBlock([]*transaction.Transaction{})
 	if b.hash != b.ComputeHash() {
