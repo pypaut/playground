@@ -3,6 +3,7 @@ package block
 import (
 	"fmt"
 
+	"blockchain/src/transaction"
 	"crypto/sha256"
 	"time"
 )
@@ -10,17 +11,17 @@ import (
 type Block struct {
 	index        int
 	timestamp    int64
-	data         string
+	transactions []*transaction.Transaction
 	hash         [32]byte
 	previousHash [32]byte
 	nonce        int
 }
 
-func NewGenesisBlock(data string) *Block {
+func NewGenesisBlock(transactions []*transaction.Transaction) *Block {
 	newBlock := &Block{
 		index:        0,
 		timestamp:    time.Now().Unix(),
-		data:         data,
+		transactions: transactions,
 		previousHash: [32]byte{},
 	}
 
@@ -28,11 +29,11 @@ func NewGenesisBlock(data string) *Block {
 	return newBlock
 }
 
-func NewBlock(data string, difficulty int64, previousBlock *Block) *Block {
+func NewBlock(transactions []*transaction.Transaction, difficulty int64, previousBlock *Block) *Block {
 	newBlock := &Block{
 		index:        previousBlock.GetIndex() + 1,
 		timestamp:    time.Now().Unix(),
-		data:         data,
+		transactions: transactions,
 		previousHash: previousBlock.GetHash(),
 	}
 
@@ -44,8 +45,8 @@ func (b *Block) GetIndex() int {
 	return b.index
 }
 
-func (b *Block) GetData() string {
-	return b.data
+func (b *Block) GetTransactions() []*transaction.Transaction {
+	return b.transactions
 }
 
 func (b *Block) GetHash() [32]byte {
@@ -57,7 +58,10 @@ func (b *Block) GetPreviousHash() [32]byte {
 }
 
 func (b *Block) ComputeHash() [32]byte {
-	stringToConvert := fmt.Sprintf("%d%x%d%s%d", b.index, b.previousHash, b.timestamp, b.data, b.nonce)
+	stringToConvert := fmt.Sprintf("%d%x%d%d", b.index, b.previousHash, b.timestamp, b.nonce)
+	for _, t := range b.transactions {
+		stringToConvert += fmt.Sprintf("%s%s%d", t.GetFromAddress(), t.GetToAddress(), t.GetAmount())
+	}
 	return sha256.Sum256([]byte(stringToConvert))
 }
 
@@ -65,7 +69,7 @@ func (b *Block) Dump() {
 	fmt.Printf("{\n")
 	fmt.Printf("    Index: %d\n", b.index)
 	fmt.Printf("    Timestamp: %d\n", b.timestamp)
-	fmt.Printf("    Data: %s\n", b.data)
+	fmt.Printf("    Transactions: %v\n", b.transactions)
 	fmt.Printf("    Hash: %x\n", b.hash)
 	fmt.Printf("    PreviousHash: %x\n", b.previousHash)
 	fmt.Printf("}\n")

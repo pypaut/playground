@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"blockchain/src/block"
+	"blockchain/src/transaction"
 )
 
 type Blockchain struct {
@@ -11,13 +12,13 @@ type Blockchain struct {
 
 func NewBlockchain(difficulty int64) *Blockchain {
 	return &Blockchain{
-		chain:      []*block.Block{block.NewGenesisBlock("Genesis")},
+		chain:      []*block.Block{block.NewGenesisBlock([]*transaction.Transaction{})},
 		difficulty: difficulty,
 	}
 }
 
-func (bc *Blockchain) AddNewBlock(data string) {
-	newBlock := block.NewBlock(data, bc.difficulty, bc.GetLatestBlock())
+func (bc *Blockchain) AddNewBlock(transactions []*transaction.Transaction) {
+	newBlock := block.NewBlock(transactions, bc.difficulty, bc.GetLatestBlock())
 	bc.chain = append(bc.chain, newBlock)
 }
 
