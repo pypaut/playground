@@ -5,17 +5,19 @@ import (
 )
 
 type Blockchain struct {
-	chain []*block.Block
+	chain      []*block.Block
+	difficulty int64
 }
 
-func NewBlockchain() *Blockchain {
+func NewBlockchain(difficulty int64) *Blockchain {
 	return &Blockchain{
-		chain: []*block.Block{block.NewGenesisBlock("Genesis")},
+		chain:      []*block.Block{block.NewGenesisBlock("Genesis")},
+		difficulty: difficulty,
 	}
 }
 
 func (bc *Blockchain) AddNewBlock(data string) {
-	newBlock := block.NewBlock(data, bc.GetLatestBlock())
+	newBlock := block.NewBlock(data, bc.difficulty, bc.GetLatestBlock())
 	bc.chain = append(bc.chain, newBlock)
 }
 

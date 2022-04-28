@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	myBlockchain := blockchain.NewBlockchain()
+	myBlockchain := blockchain.NewBlockchain(0)
 	myBlockchain.AddNewBlock("Second block")
 	myBlockchain.Dump()
 	isValid, errMessage := myBlockchain.IsValid()

@@ -3,7 +3,7 @@ package blockchain
 import "testing"
 
 func TestNewBlockchainHasGenesisBlock(t *testing.T) {
-	bc := NewBlockchain()
+	bc := NewBlockchain(0)
 	b := bc.GetLatestBlock()
 
 	if b.GetIndex() != 0 || b.GetData() != "Genesis" {

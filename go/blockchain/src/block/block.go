@@ -28,7 +28,7 @@ func NewGenesisBlock(data string) *Block {
 	return newBlock
 }
 
-func NewBlock(data string, previousBlock *Block) *Block {
+func NewBlock(data string, difficulty int64, previousBlock *Block) *Block {
 	newBlock := &Block{
 		index:        previousBlock.GetIndex() + 1,
 		timestamp:    time.Now().Unix(),
@@ -36,7 +36,7 @@ func NewBlock(data string, previousBlock *Block) *Block {
 		previousHash: previousBlock.GetHash(),
 	}
 
-	newBlock.hash = newBlock.ComputeHash()
+	newBlock.Mine(difficulty)
 	return newBlock
 }
 
