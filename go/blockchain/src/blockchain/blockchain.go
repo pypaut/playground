@@ -9,6 +9,7 @@ type Blockchain struct {
 	chain               []*block.Block
 	difficulty          int64
 	pendingTransactions []*transaction.Transaction
+	miningReward        int64
 }
 
 func NewBlockchain(difficulty int64) *Blockchain {
@@ -65,6 +66,9 @@ func (bc *Blockchain) GetBalance(address string) (balance int64) {
 	return balance
 }
 
-func (bc *Blockchain) MinePendingTransactions() {
+func (bc *Blockchain) MinePendingTransactions(rewardAddress string) {
 	bc.AddNewBlock(bc.pendingTransactions)
+	bc.pendingTransactions = []*transaction.Transaction{
+		transaction.NewTransaction("", rewardAddress, bc.miningReward),
+	}
 }

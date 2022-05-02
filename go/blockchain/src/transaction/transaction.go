@@ -6,6 +6,14 @@ type Transaction struct {
 	amount      int64
 }
 
+func NewTransaction(fromAddress, toAddress string, amount int64) *Transaction {
+	return &Transaction{
+		fromAddress: fromAddress,
+		toAddress:   toAddress,
+		amount:      amount,
+	}
+}
+
 func (t *Transaction) GetFromAddress() string {
 	return t.fromAddress
 }
