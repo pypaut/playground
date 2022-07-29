@@ -6,28 +6,27 @@ import pygame as pg
 from button import Button
 from pygame.locals import QUIT, KEYDOWN, MOUSEBUTTONUP
 
-
 W = 1000
 H = 800
 FPS = 60.0
 
 
 def draw_buttons(buttons, window):
-        window.fill((0, 0, 0))
-        for b in buttons:
-            b.draw(window)
-        pg.display.flip()
+    window.fill((0, 0, 0))
+    for b in buttons:
+        b.draw(window)
+    pg.display.flip()
 
 
 def get_details_buttons(name):
     client = docker.from_env()
     container = client.containers.get(name)
     return [
-            Button(f"Status: {container.status}", 150, W),
-            Button(f"ID: {container.id}", 200, W),
-            Button(f"Image: {container.image}", 250, W),
+        Button(f"Status: {container.status}", 150, W),
+        Button(f"ID: {container.id}", 200, W),
+        Button(f"Image: {container.image}", 250, W),
     ]
-    
+
 
 def container_details_menu(name, window, clock):
     button_back = Button("BACK", H - 50, W)
@@ -53,7 +52,7 @@ def container_details_menu(name, window, clock):
 
         # Draw
         draw_buttons([button_title, button_back] + details_buttons, window)
-    
+
 
 def get_containers_buttons():
     client = docker.from_env()
@@ -119,7 +118,7 @@ def main():
 
         # Draw
         draw_buttons([button_containers, button_quit], window)
-        
+
 
 if __name__ == "__main__":
     main()
