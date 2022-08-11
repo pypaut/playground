@@ -16,8 +16,9 @@ game *init_game() {
         fprintf(stderr, "%s\n", "Error on window fullscreen\0");
         return NULL;
     }
-
     SDL_GetWindowSize(*g->window, &g->W, &g->H);
+
+    SDL_ShowCursor(SDL_DISABLE);
 
     g->c = new_clock();
     g->p = new_player(g->H, g->W);
