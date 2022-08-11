@@ -1,27 +1,30 @@
 #include <game.h>
 
-game *init_game(int W, int H) {
+game *init_game() {
     SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 
     game *g = calloc(1, sizeof(game));
-
-    g->H = H;
-    g->W = W;
-
     g->window = calloc(1, 8);
     g->renderer = calloc(1, 8);
 
+    if (SDL_CreateWindowAndRenderer(0, 0, 0, g->window, g->renderer)) {
+        fprintf(stderr, "%s\n", "Error on Window/Renderer creation\0");
+        return NULL;
+    }
+
+    if (SDL_SetWindowFullscreen(*g->window, SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+        fprintf(stderr, "%s\n", "Error on window fullscreen\0");
+        return NULL;
+    }
+
+    SDL_GetWindowSize(*g->window, &g->W, &g->H);
+
     g->c = new_clock();
-    g->p = new_player(H, W);
+    g->p = new_player(g->H, g->W);
 
     g->is_running = 1;
     g->error = 0;
     g->has_started = 0;
-
-    if (SDL_CreateWindowAndRenderer(W, H, 0, g->window, g->renderer)) {
-        fprintf(stderr, "%s\n", "Error on Window/Renderer creation\0");
-        return NULL;
-    }
 
     return g;
 }

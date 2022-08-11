@@ -18,7 +18,7 @@ typedef struct game {
     int has_started;
 } game;
 
-game *init_game(int W, int H);
+game *init_game();
 void destroy_game(game *g);
 void update_game(game *g);
 void draw_game(game *g);
