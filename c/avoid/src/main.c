@@ -3,7 +3,10 @@
 
 
 int main() {
-    game *g = init_game();
+    int H = 800;
+    int W = 1000;
+
+    game *g = init_game(H, W);
 
     while (g->is_running && !g->error) {
         handle_quit_event(g);

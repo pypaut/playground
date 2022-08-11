@@ -1,13 +1,13 @@
 #include <game.h>
 
-game *init_game() {
+game *init_game(int W, int H) {
     SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 
     game *g = calloc(1, sizeof(game));
     g->window = calloc(1, 8);
     g->renderer = calloc(1, 8);
 
-    if (SDL_CreateWindowAndRenderer(0, 0, 0, g->window, g->renderer)) {
+    if (SDL_CreateWindowAndRenderer(W, H, 0, g->window, g->renderer)) {
         fprintf(stderr, "%s\n", "Error on Window/Renderer creation\0");
         return NULL;
     }
