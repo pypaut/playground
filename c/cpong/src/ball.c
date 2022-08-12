@@ -1,6 +1,6 @@
 #include <ball.h>
 
-ball *new_ball(int x, int y, int w, int h) {
+ball *new_ball(float x, float y, int w, int h) {
     ball *ba = calloc(1, sizeof(ball));
     ba->speed = 5;
     ba->rect = calloc(1, sizeof(SDL_Rect));
@@ -8,6 +8,8 @@ ball *new_ball(int x, int y, int w, int h) {
     ba->rect->y = y;
     ba->rect->w = w;
     ba->rect->h = h;
+    ba->x = x;
+    ba->y = y;
     return ba;
 }
 
@@ -39,10 +41,12 @@ int draw_ball(ball *b, SDL_Renderer *renderer) {
 
 int update_ball(ball *b, player *p1, player *p2, int H, int W) {
     // Update position
-    int old_x = b->rect->x;
-    int old_y = b->rect->y;
-    b->rect->x += b->dir_x;
-    b->rect->y += b->dir_y;
+    float old_x = b->x;
+    float old_y = b->y;
+    b->x += b->dir_x;
+    b->y += b->dir_y;
+    b->rect->x = b->x;
+    b->rect->y = b->y;
 
     // Handle player collision
     SDL_bool p1_collision = SDL_HasIntersection(b->rect, p1->rect);
@@ -63,7 +67,7 @@ int update_ball(ball *b, player *p1, player *p2, int H, int W) {
             player_middle = p2->rect->y + p2->rect->h/2;
         }
 
-        float deviation = 0.005 * (ball_middle - player_middle);
+        float deviation = 0.1 * (ball_middle - player_middle);
         b->dir_y = deviation;
     }
 
@@ -82,7 +86,6 @@ int update_ball(ball *b, player *p1, player *p2, int H, int W) {
     float dir_norm = pow(pow(b->dir_x, 2) + pow(b->dir_y, 2), 0.5);
     b->dir_x = b->dir_x * b->speed / dir_norm;
     b->dir_y = b->dir_y * b->speed / dir_norm;
-
 
     return 0;
 }
