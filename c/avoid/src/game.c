@@ -22,6 +22,11 @@ game *init_game(int W, int H) {
 
     g->c = new_clock();
     g->p = new_player(g->H, g->W);
+    g->balls = calloc(1, 8);
+    g->nb_balls = 0;
+
+    // Spawn one ball (for now)
+    spawn_ball(g, 1);
 
     g->is_running = 1;
     g->error = 0;
@@ -53,6 +58,10 @@ void draw_game(game *g) {
 
     draw_player(g->p, *g->renderer);
 
+    for (int i = 0; i < g->nb_balls; i++) {
+        draw_ball(g->balls[i], *g->renderer);
+    }
+
     SDL_RenderPresent(*g->renderer);
 }
 
@@ -70,7 +79,37 @@ void destroy_game(game *g) {
     free(g->renderer);
     destroy_clock(g->c);
     destroy_player(g->p);
+    for (int i = 0; i < g->nb_balls; i++) {
+        destroy_ball(g->balls[i]);
+    }
+    free(g->balls);
     free(g);
 
     SDL_Quit();
+}
+
+void spawn_ball(game *g, int pos) {
+    float x, y, dir_x, dir_y;
+    if (pos == 1) {  // Top left corner
+        x = 0;
+        y = 0;
+        dir_x = 0.5;
+        dir_y = 0.5;
+    }
+    else if (pos == 2) {  // Top right corner
+
+    }
+    else if (pos == 3) {  // Bottom left corner
+
+    }
+    else {  // Bottom right corner
+
+    }
+
+    ball *b = new_ball(x, y, dir_x, dir_y);
+
+    // Update game struct
+    g->nb_balls += 1;
+    g->balls = realloc(g->balls, 8 * g->nb_balls);
+    g->balls[g->nb_balls-1] = b;
 }
