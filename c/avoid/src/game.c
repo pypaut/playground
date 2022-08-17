@@ -14,11 +14,11 @@ game *init_game(int W, int H) {
         return NULL;
     }
 
-    if (SDL_SetWindowFullscreen(*g->window, SDL_WINDOW_FULLSCREEN_DESKTOP)) {
-        fprintf(stderr, "%s\n", "Error on window fullscreen\0");
-        return NULL;
-    }
-    SDL_GetWindowSize(*g->window, &g->W, &g->H);
+    // if (SDL_SetWindowFullscreen(*g->window, SDL_WINDOW_FULLSCREEN_DESKTOP)) {
+    //     fprintf(stderr, "%s\n", "Error on window fullscreen\0");
+    //     return NULL;
+    // }
+    // SDL_GetWindowSize(*g->window, &g->W, &g->H);
 
     SDL_ShowCursor(SDL_DISABLE);
 
@@ -27,8 +27,12 @@ game *init_game(int W, int H) {
     g->balls = calloc(1, 8);
     g->nb_balls = 0;
 
-    // Spawn one ball (for now)
+    // Spawn balls
+    // TODO : use a timer to spawn balls over time
     spawn_ball(g, 1);
+    spawn_ball(g, 2);
+    spawn_ball(g, 3);
+    spawn_ball(g, 4);
 
     g->is_running = 1;
     g->error = 0;
@@ -102,13 +106,23 @@ void spawn_ball(game *g, int pos) {
         dir_y = 0.5;
     }
     else if (pos == 2) {  // Top right corner
-
+        x = g->W - 10;
+        y = 0;
+        dir_x = -0.5;
+        dir_y = 0.5;
     }
     else if (pos == 3) {  // Bottom left corner
+        x = 0;
+        y = g->H - 10;
+        dir_x = 0.5;
+        dir_y = -0.5;
 
     }
     else {  // Bottom right corner
-
+        x = g->W - 10;
+        y = g->H - 10;
+        dir_x = -0.5;
+        dir_y = -0.5;
     }
 
     ball *b = new_ball(x, y, dir_x, dir_y);
