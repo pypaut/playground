@@ -41,8 +41,10 @@ int update_ball(ball *b, int W, int H) {
     // Update position
     float old_x = b->x;
     float old_y = b->y;
-    b->x += b->dir_x;
-    b->y += b->dir_y;
+    b->x += b->dir_x * b->speed;
+    b->y += b->dir_y * b->speed;
+    b->rect->x = b->x;
+    b->rect->y = b->y;
 
     // Check wall collision
     if (b->rect->y < 0 || b->rect->y + b->rect->h > H) {
@@ -56,15 +58,18 @@ int update_ball(ball *b, int W, int H) {
     }
 
     // Check player collision
+    // TODO
 
+    // Check other balls collision
+    // TODO
 
-    b->rect->x = b->x;
-    b->rect->y = b->y;
+    // b->rect->x = b->x;
+    // b->rect->y = b->y;
 
     // Normalize dir vector to speed
     float dir_norm = pow(pow(b->dir_x, 2) + pow(b->dir_y, 2), 0.5);
-    b->dir_x = b->dir_x * b->speed / dir_norm;
-    b->dir_y = b->dir_y * b->speed / dir_norm;
+    b->dir_x = b->dir_x / dir_norm;
+    b->dir_y = b->dir_y / dir_norm;
 
     return 0;
 }
