@@ -13,7 +13,7 @@ ball *new_ball(float x, float y, float dir_x, float dir_y) {
     b->y = y;
     b->dir_x = dir_x;
     b->dir_y = dir_y;
-    b->speed = 5.0;
+    b->speed = 2.5;
 
     return b;
 }

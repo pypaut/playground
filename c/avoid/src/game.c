@@ -6,6 +6,8 @@ game *init_game(int W, int H) {
     game *g = calloc(1, sizeof(game));
     g->window = calloc(1, 8);
     g->renderer = calloc(1, 8);
+    g->W = W;
+    g->H = H;
 
     if (SDL_CreateWindowAndRenderer(W, H, 0, g->window, g->renderer)) {
         fprintf(stderr, "%s\n", "Error on Window/Renderer creation\0");
@@ -43,6 +45,9 @@ void update_game(game *g) {
 
     SDL_GetMouseState(&x, &y);
     update_player(g->p, x, y);
+    for (int i = 0; i < g->nb_balls; i++) {
+        update_ball(g->balls[i], g->W, g->H);
+    }
 }
 
 void draw_game(game *g) {
