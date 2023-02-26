@@ -1,4 +1,4 @@
-use crate::components::{Ball, Velocity};
+use crate::components::{Ball, Direction};
 use crate::{BALL_BASE_SPEED, BALL_SIZE, TIME_STEP};
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
@@ -24,13 +24,13 @@ fn ball_spawn_system(
             ..default()
         })
         .insert(Ball)
-        .insert(Velocity { x: 0., y: 0. });
+        .insert(Direction { x: 0., y: -1. });
 }
 
-fn ball_movement_system(mut query: Query<(&Velocity, &mut Transform), With<Ball>>) {
-    for (velocity, mut transform) in query.iter_mut() {
+fn ball_movement_system(mut query: Query<(&Direction, &mut Transform), With<Ball>>) {
+    for (direction, mut transform) in query.iter_mut() {
         let translation = &mut transform.translation;
-        translation.x += velocity.x * TIME_STEP * BALL_BASE_SPEED;
-        translation.y += velocity.y * TIME_STEP * BALL_BASE_SPEED;
+        translation.x += direction.x * TIME_STEP * BALL_BASE_SPEED;
+        translation.y += direction.y * TIME_STEP * BALL_BASE_SPEED;
     }
 }

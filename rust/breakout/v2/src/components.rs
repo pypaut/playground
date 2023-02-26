@@ -3,7 +3,7 @@ use bevy::prelude::Component;
 // region:    --- Common Components
 
 #[derive(Component)]
-pub struct Velocity {
+pub struct Direction {
     pub x: f32,
     pub y: f32,
 }
