@@ -27,9 +27,11 @@ fn ball_spawn_system(
         .insert(Direction { x: 0., y: -1. });
 }
 
-fn ball_movement_system(mut query: Query<(&Direction, &mut Transform), With<Ball>>) {
-    for (direction, mut transform) in query.iter_mut() {
+fn ball_movement_system(mut query: Query<(&mut Direction, &mut Transform), With<Ball>>) {
+    for (mut direction, mut transform) in query.iter_mut() {
         let translation = &mut transform.translation;
+        direction.normalize();
+
         translation.x += direction.x * TIME_STEP * BALL_BASE_SPEED;
         translation.y += direction.y * TIME_STEP * BALL_BASE_SPEED;
     }

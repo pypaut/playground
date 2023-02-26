@@ -8,6 +8,18 @@ pub struct Direction {
     pub y: f32,
 }
 
+impl Direction {
+    pub fn norm(&self) -> f32 {
+        (self.x.powf(2.0) + self.y.powf(2.)).sqrt()
+    }
+
+    pub fn normalize(&mut self) {
+        let norm = self.norm();
+        self.x /= norm;
+        self.y /= norm;
+    }
+}
+
 // endregion: --- Common Components
 
 // region:    --- Player Components
