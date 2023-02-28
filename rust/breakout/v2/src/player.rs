@@ -43,9 +43,25 @@ fn player_keyboard_event_system(
     }
 }
 
-fn player_movement_system(mut query: Query<(&Direction, &mut Transform), With<Player>>) {
+fn player_movement_system(
+    win_size: Res<WinSize>,
+    mut query: Query<(&Direction, &mut Transform), With<Player>>,
+) {
     for (direction, mut transform) in query.iter_mut() {
         let translation = &mut transform.translation;
-        translation.x += direction.x * TIME_STEP * PLAYER_BASE_SPEED;
+
+        let player_left = translation.x - PLAYER_SIZE.0 / 2.;
+        let player_right = translation.x + PLAYER_SIZE.0 / 2.;
+
+        let screen_left = -win_size.w / 2.;
+        let screen_right = win_size.w / 2.;
+
+        let is_in_bound = screen_left < player_left && player_right < screen_right;
+        let is_left_toward_right = player_left < screen_left && direction.x > 0.;
+        let is_right_toward_left = screen_right < player_right && direction.x < 0.;
+
+        if is_in_bound || is_left_toward_right || is_right_toward_left {
+            translation.x += direction.x * TIME_STEP * PLAYER_BASE_SPEED;
+        }
     }
 }
