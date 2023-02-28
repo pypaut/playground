@@ -1,7 +1,8 @@
-[ ] Ball: walls collisions
+[X] Ball: walls collisions
 [ ] Ball: player collisions
 [ ] Player: screen boundaries
 [ ] Bricks: plugin
 [ ] Ball: bricks collisions
     [ ] Change dir (like wall)
     [ ] Destroy brick
+[ ] Stop game if ball falls
