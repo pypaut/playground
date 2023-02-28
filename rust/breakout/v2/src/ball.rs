@@ -1,5 +1,5 @@
 use crate::components::{Ball, Direction, Player};
-use crate::{WinSize, BALL_BASE_SPEED, BALL_SIZE, PLAYER_SIZE, TIME_STEP};
+use crate::{WinSize, BALL_BASE_SPEED, BALL_SIZE, PLAYER_SIZE};
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
 pub struct BallPlugin;
@@ -29,21 +29,25 @@ fn ball_spawn_system(
         .insert(Direction { x: -0.5, y: -1. });
 }
 
-fn ball_movement_system(mut query: Query<(&mut Direction, &mut Transform), With<Ball>>) {
+fn ball_movement_system(
+    time: Res<Time>,
+    mut query: Query<(&mut Direction, &mut Transform), With<Ball>>,
+) {
     for (direction, mut transform) in query.iter_mut() {
         let translation = &mut transform.translation;
-        translation.x += direction.x * TIME_STEP * BALL_BASE_SPEED;
-        translation.y += direction.y * TIME_STEP * BALL_BASE_SPEED;
+        translation.x += direction.x * time.delta_seconds() * BALL_BASE_SPEED;
+        translation.y += direction.y * time.delta_seconds() * BALL_BASE_SPEED;
     }
 }
 
 fn ball_wall_collision_system(
+    time: Res<Time>,
     win_size: Res<WinSize>,
     mut query: Query<(&mut Direction, &Transform), With<Ball>>,
 ) {
     for (mut direction, transform) in query.iter_mut() {
-        let next_x = transform.translation.x + direction.x * TIME_STEP * BALL_BASE_SPEED;
-        let next_y = transform.translation.y + direction.y * TIME_STEP * BALL_BASE_SPEED;
+        let next_x = transform.translation.x + direction.x * time.delta_seconds() * BALL_BASE_SPEED;
+        let next_y = transform.translation.y + direction.y * time.delta_seconds() * BALL_BASE_SPEED;
 
         // Ball reaches bottom or top
         if next_y - BALL_SIZE / 2. < -win_size.h / 2. || next_y + BALL_SIZE / 2. > win_size.h / 2. {
@@ -60,12 +64,15 @@ fn ball_wall_collision_system(
 }
 
 fn ball_player_collision_system(
+    time: Res<Time>,
     mut ball_query: Query<(&mut Direction, &Transform), With<Ball>>,
     mut player_query: Query<&Transform, With<Player>>,
 ) {
     for (mut ball_dir, ball_transform) in ball_query.iter_mut() {
-        let next_ball_x = ball_transform.translation.x + ball_dir.x * TIME_STEP * BALL_BASE_SPEED;
-        let next_ball_y = ball_transform.translation.y + ball_dir.y * TIME_STEP * BALL_BASE_SPEED;
+        let next_ball_x =
+            ball_transform.translation.x + ball_dir.x * time.delta_seconds() * BALL_BASE_SPEED;
+        let next_ball_y =
+            ball_transform.translation.y + ball_dir.y * time.delta_seconds() * BALL_BASE_SPEED;
 
         if let Ok(player_transform) = player_query.get_single_mut() {
             let player_x = player_transform.translation.x;
@@ -81,7 +88,7 @@ fn ball_player_collision_system(
             let x_cond = player_left < next_ball_x && next_ball_x < player_right;
             let y_cond = player_bot < next_ball_y && next_ball_y < player_top;
             if x_cond && y_cond {
-                let c = (ball_transform.translation.x - player_x) / PLAYER_SIZE.0;
+                let c = 1.5 * (ball_transform.translation.x - player_x) / PLAYER_SIZE.0;
 
                 ball_dir.y *= -1.;
                 ball_dir.x = c;

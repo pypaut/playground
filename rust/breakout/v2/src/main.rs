@@ -8,8 +8,6 @@ mod player;
 
 // region:    --- Constants
 
-const TIME_STEP: f32 = 1. / 60.;
-
 const PLAYER_SIZE: (f32, f32) = (200., 20.);
 const PLAYER_BASE_SPEED: f32 = 800.;
 

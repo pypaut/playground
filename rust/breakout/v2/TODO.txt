@@ -1,7 +1,7 @@
 [X] Ball: walls collisions
 [X] Ball: player collisions
 [X] Player: screen boundaries
-[ ] Use delta time
+[X] Use delta time
 [ ] Bricks: plugin
 [ ] Ball: bricks collisions
     [ ] Change dir (like wall)

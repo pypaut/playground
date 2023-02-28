@@ -1,5 +1,5 @@
 use crate::components::{Direction, Player};
-use crate::{WinSize, PLAYER_BASE_SPEED, PLAYER_SIZE, TIME_STEP};
+use crate::{WinSize, PLAYER_BASE_SPEED, PLAYER_SIZE};
 use bevy::prelude::*;
 
 pub struct PlayerPlugin;
@@ -44,6 +44,7 @@ fn player_keyboard_event_system(
 }
 
 fn player_movement_system(
+    time: Res<Time>,
     win_size: Res<WinSize>,
     mut query: Query<(&Direction, &mut Transform), With<Player>>,
 ) {
@@ -61,7 +62,7 @@ fn player_movement_system(
         let is_right_toward_left = screen_right < player_right && direction.x < 0.;
 
         if is_in_bound || is_left_toward_right || is_right_toward_left {
-            translation.x += direction.x * TIME_STEP * PLAYER_BASE_SPEED;
+            translation.x += direction.x * time.delta_seconds() * PLAYER_BASE_SPEED;
         }
     }
 }
