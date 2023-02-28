@@ -1,4 +1,4 @@
-use crate::components::{Player, Direction};
+use crate::components::{Direction, Player};
 use crate::{WinSize, PLAYER_BASE_SPEED, PLAYER_SIZE, TIME_STEP};
 use bevy::prelude::*;
 
