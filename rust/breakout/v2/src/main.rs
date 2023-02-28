@@ -34,9 +34,9 @@ fn main() {
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             window: WindowDescriptor {
                 title: "Breakout".to_string(),
-                width: 1920.,
-                height: 1080.,
-                mode: WindowMode::BorderlessFullscreen,
+                width: 1000.,
+                height: 800.,
+                // mode: WindowMode::BorderlessFullscreen,
                 ..default()
             },
             ..default()

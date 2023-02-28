@@ -25,7 +25,7 @@ fn ball_spawn_system(
             ..default()
         })
         .insert(Ball)
-        .insert(Direction { x: 0., y: -1. });
+        .insert(Direction { x: -0.5, y: -1. });
 }
 
 fn ball_movement_system(mut query: Query<(&mut Direction, &mut Transform), With<Ball>>) {
