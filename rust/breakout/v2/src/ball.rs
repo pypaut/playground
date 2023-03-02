@@ -8,8 +8,8 @@ impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system_to_stage(StartupStage::PostStartup, ball_spawn_system);
         app.add_system(ball_movement_system);
-        app.add_system(ball_wall_collision_system);
-        app.add_system(ball_player_collision_system);
+        app.add_system(ball_player_collision_system.after(ball_movement_system));
+        app.add_system(ball_wall_collision_system.after(ball_player_collision_system));
     }
 }
 

@@ -8,7 +8,7 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system_to_stage(StartupStage::PostStartup, player_spawn_system);
         app.add_system(player_keyboard_event_system);
-        app.add_system(player_movement_system);
+        app.add_system(player_movement_system.after(player_keyboard_event_system));
     }
 }
 
