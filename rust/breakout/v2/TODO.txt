@@ -4,7 +4,7 @@
 [X] Use delta time
 [ ] Refactor: check https://bevyengine.org/examples/games/breakout/ for more
     idiomatic programming
-[ ] Bricks: plugin
+[X] Bricks: plugin
 [ ] Ball: bricks collisions
     [ ] Change dir (like wall)
     [ ] Destroy brick

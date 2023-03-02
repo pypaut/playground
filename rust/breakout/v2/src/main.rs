@@ -1,8 +1,10 @@
 use crate::ball::BallPlugin;
+use crate::bricks::BricksPlugin;
 use crate::player::PlayerPlugin;
 use bevy::prelude::*;
 
 mod ball;
+mod bricks;
 mod components;
 mod player;
 
@@ -14,6 +16,9 @@ const PLAYER_BASE_SPEED: f32 = 800.;
 const BALL_SIZE: f32 = 10.;
 const BALL_BASE_SPEED: f32 = 500.;
 
+const BRICKS_LINES: i8 = 5;
+const BRICKS_COLUMNS: i8 = 8;
+
 // endregion: --- Constants
 
 // region:    --- Resources
@@ -22,6 +27,12 @@ const BALL_BASE_SPEED: f32 = 500.;
 pub struct WinSize {
     pub w: f32,
     pub h: f32,
+}
+
+#[derive(Resource)]
+pub struct BricksNumber {
+    pub lines: f32,
+    pub columns: f32,
 }
 
 // endregion: --- Resources
@@ -41,6 +52,7 @@ fn main() {
         }))
         .add_plugin(PlayerPlugin)
         .add_plugin(BallPlugin)
+        .add_plugin(BricksPlugin)
         .add_startup_system(setup_system)
         .run()
 }

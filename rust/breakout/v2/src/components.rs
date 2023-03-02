@@ -35,3 +35,10 @@ pub struct Player;
 pub struct Ball;
 
 // endregion: --- Ball Components
+
+// region:    --- Brick Components
+
+#[derive(Component)]
+pub struct Brick;
+
+// endregion: --- Brick Components
