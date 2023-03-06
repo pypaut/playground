@@ -1,15 +1,20 @@
-use crate::components::{Ball, Direction, Player};
-use crate::{WinSize, BALL_BASE_SPEED, BALL_SIZE, PLAYER_SIZE};
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+use crate::components::{Ball, Brick, Direction, Player};
+use crate::{BrickSize, WinSize, BALL_BASE_SPEED, BALL_SIZE, PLAYER_SIZE};
+use bevy::{
+    prelude::*,
+    sprite::collide_aabb::{collide, Collision},
+    sprite::MaterialMesh2dBundle,
+};
 
 pub struct BallPlugin;
 
 impl Plugin for BallPlugin {
     fn build(&self, app: &mut App) {
         app.add_startup_system_to_stage(StartupStage::PostStartup, ball_spawn_system);
-        app.add_system(ball_movement_system);
         app.add_system(ball_player_collision_system.after(ball_movement_system));
         app.add_system(ball_wall_collision_system.after(ball_player_collision_system));
+        app.add_system(ball_brick_collision_system);
+        app.add_system(ball_movement_system);
     }
 }
 
@@ -94,6 +99,59 @@ fn ball_player_collision_system(
                 ball_dir.x = c;
 
                 ball_dir.normalize();
+            }
+        }
+    }
+}
+
+fn ball_brick_collision_system(
+    mut commands: Commands,
+    brick_size: Res<BrickSize>,
+    time: Res<Time>,
+    mut ball_query: Query<(&mut Direction, &Transform), With<Ball>>,
+    mut bricks_query: Query<(Entity, &Transform), With<Brick>>,
+) {
+    for (mut ball_dir, ball_transform) in ball_query.iter_mut() {
+        let next_ball_x =
+            ball_transform.translation.x + ball_dir.x * time.delta_seconds() * BALL_BASE_SPEED;
+        let next_ball_y =
+            ball_transform.translation.y + ball_dir.y * time.delta_seconds() * BALL_BASE_SPEED;
+
+        for (entity, brick_transform) in bricks_query.iter_mut() {
+            let collision = collide(
+                ball_transform.translation,
+                ball_transform.scale.truncate(),
+                brick_transform.translation,
+                Vec2::new(brick_size.w, brick_size.h),
+            );
+
+            if collision.is_some() {
+                let brick_x = brick_transform.translation.x;
+                let brick_y = brick_transform.translation.y;
+
+                let brick_left = brick_x - brick_size.w / 2.;
+                let brick_right = brick_x + brick_size.w / 2.;
+
+                let brick_bot = brick_y - brick_size.h / 2.;
+                let brick_top = brick_y + brick_size.h / 2.;
+
+                let ball_left = next_ball_x - BALL_SIZE / 2.;
+                let ball_right = next_ball_x + BALL_SIZE / 2.;
+
+                let ball_bot = next_ball_y - BALL_SIZE / 2.;
+                let ball_top = next_ball_y + BALL_SIZE / 2.;
+
+                // Vertical collision
+                if ball_top > brick_bot || ball_bot < brick_top {
+                    ball_dir.y *= -1.;
+                }
+
+                // Horizontal collision
+                if ball_right > brick_left || ball_left < brick_right {
+                    ball_dir.x *= -1.;
+                }
+
+                commands.entity(entity).despawn();
             }
         }
     }

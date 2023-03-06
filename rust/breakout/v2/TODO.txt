@@ -5,7 +5,7 @@
 [ ] Refactor: check https://bevyengine.org/examples/games/breakout/ for more
     idiomatic programming
 [X] Bricks: plugin
-[ ] Ball: bricks collisions
-    [ ] Change dir (like wall)
-    [ ] Destroy brick
+[X] Ball: bricks collisions
+    [X] Change dir (like wall)
+    [X] Destroy brick
 [ ] Stop game if ball falls

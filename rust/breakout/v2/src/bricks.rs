@@ -1,5 +1,5 @@
 use crate::components::Brick;
-use crate::{WinSize, BRICKS_COLUMNS, BRICKS_LINES};
+use crate::{BrickSize, WinSize, BRICKS_COLUMNS, BRICKS_LINES};
 use bevy::prelude::*;
 
 pub struct BricksPlugin;
@@ -17,6 +17,11 @@ fn bricks_spawn_system(mut commands: Commands, win_size: Res<WinSize>) {
     let wall_gap = 0.05 * win_size.w; // Gap between wall and first bricks
     let brick_gap = 0.01 * win_size.w; // Gap in between bricks
     let brick_size = compute_bricks_size(brick_gap, wall_gap, win_size.w, win_size.h);
+
+    commands.insert_resource(BrickSize {
+        w: brick_size.x,
+        h: brick_size.y,
+    });
 
     for l in 0..BRICKS_LINES {
         for c in 0..BRICKS_COLUMNS {

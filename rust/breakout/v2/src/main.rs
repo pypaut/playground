@@ -35,6 +35,12 @@ pub struct BricksNumber {
     pub columns: f32,
 }
 
+#[derive(Resource)]
+pub struct BrickSize {
+    pub w: f32,
+    pub h: f32,
+}
+
 // endregion: --- Resources
 
 fn main() {
