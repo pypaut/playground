@@ -60,9 +60,13 @@ func NewGame() *Game {
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
 func (g *Game) Update() error {
+	if !g.HasStarted && ebiten.IsKeyPressed(ebiten.KeySpace) {
+		g.HasStarted = true
+	}
+
 	g.Player1.Update(float64(g.Width), float64(g.Height))
 	g.Player2.Update(float64(g.Width), float64(g.Height))
-	g.HasStarted, g.IsRunning = g.Ball.Update(float64(g.Width), float64(g.Height), false, false)
+	g.IsRunning = g.Ball.Update(float64(g.Width), float64(g.Height), g.IsRunning, g.HasStarted)
 	if !g.IsRunning {
 		return errors.New("Game's done")
 	}

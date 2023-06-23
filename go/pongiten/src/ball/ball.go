@@ -29,8 +29,19 @@ func NewBall(screenWidth, screenHeight float64) *Ball {
 	}
 }
 
-func (b *Ball) Update(screenWidth, screenHeight float64, isRunning, hasStarted bool) (bool, bool) {
-	return false, true
+func (b *Ball) Update(screenWidth, screenHeight float64, isRunning, hasStarted bool) (isStillRunning bool) {
+	if hasStarted && isRunning {
+		// Ball update here
+		b.moveVector(b.Speed/2, b.Speed/2)
+	}
+
+	isStillRunning = true
+	return
+}
+
+func (b *Ball) moveVector(dirX, dirY float64) {
+	b.PosX += dirX
+	b.PosY += dirY
 }
 
 func (b *Ball) Draw(screen *ebiten.Image) {

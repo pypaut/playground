@@ -44,12 +44,17 @@ func NewPlayer(posX, posY, width, height, speed float64, clr color.Color, contro
 
 func (p *Player) Update(boundWidth, boundHeight float64) {
 	if ebiten.IsKeyPressed(p.UpKey) && p.PosY > 0 {
-		p.PosY -= p.Speed
+		p.moveVector(0.0, -p.Speed)
 	}
 
 	if ebiten.IsKeyPressed(p.DownKey) && p.PosY+p.Height < boundHeight {
-		p.PosY += p.Speed
+		p.moveVector(0.0, p.Speed)
 	}
+}
+
+func (p *Player) moveVector(dirX, dirY float64) {
+	p.PosX += dirX
+	p.PosY += dirY
 }
 
 func (p *Player) Draw(screen *ebiten.Image) {
