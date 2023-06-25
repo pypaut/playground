@@ -49,10 +49,10 @@ class Player:
         Handle input and update state
         """
         # Movements
-        if keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+        if keys[pygame.K_a] and not keys[pygame.K_d]:
             self.direction = "left"
             self.animation = "run"
-        elif keys[pygame.K_RIGHT] and not keys[pygame.K_LEFT]:
+        elif keys[pygame.K_d] and not keys[pygame.K_a]:
             self.direction = "right"
             self.animation = "run"
         else:
@@ -118,7 +118,7 @@ class Player:
         Apply left/right movement
         """
         if (
-            keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]
+            keys[pygame.K_a] or keys[pygame.K_d]
         ) and not self.is_attacking:
             if self.direction == "left" and self.rect.x > 10:
                 self.rect = self.rect.move(-self.SPEED * dt, 0)

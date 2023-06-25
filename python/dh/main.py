@@ -17,9 +17,6 @@ def init_pygame(name, w, h):
 
 
 def main():
-    """
-    PyGame modules initialization
-    """
     window, clock = init_pygame("Dark Hunter", W, H)
 
     while True:
