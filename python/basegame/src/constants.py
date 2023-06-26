@@ -17,3 +17,5 @@ GAME_TITLE = "Base Game"
 # Movements
 
 MAX_GRAVITY = 2
+JUMP_FORCE = 1.8
+GRAVITY_GROWTH = 0.1

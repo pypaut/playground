@@ -1,6 +1,6 @@
 import pygame
 
-from src.constants import W, MAX_GRAVITY
+from src.constants import W, MAX_GRAVITY, JUMP_FORCE, GRAVITY_GROWTH
 
 class Player:
     def __init__(self, win_w, win_h):
@@ -22,6 +22,7 @@ class Player:
         # Movement
         self.speed = 0.5
         self.direction = [0.0, MAX_GRAVITY]
+        self.is_on_ground = False
 
     def events(self, keys):
         # Left and right movements
@@ -30,11 +31,13 @@ class Player:
             self.direction[0] = -1.0
         if keys[self.right_key]:
             self.direction[0] = 1.0
+        if keys[self.jump_key] and self.is_on_ground:
+            self.direction[1] = -JUMP_FORCE
 
 
     def update(self, keys, dt, blocks):
         # Gravity
-        self.direction[1] += 0.2
+        self.direction[1] += GRAVITY_GROWTH
         if self.direction[1] > MAX_GRAVITY:
             self.direction[1] = MAX_GRAVITY
 
@@ -43,10 +46,12 @@ class Player:
         self.rect.top += dt * self.speed * self.direction[1]
 
         # Vertical collisions
+        self.is_on_ground = False
         for b in blocks.blocks:
             if self.rect.colliderect(b.rect):
                 self.rect.top = b.rect.top - self.rect.height
-        
+                self.is_on_ground = True
+
         # Boundaries
         if self.rect.left < 0:
             self.rect.left = 0
