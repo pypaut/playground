@@ -1,2 +1,3 @@
-[ ] Jump
-[ ] Sprites (movements only)
+[X] Jump
+[X] Sprites (static player, blocks, background)
+[ ] Sprites (idle, walk, jump)
