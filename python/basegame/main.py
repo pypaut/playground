@@ -11,16 +11,15 @@ def init_pygame(name, w, h):
     pygame.display.init()
     pygame.font.init()
     pygame.display.set_caption(name)
-    window = pygame.display.set_mode((w, h))
+    pygame.mouse.set_visible(False)
+    window = pygame.display.set_mode((w, h), flags=pygame.SCALED, vsync=1)
     clock = pygame.time.Clock()
     return window, clock
 
 
-def check_quit_event(keys):
+def check_quit_event(keys, events):
     # Check quit event
-    events = pygame.event.get()
-    events_types = [e.type for e in events]
-    if pygame.QUIT in events_types:
+    if pygame.QUIT in events:
         return True
 
     # Check ESC
@@ -39,8 +38,10 @@ def main():
         dt = clock.tick(FPS)
 
         # Events
+        events = pygame.event.get()
+        events_types = [e.type for e in events]
         keys = pygame.key.get_pressed()
-        if check_quit_event(keys):
+        if check_quit_event(keys, events_types):
             break
 
         player.events(keys)
