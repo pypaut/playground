@@ -2,8 +2,8 @@
 
 import pygame
 
-from src.blocks import Blocks
-from src.constants import W, H, GAME_TITLE, FPS
+from src.block import Block
+from src.constants import W, H, GAME_TITLE, FPS, BLOCK_SIDE
 from src.player import Player
 
 
@@ -30,10 +30,36 @@ def check_quit_event(keys, events):
 
 
 def main():
+    # Init and create objects
     window, clock = init_pygame(GAME_TITLE, W, H)
-    player = Player(W, H)
-    blocks = Blocks()
+    player = Player()
+    blocks = []
 
+    # Ground blocks
+    nb_blocks_in_width = int(W // BLOCK_SIDE) + 1
+    ground_height = H - BLOCK_SIDE
+    ground_blocks = [
+        Block(
+            i * BLOCK_SIDE,
+            ground_height,
+        )
+        for i in range(nb_blocks_in_width)
+    ]
+
+    blocks += ground_blocks
+
+    # Add sprites to group
+    blocks_group = pygame.sprite.Group()
+    player_group = pygame.sprite.Group()
+
+    player_group.add(player)
+    blocks_group.add(blocks)
+
+    # Load background
+    background = pygame.image.load("assets/background.png")
+    background = pygame.transform.scale(background, [W, H])
+
+    # Game loop
     while True:
         dt = clock.tick(FPS)
 
@@ -51,8 +77,9 @@ def main():
 
         # Draw
         window.fill((0, 0, 0))
-        blocks.draw(window)
-        player.draw(window)
+        window.blit(background, (0, 0))
+        blocks_group.draw(window)
+        player_group.draw(window)
         pygame.display.flip()
 
 

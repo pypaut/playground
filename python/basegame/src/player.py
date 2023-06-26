@@ -1,18 +1,20 @@
 import pygame
 
-from src.constants import W, MAX_GRAVITY, JUMP_FORCE, GRAVITY_GROWTH
+from src.constants import H, W, MAX_GRAVITY, JUMP_FORCE, GRAVITY_GROWTH, PLACEHOLDER_COLOR
 
-class Player:
-    def __init__(self, win_w, win_h):
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+
         # Pygame attributes
-        self.color = (255, 255, 255)
-        side = win_h / 10
-        self.rect = pygame.Rect(
-            (win_w-side)/2, # left
-            (win_h-side)/2, # top
-            side,           # w
-            side            # h
-        )
+        side = H / 7
+
+        # Load image
+        image = pygame.image.load("assets/character/idle/Warrior_Idle_1.png")
+        self.image = pygame.transform.scale(image, [side, side])
+
+        self.rect = self.image.get_rect()
+        self.rect.center = [W/2, H/2]
 
         # Control keys
         self.left_key = pygame.K_a
@@ -47,7 +49,7 @@ class Player:
 
         # Vertical collisions
         self.is_on_ground = False
-        for b in blocks.blocks:
+        for b in blocks:
             if self.rect.colliderect(b.rect):
                 self.rect.top = b.rect.top - self.rect.height
                 self.is_on_ground = True
@@ -57,6 +59,3 @@ class Player:
             self.rect.left = 0
         if self.rect.left + self.rect.width > W:
             self.rect.left = W - self.rect.width
-
-    def draw(self, window):
-        pygame.draw.rect(window, self.color, self.rect)
