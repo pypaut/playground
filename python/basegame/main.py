@@ -29,13 +29,7 @@ def check_quit_event(keys, events):
     return False
 
 
-def main():
-    # Init and create objects
-    window, clock = init_pygame(GAME_TITLE, W, H)
-    player = Player()
-    blocks = []
-
-    # Ground blocks
+def create_ground_blocks():
     nb_blocks_in_width = int(W // BLOCK_SIDE) + 1
     ground_height = H - BLOCK_SIDE
     ground_blocks = [
@@ -45,10 +39,19 @@ def main():
         )
         for i in range(nb_blocks_in_width)
     ]
+    return ground_blocks
 
+
+def main():
+    # Init and create objects
+    window, clock = init_pygame(GAME_TITLE, W, H)
+    player = Player()
+    blocks = []
+
+    ground_blocks = create_ground_blocks()
     blocks += ground_blocks
 
-    # Add sprites to group
+    # Add sprites to groups
     blocks_group = pygame.sprite.Group()
     player_group = pygame.sprite.Group()
 

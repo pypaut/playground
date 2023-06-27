@@ -1,3 +1,6 @@
 [X] Jump
 [X] Sprites (static player, blocks, background)
+[X] Clean code
 [ ] Sprites (idle, walk, jump)
+[ ] Bigger level with moving camera
+[ ] Editable controls (config file)

@@ -16,10 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = [W/2, H/2]
 
-        # Control keys
-        self.left_key = pygame.K_a
-        self.right_key = pygame.K_d
-        self.jump_key = pygame.K_SPACE
+        self.init_control_keys()
 
         # Movement
         self.speed = 0.5
@@ -27,35 +24,56 @@ class Player(pygame.sprite.Sprite):
         self.is_on_ground = False
 
     def events(self, keys):
-        # Left and right movements
-        self.direction[0] = 0.0
-        if keys[self.left_key]:
-            self.direction[0] = -1.0
-        if keys[self.right_key]:
-            self.direction[0] = 1.0
-        if keys[self.jump_key] and self.is_on_ground:
-            self.direction[1] = -JUMP_FORCE
+        """
+        Update direction according to input
+        """
+        self.update_dir_horizontal(keys)
+        self.update_dir_vertical(keys)
 
 
     def update(self, keys, dt, blocks):
-        # Gravity
+        """
+        Update position according to direction and collision
+        """
+        self.update_dir_with_gravity()
+        self.update_pos_with_dir(dt)
+        self.update_pos_with_collision_ground(blocks)
+        self.update_pos_with_collision_boundaries()
+
+    def update_dir_with_gravity(self):
         self.direction[1] += GRAVITY_GROWTH
         if self.direction[1] > MAX_GRAVITY:
             self.direction[1] = MAX_GRAVITY
 
-        # Left and right movements
+    def update_pos_with_dir(self, dt):
         self.rect.left += dt * self.speed * self.direction[0]
         self.rect.top += dt * self.speed * self.direction[1]
 
-        # Vertical collisions
+    def update_pos_with_collision_ground(self, blocks):
         self.is_on_ground = False
         for b in blocks:
             if self.rect.colliderect(b.rect):
                 self.rect.top = b.rect.top - self.rect.height
                 self.is_on_ground = True
 
-        # Boundaries
+    def update_pos_with_collision_boundaries(self):
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.left + self.rect.width > W:
             self.rect.left = W - self.rect.width
+
+    def update_dir_horizontal(self, keys):
+        self.direction[0] = 0.0
+        if keys[self.LEFT_KEY]:
+            self.direction[0] -= 1.0
+        if keys[self.RIGHT_KEY]:
+            self.direction[0] += 1.0
+
+    def update_dir_vertical(self, keys):
+        if keys[self.JUMP_KEY] and self.is_on_ground:
+            self.direction[1] = -JUMP_FORCE
+
+    def init_control_keys(self):
+        self.LEFT_KEY = pygame.K_a
+        self.RIGHT_KEY = pygame.K_d
+        self.JUMP_KEY = pygame.K_SPACE
