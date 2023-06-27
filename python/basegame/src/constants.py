@@ -5,6 +5,7 @@ W = 320 * SCALING
 H = 180 * SCALING
 BLOCK_SIDE = H / 10
 PLACEHOLDER_COLOR = (255, 0, 200)
+PLAYER_SIDE = H / 5
 
 # Refresh rate
 
