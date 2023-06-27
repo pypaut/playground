@@ -4,3 +4,4 @@
 [ ] Sprites (idle, walk, jump)
 [ ] Bigger level with moving camera
 [ ] Editable controls (config file)
+[ ] Better error handling (alert boxes)

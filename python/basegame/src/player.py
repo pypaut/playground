@@ -1,22 +1,40 @@
+import os
 import pygame
 
-from src.constants import H, W, MAX_GRAVITY, JUMP_FORCE, GRAVITY_GROWTH, PLACEHOLDER_COLOR
+from src.constants import H, W, MAX_GRAVITY, JUMP_FORCE, GRAVITY_GROWTH, PLACEHOLDER_COLOR, ASSETS_PLAYER_PATH, FPS, ANIMATION_FPS
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
+        self.init_control_keys()
+
         # Pygame attributes
         side = H / 7
 
+        # Load animation images
+        animation_images = {"idle": []}
+        path = "assets/player"
+        for animation in animation_images:
+            animation_path = os.path.join(path, animation)
+            filenames = sorted(os.listdir(animation_path))
+            for f in filenames:
+                complete_filename = os.path.join(animation_path, f)
+                img = pygame.image.load(complete_filename)
+                img = pygame.transform.scale(img, [side, side])
+                animation_images["idle"].append(img)
+        self.animation_images = animation_images
+
         # Load image
-        image = pygame.image.load("assets/character/idle/Warrior_Idle_1.png")
-        self.image = pygame.transform.scale(image, [side, side])
+        self.image = self.animation_images["idle"][0]
 
-        self.rect = self.image.get_rect()
-        self.rect.center = [W/2, H/2]
+        # Fix rect
+        self.rect = self.image.get_rect(center=[W/2, H/2])
 
-        self.init_control_keys()
+        # Animation
+        self.ANIMATION_SPEED = ANIMATION_FPS / FPS
+        self.current_frame = 0
+        self.current_animation = "idle"
 
         # Movement
         self.speed = 0.5
@@ -30,7 +48,6 @@ class Player(pygame.sprite.Sprite):
         self.update_dir_horizontal(keys)
         self.update_dir_vertical(keys)
 
-
     def update(self, keys, dt, blocks):
         """
         Update position according to direction and collision
@@ -39,6 +56,13 @@ class Player(pygame.sprite.Sprite):
         self.update_pos_with_dir(dt)
         self.update_pos_with_collision_ground(blocks)
         self.update_pos_with_collision_boundaries()
+        self.update_animation()
+
+    def update_animation(self):
+        self.current_frame += self.ANIMATION_SPEED
+        self.current_frame %= len(self.animation_images[self.current_animation])
+        current_frame_index = int(self.current_frame)
+        self.image = self.animation_images[self.current_animation][current_frame_index]
 
     def update_dir_with_gravity(self):
         self.direction[1] += GRAVITY_GROWTH

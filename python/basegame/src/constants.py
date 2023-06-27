@@ -9,11 +9,12 @@ PLACEHOLDER_COLOR = (255, 0, 200)
 # Refresh rate
 
 FPS = 60.0
-NB_FRAMES_ANIM = 5
+ANIMATION_FPS = 10
 
-# Others
+# Assets
 
 GAME_TITLE = "Base Game"
+ASSETS_PLAYER_PATH = "assets/player"
 
 # Movements
 
