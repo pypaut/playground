@@ -18,8 +18,11 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
+        animations = ["idle", "run"]
+        self.init_load_sprites(animations)
+
         self.init_control_keys()
-        self.load_sprites()
+
         self.image = pygame.surface.Surface([PLAYER_SIDE, PLAYER_SIDE])
         self.rect = self.image.get_rect(center=[W / 2, H / 2])
 
@@ -84,11 +87,6 @@ class Player(pygame.sprite.Sprite):
         if keys[self.JUMP_KEY] and self.is_on_ground:
             self.direction[1] = -JUMP_FORCE
 
-    def init_control_keys(self):
-        self.LEFT_KEY = pygame.K_a
-        self.RIGHT_KEY = pygame.K_d
-        self.JUMP_KEY = pygame.K_SPACE
-
     def update_animation(self):
         if self.direction[0] < 0:
             self.frame_direction = "left"
@@ -101,42 +99,36 @@ class Player(pygame.sprite.Sprite):
 
         self.frame_index += self.ANIMATION_SPEED
         self.frame_index %= len(
-            self.sprites[self.animation][self.frame_direction]
+            self.sprites[self.frame_direction][self.animation]
         )
-        self.image = self.sprites[self.animation][self.frame_direction][
+        self.image = self.sprites[self.frame_direction][self.animation][
             int(self.frame_index)
         ]
 
-    def load_sprites(self):
-        self.sprites = {}
-        animations = ["idle", "run"]
-        for animation in animations:
-            self.sprites[animation] = {"left": [], "right": []}
-            sprites_right = self.load_sprites_right(animation)
-            self.sprites[animation]["right"] = sprites_right
-            self.sprites[animation]["left"] = self.flip_sprites_left(
-                sprites_right
-            )
+    def init_control_keys(self):
+        self.LEFT_KEY = pygame.K_a
+        self.RIGHT_KEY = pygame.K_d
+        self.JUMP_KEY = pygame.K_SPACE
 
-    def load_sprites_right(self, animation):
-        right_sprites = []
-        images_paths = self.get_images_paths(animation)
-        for f in images_paths:
-            img = pygame.image.load(f)
-            img = pygame.transform.scale(img, [PLAYER_SIDE * 1.4, PLAYER_SIDE])
-            right_sprites.append(img)
-        return right_sprites
+    def init_load_sprites(self, animations):
+        self.sprites = {
+            "right": {
+                a: self.load_sprites(os.path.join(ASSETS_PLAYER_PATH, a))
+                for a in animations
+            },
+        }
+        self.sprites["left"] = {
+            a: self.left_sprites(s) for (a, s) in self.sprites["right"].items()
+        }
 
-    def flip_sprites_left(self, right_sprites):
-        sprites_left = [
-            pygame.transform.flip(s.copy(), True, False) for s in right_sprites
-        ]
-        return sprites_left
+    def load_sprites(self, path):
+        filenames = sorted(os.listdir(path))
+        sprites = [pygame.image.load(os.path.join(path, f)) for f in filenames]
+        sprites = list(map(self.scale_sprite, sprites))
+        return sprites
 
-    def get_images_paths(self, animation):
-        path_animation_dir = os.path.join(ASSETS_PLAYER_PATH, animation)
-        image_filenames = sorted(os.listdir(path_animation_dir))
-        images_paths = [
-            os.path.join(path_animation_dir, f) for f in image_filenames
-        ]
-        return images_paths
+    def scale_sprite(self, sprite):
+        return pygame.transform.scale(sprite, [PLAYER_SIDE * 1.4, PLAYER_SIDE])
+
+    def left_sprites(self, sprites):
+        return [pygame.transform.flip(i.copy(), True, False) for i in sprites]
