@@ -1,6 +1,7 @@
 import pygame
 
-from src.constants import BLOCK_SIDE, PLACEHOLDER_COLOR
+from src.constants import BLOCK_SIDE
+
 
 class Block(pygame.sprite.Sprite):
     def __init__(self, left, top):
