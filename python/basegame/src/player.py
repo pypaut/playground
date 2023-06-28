@@ -15,6 +15,8 @@ from src.constants import (
     PLAYER_SPEED,
     TOP_OFFSET_SPRITE,
     LEFT_OFFSET_SPRITE,
+    PLAYER_SPRITE_WIDTH_SCALE,
+    PLAYER_SPRITE_HEIGHT_SCALE,
     IDLE,
     RUN,
     JUMP,
@@ -162,7 +164,11 @@ class Player(pygame.sprite.Sprite):
 
     def scale_sprite(self, sprite):
         return pygame.transform.scale(
-            sprite, [PLAYER_WIDTH * 3.5, PLAYER_HEIGHT * 1.3]
+            sprite,
+            [
+                PLAYER_WIDTH * PLAYER_SPRITE_WIDTH_SCALE,
+                PLAYER_HEIGHT * PLAYER_SPRITE_HEIGHT_SCALE,
+            ],
         )
 
     def left_sprites(self, sprites):
