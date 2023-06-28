@@ -1,18 +1,31 @@
 #!/usr/bin/python3
 
 import pygame
+import sys
 
 from src.block import Block
-from src.constants import W, H, GAME_TITLE, FPS, BLOCK_SIDE
+from src.constants import (
+    W,
+    H,
+    GAME_TITLE,
+    FPS,
+    BLOCK_SIDE,
+    PLACEHOLDER_COLOR,
+    PLACEHOLDER_COLOR_2,
+)
 from src.player import Player
 
 
-def init_pygame(name, w, h):
+def init_pygame(name, w, h, debug):
     pygame.display.init()
     pygame.font.init()
     pygame.display.set_caption(name)
     pygame.mouse.set_visible(False)
-    window = pygame.display.set_mode((w, h), flags=pygame.SCALED, vsync=1)
+    window = None
+    if debug:
+        window = pygame.display.set_mode((w, h), vsync=1)
+    else:
+        window = pygame.display.set_mode((w, h), flags=pygame.SCALED, vsync=1)
     clock = pygame.time.Clock()
     return window, clock
 
@@ -43,8 +56,13 @@ def create_ground_blocks():
 
 
 def main():
+    # Command line arguments
+    DEBUG = False
+    if len(sys.argv) > 1 and sys.argv[1] == "debug":
+        DEBUG = True
+
     # Init and create objects
-    window, clock = init_pygame(GAME_TITLE, W, H)
+    window, clock = init_pygame(GAME_TITLE, W, H, DEBUG)
     player = Player()
     blocks = []
 
@@ -83,6 +101,9 @@ def main():
         window.blit(background, (0, 0))
         blocks_group.draw(window)
         player_group.draw(window)
+        if DEBUG:
+            pygame.draw.rect(window, PLACEHOLDER_COLOR, player.hitrect, 1)
+            pygame.draw.rect(window, PLACEHOLDER_COLOR_2, player.rect, 1)
         pygame.display.flip()
 
 
