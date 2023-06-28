@@ -1,7 +1,8 @@
 OBJS = \
 	   src/block.py \
 	   src/constants.py \
-	   src/player.py
+	   src/player.py \
+	   src/sprites.py
 
 all: lint
 	python3 main.py

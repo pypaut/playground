@@ -1,13 +1,12 @@
-import os
 import pygame
 
+from src.sprites import load_player_sprites
 from src.constants import (
     H,
     W,
     MAX_GRAVITY,
     JUMP_FORCE,
     GRAVITY_GROWTH,
-    ASSETS_PLAYER_PATH,
     FPS,
     ANIMATION_FPS,
     PLAYER_WIDTH,
@@ -15,8 +14,6 @@ from src.constants import (
     PLAYER_SPEED,
     TOP_OFFSET_SPRITE,
     LEFT_OFFSET_SPRITE,
-    PLAYER_SPRITE_WIDTH_SCALE,
-    PLAYER_SPRITE_HEIGHT_SCALE,
     IDLE,
     RUN,
     JUMP,
@@ -27,7 +24,11 @@ from src.constants import (
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.init_control_keys()
+
+        # Controls
+        self.LEFT_KEY = pygame.K_a
+        self.RIGHT_KEY = pygame.K_d
+        self.JUMP_KEY = pygame.K_SPACE
 
         # Collision
         self.hitrect = pygame.Rect(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
@@ -35,7 +36,7 @@ class Player(pygame.sprite.Sprite):
 
         # Sprites
         animations = [IDLE, RUN, JUMP, FALL]
-        self.init_load_sprites(animations)
+        self.sprites = load_player_sprites(animations)
 
         # Image
         self.image = self.sprites["right"][IDLE][0]
@@ -134,37 +135,3 @@ class Player(pygame.sprite.Sprite):
         self.image = self.sprites[self.frame_direction][self.animation][
             int(self.frame_index)
         ]
-
-    def init_control_keys(self):
-        self.LEFT_KEY = pygame.K_a
-        self.RIGHT_KEY = pygame.K_d
-        self.JUMP_KEY = pygame.K_SPACE
-
-    def init_load_sprites(self, animations):
-        self.sprites = {
-            "right": {
-                a: self.load_sprites(os.path.join(ASSETS_PLAYER_PATH, a))
-                for a in animations
-            },
-        }
-        self.sprites["left"] = {
-            a: self.left_sprites(s) for (a, s) in self.sprites["right"].items()
-        }
-
-    def load_sprites(self, path):
-        filenames = sorted(os.listdir(path))
-        sprites = [pygame.image.load(os.path.join(path, f)) for f in filenames]
-        sprites = list(map(self.scale_sprite, sprites))
-        return sprites
-
-    def scale_sprite(self, sprite):
-        return pygame.transform.scale(
-            sprite,
-            [
-                PLAYER_WIDTH * PLAYER_SPRITE_WIDTH_SCALE,
-                PLAYER_HEIGHT * PLAYER_SPRITE_HEIGHT_SCALE,
-            ],
-        )
-
-    def left_sprites(self, sprites):
-        return [pygame.transform.flip(i.copy(), True, False) for i in sprites]
