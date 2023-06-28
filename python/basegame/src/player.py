@@ -86,26 +86,21 @@ class Player(pygame.sprite.Sprite):
             self.direction[1] = MAX_GRAVITY
 
     def update_pos_with_dir(self, dt):
-        x = dt * self.speed * self.direction[0]
-        y = dt * self.speed * self.direction[1]
-        self.move(x, y)
+        self.hitrect.left += dt * self.speed * self.direction[0]
+        self.hitrect.top += dt * self.speed * self.direction[1]
 
     def update_pos_with_collision_ground(self, blocks):
         self.is_on_ground = False
         for b in blocks:
             if self.hitrect.colliderect(b.rect):
-                # Collides, thus compute offset with floor and move up
-                target_top = b.rect.top - self.hitrect.height
-                y_translation = target_top - self.hitrect.top
-                self.move(0, y_translation)
+                self.hitrect.top = b.rect.top - self.hitrect.height
                 self.is_on_ground = True
 
     def update_pos_with_collision_boundaries(self):
         if self.hitrect.left < 0:
-            self.move(-self.hitrect.left, 0)  # Reset to 0
+            self.hitrect.left = 0
         if self.hitrect.left + self.hitrect.width > W:
-            x_translation = -(self.hitrect.left + self.hitrect.width - W)
-            self.move(x_translation, 0)
+            self.hitrect.left = W - self.hitrect.width
 
     def update_dir_horizontal(self, keys):
         self.direction[0] = 0.0
@@ -173,9 +168,3 @@ class Player(pygame.sprite.Sprite):
 
     def left_sprites(self, sprites):
         return [pygame.transform.flip(i.copy(), True, False) for i in sprites]
-
-    def move(self, x, y):
-        self.rect.left += x
-        self.rect.top += y
-        self.hitrect.left += x
-        self.hitrect.top += y
