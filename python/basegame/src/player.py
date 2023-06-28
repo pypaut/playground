@@ -10,7 +10,11 @@ from src.constants import (
     ASSETS_PLAYER_PATH,
     FPS,
     ANIMATION_FPS,
-    PLAYER_SIDE,
+    PLAYER_WIDTH,
+    PLAYER_HEIGHT,
+    PLAYER_SPEED,
+    TOP_OFFSET_SPRITE,
+    LEFT_OFFSET_SPRITE,
     IDLE,
     RUN,
     JUMP,
@@ -21,14 +25,21 @@ from src.constants import (
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
+        self.init_control_keys()
 
+        # Collision
+        self.hitrect = pygame.Rect(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
+        self.hitrect.center = [W / 2, H / 2]
+
+        # Sprites
         animations = [IDLE, RUN, JUMP, FALL]
         self.init_load_sprites(animations)
 
-        self.init_control_keys()
-
-        self.image = pygame.surface.Surface([PLAYER_SIDE, PLAYER_SIDE])
-        self.rect = self.image.get_rect(center=[W / 2, H / 2])
+        # Image
+        self.image = self.sprites["right"][IDLE][0]
+        self.rect = self.image.get_rect(center=self.hitrect.center)
+        self.rect.top -= TOP_OFFSET_SPRITE
+        self.rect.left += LEFT_OFFSET_SPRITE
 
         # Animation
         self.ANIMATION_SPEED = ANIMATION_FPS / FPS
@@ -37,7 +48,7 @@ class Player(pygame.sprite.Sprite):
         self.frame_direction = "right"
 
         # Movement
-        self.speed = 0.5
+        self.speed = PLAYER_SPEED
         self.direction = [0.0, MAX_GRAVITY]
         self.is_on_ground = False
 
@@ -57,6 +68,15 @@ class Player(pygame.sprite.Sprite):
         self.update_pos_with_collision_ground(blocks)
         self.update_pos_with_collision_boundaries()
         self.update_animation()
+        self.update_sprite_rect()
+
+    def update_sprite_rect(self):
+        self.rect.center = self.hitrect.center  # center[0] != left !!!
+        self.rect.top -= TOP_OFFSET_SPRITE
+        if self.frame_direction == "left":
+            self.rect.left -= LEFT_OFFSET_SPRITE
+        else:
+            self.rect.left += LEFT_OFFSET_SPRITE
 
     def update_dir_with_gravity(self):
         self.direction[1] += GRAVITY_GROWTH
@@ -64,21 +84,26 @@ class Player(pygame.sprite.Sprite):
             self.direction[1] = MAX_GRAVITY
 
     def update_pos_with_dir(self, dt):
-        self.rect.left += dt * self.speed * self.direction[0]
-        self.rect.top += dt * self.speed * self.direction[1]
+        x = dt * self.speed * self.direction[0]
+        y = dt * self.speed * self.direction[1]
+        self.move(x, y)
 
     def update_pos_with_collision_ground(self, blocks):
         self.is_on_ground = False
         for b in blocks:
-            if self.rect.colliderect(b.rect):
-                self.rect.top = b.rect.top - self.rect.height
+            if self.hitrect.colliderect(b.rect):
+                # Collides, thus compute offset with floor and move up
+                target_top = b.rect.top - self.hitrect.height
+                y_translation = target_top - self.hitrect.top
+                self.move(0, y_translation)
                 self.is_on_ground = True
 
     def update_pos_with_collision_boundaries(self):
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.left + self.rect.width > W:
-            self.rect.left = W - self.rect.width
+        if self.hitrect.left < 0:
+            self.move(-self.hitrect.left, 0)  # Reset to 0
+        if self.hitrect.left + self.hitrect.width > W:
+            x_translation = -(self.hitrect.left + self.hitrect.width - W)
+            self.move(x_translation, 0)
 
     def update_dir_horizontal(self, keys):
         self.direction[0] = 0.0
@@ -136,7 +161,15 @@ class Player(pygame.sprite.Sprite):
         return sprites
 
     def scale_sprite(self, sprite):
-        return pygame.transform.scale(sprite, [PLAYER_SIDE * 1.4, PLAYER_SIDE])
+        return pygame.transform.scale(
+            sprite, [PLAYER_WIDTH * 3.5, PLAYER_HEIGHT * 1.3]
+        )
 
     def left_sprites(self, sprites):
         return [pygame.transform.flip(i.copy(), True, False) for i in sprites]
+
+    def move(self, x, y):
+        self.rect.left += x
+        self.rect.top += y
+        self.hitrect.left += x
+        self.hitrect.top += y
