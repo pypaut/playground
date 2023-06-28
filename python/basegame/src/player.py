@@ -11,6 +11,10 @@ from src.constants import (
     FPS,
     ANIMATION_FPS,
     PLAYER_SIDE,
+    IDLE,
+    RUN,
+    JUMP,
+    FALL,
 )
 
 
@@ -18,7 +22,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        animations = ["idle", "run", "jump", "fall"]
+        animations = [IDLE, RUN, JUMP, FALL]
         self.init_load_sprites(animations)
 
         self.init_control_keys()
@@ -29,7 +33,7 @@ class Player(pygame.sprite.Sprite):
         # Animation
         self.ANIMATION_SPEED = ANIMATION_FPS / FPS
         self.frame_index = 0
-        self.animation = "idle"
+        self.animation = IDLE
         self.frame_direction = "right"
 
         # Movement
@@ -90,16 +94,16 @@ class Player(pygame.sprite.Sprite):
     def update_animation(self):
         if self.direction[0] < 0:
             self.frame_direction = "left"
-            self.animation = "run"
+            self.animation = RUN
         elif self.direction[0] > 0:
             self.frame_direction = "right"
-            self.animation = "run"
+            self.animation = RUN
         elif self.direction[0] == 0:
-            self.animation = "idle"
+            self.animation = IDLE
         if self.direction[1] < 0 and not self.is_on_ground:
-            self.animation = "jump"
+            self.animation = JUMP
         elif self.direction[1] > 0 and not self.is_on_ground:
-            self.animation = "fall"
+            self.animation = FALL
 
         self.frame_index += self.ANIMATION_SPEED
         self.frame_index %= len(

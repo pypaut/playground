@@ -16,6 +16,10 @@ ANIMATION_FPS = 10
 
 GAME_TITLE = "Base Game"
 ASSETS_PLAYER_PATH = "assets/player"
+IDLE = "idle"
+RUN = "run"
+JUMP = "jump"
+FALL = "fall"
 
 # Movements
 
