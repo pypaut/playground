@@ -1,7 +1,12 @@
 [X] Jump
 [X] Sprites (static player, blocks, background)
 [X] Clean code
-[ ] Sprites (idle, walk, jump)
+[X] Sprites (idle, walk, jump)
+[ ] Refactor hitbox system
+[ ] Add blocks + horizontal collision
+[ ] Crouch (+ adapt hitbox)
+[ ] Attack (animation)
+[ ] Enemy
 [ ] Bigger level with moving camera
 [ ] Editable controls (config file)
 [ ] Better error handling (alert boxes)
