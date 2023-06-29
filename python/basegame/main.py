@@ -87,6 +87,9 @@ def main():
     blocks_map[7][0] = 1
     blocks_map[7][1] = 1
     blocks_map[5][3] = 1
+    blocks_map[5][4] = 1
+    blocks_map[5][5] = 1
+    blocks_map[5][6] = 1
     blocks = blocks_from_map(blocks_map)
 
     # Add sprites to groups

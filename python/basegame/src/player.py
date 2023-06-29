@@ -67,8 +67,11 @@ class Player(pygame.sprite.Sprite):
         Update position according to direction and collision
         """
         self.update_dir_with_gravity()
-        self.update_pos_with_dir(dt)
-        self.update_pos_with_collision_ground(blocks)
+        self.update_pos_with_dir_y(dt)
+        self.update_pos_with_collision_y(blocks)
+        old_x = self.hitrect.x
+        self.update_pos_with_dir_x(dt)
+        self.update_pos_with_collision_x(blocks, old_x)
         self.update_pos_with_collision_boundaries()
         self.update_animation()
         self.update_sprite_rect()
@@ -86,16 +89,27 @@ class Player(pygame.sprite.Sprite):
         if self.direction[1] > MAX_GRAVITY:
             self.direction[1] = MAX_GRAVITY
 
-    def update_pos_with_dir(self, dt):
+    def update_pos_with_dir_x(self, dt):
         self.hitrect.left += dt * self.speed * self.direction[0]
+
+    def update_pos_with_dir_y(self, dt):
         self.hitrect.top += dt * self.speed * self.direction[1]
 
-    def update_pos_with_collision_ground(self, blocks):
+    def update_pos_with_collision_y(self, blocks):
         self.is_on_ground = False
         for b in blocks:
             if self.hitrect.colliderect(b.rect):
-                self.hitrect.top = b.rect.top - self.hitrect.height
-                self.is_on_ground = True
+                if self.direction[1] > 0:
+                    self.hitrect.top = b.rect.top - self.hitrect.height
+                    self.is_on_ground = True
+                elif self.direction[1] < 0:
+                    self.hitrect.top = b.rect.top + b.rect.height
+                    self.direction[1] = 0
+
+    def update_pos_with_collision_x(self, blocks, old_x):
+        for b in blocks:
+            if self.hitrect.colliderect(b.rect):
+                self.hitrect.x = old_x
 
     def update_pos_with_collision_boundaries(self):
         if self.hitrect.left < 0:
