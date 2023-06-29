@@ -55,6 +55,22 @@ def create_ground_blocks():
     return ground_blocks
 
 
+def blocks_from_map(m):
+    blocks = []
+    for i in range(len(m)):
+        for j in range(len(m[i])):
+            if m[i][j] == 1:
+                x = j * BLOCK_SIDE
+                y = i * BLOCK_SIDE
+                blocks.append(Block(x, y))
+    return blocks
+
+
+def print_map(m):
+    for line in m:
+        print(line)
+
+
 def main():
     # Command line arguments
     DEBUG = False
@@ -64,10 +80,14 @@ def main():
     # Init and create objects
     window, clock = init_pygame(GAME_TITLE, W, H, DEBUG)
     player = Player()
-    blocks = []
 
-    ground_blocks = create_ground_blocks()
-    blocks += ground_blocks
+    # Map
+    blocks_map = [[0 for i in range(16)] for _ in range(9)]
+    blocks_map[8] = [1 for i in range(16)]
+    blocks_map[7][0] = 1
+    blocks_map[7][1] = 1
+    blocks_map[5][3] = 1
+    blocks = blocks_from_map(blocks_map)
 
     # Add sprites to groups
     blocks_group = pygame.sprite.Group()
