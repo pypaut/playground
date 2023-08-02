@@ -7,7 +7,7 @@ OBJS = \
 all: lint
 	python3 main.py
 
-debug: lint
+debug:
 	python3 main.py debug
 
 lint:

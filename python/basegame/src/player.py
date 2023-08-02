@@ -11,13 +11,16 @@ from src.constants import (
     ANIMATION_FPS,
     PLAYER_WIDTH,
     PLAYER_HEIGHT,
+    PLAYER_HEIGHT_CROUCH,
     PLAYER_SPEED,
     TOP_OFFSET_SPRITE,
+    TOP_OFFSET_SPRITE_CROUCH,
     LEFT_OFFSET_SPRITE,
     IDLE,
     RUN,
     JUMP,
     FALL,
+    CROUCH,
 )
 
 
@@ -29,13 +32,14 @@ class Player(pygame.sprite.Sprite):
         self.LEFT_KEY = pygame.K_a
         self.RIGHT_KEY = pygame.K_d
         self.JUMP_KEY = pygame.K_SPACE
+        self.DOWN_KEY = pygame.K_s
 
         # Collision
         self.hitrect = pygame.Rect(0, 0, PLAYER_WIDTH, PLAYER_HEIGHT)
         self.hitrect.center = [W / 2, H / 2]
 
         # Sprites
-        animations = [IDLE, RUN, JUMP, FALL]
+        animations = [IDLE, RUN, JUMP, FALL, CROUCH]
         self.sprites = load_player_sprites(animations)
 
         # Image
@@ -54,6 +58,8 @@ class Player(pygame.sprite.Sprite):
         self.speed = PLAYER_SPEED
         self.direction = [0.0, MAX_GRAVITY]
         self.is_on_ground = False
+        self.is_crouching = False
+        self.has_uncrouched = False
 
     def events(self, keys):
         """
@@ -61,6 +67,14 @@ class Player(pygame.sprite.Sprite):
         """
         self.update_dir_horizontal(keys)
         self.update_dir_vertical(keys)
+
+        self.has_uncrouched = False
+        if self.is_crouching and not keys[self.DOWN_KEY]:
+            self.has_uncrouched = True
+
+        self.is_crouching = False
+        if keys[self.DOWN_KEY] and self.is_on_ground:
+            self.is_crouching = True
 
     def update(self, keys, dt, blocks):
         """
@@ -74,11 +88,24 @@ class Player(pygame.sprite.Sprite):
         self.update_pos_with_collision_x(blocks, old_x)
         self.update_pos_with_collision_boundaries()
         self.update_animation()
+        self.update_hitrect_with_crouch()
         self.update_sprite_rect()
+
+    def update_hitrect_with_crouch(self):
+        bot = self.hitrect.top + self.hitrect.height
+        if self.is_crouching:
+            self.hitrect.height = PLAYER_HEIGHT_CROUCH
+            self.hitrect.y = bot - self.hitrect.height
+        elif self.has_uncrouched:
+            self.hitrect.height = PLAYER_HEIGHT
+            self.hitrect.y = bot - self.hitrect.height
 
     def update_sprite_rect(self):
         self.rect.center = self.hitrect.center  # center[0] != left !!!
-        self.rect.top -= TOP_OFFSET_SPRITE
+        if self.is_crouching:
+            self.rect.top -= TOP_OFFSET_SPRITE_CROUCH
+        else:
+            self.rect.top -= TOP_OFFSET_SPRITE
         if self.frame_direction == "left":
             self.rect.left -= LEFT_OFFSET_SPRITE
         else:
@@ -141,6 +168,8 @@ class Player(pygame.sprite.Sprite):
             self.animation = JUMP
         elif self.direction[1] > 0 and not self.is_on_ground:
             self.animation = FALL
+        if self.is_crouching:
+            self.animation = CROUCH
 
         self.frame_index += self.ANIMATION_SPEED
         self.frame_index %= len(

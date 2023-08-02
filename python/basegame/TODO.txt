@@ -2,9 +2,10 @@
 [X] Sprites (static player, blocks, background)
 [X] Clean code
 [X] Sprites (idle, walk, jump)
-[ ] Refactor hitbox system
-[ ] Add blocks + horizontal collision
-[ ] Crouch (+ adapt hitbox)
+[X] Add blocks + horizontal collision
+[X] Crouch (+ adapt hitbox)
+[X] Refactor hitbox system
+[ ] Jump if "just pressed" space
 [ ] Attack (animation)
 [ ] Enemy
 [ ] Bigger level with moving camera
