@@ -114,7 +114,7 @@ def main():
         if check_quit_event(keys, events_types):
             break
 
-        player.events(keys)
+        player.events(keys, events)
 
         # Update
         player.update(keys, dt, blocks)

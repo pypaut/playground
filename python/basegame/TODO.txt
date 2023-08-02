@@ -5,9 +5,10 @@
 [X] Add blocks + horizontal collision
 [X] Crouch (+ adapt hitbox)
 [X] Refactor hitbox system
-[ ] Jump if "just pressed" space
+[X] Jump if "just pressed" space
 [ ] Attack (animation)
 [ ] Enemy
+[ ] Enemy disappear if attacked
 [ ] Bigger level with moving camera
 [ ] Editable controls (config file)
 [ ] Better error handling (alert boxes)

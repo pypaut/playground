@@ -60,8 +60,9 @@ class Player(pygame.sprite.Sprite):
         self.is_on_ground = False
         self.is_crouching = False
         self.has_uncrouched = False
+        self.pressed_jump = False
 
-    def events(self, keys):
+    def events(self, keys, events):
         """
         Update direction according to input
         """
@@ -75,6 +76,12 @@ class Player(pygame.sprite.Sprite):
         self.is_crouching = False
         if keys[self.DOWN_KEY] and self.is_on_ground:
             self.is_crouching = True
+
+        self.pressed_jump = False
+        for e in events:
+            if e.type == pygame.KEYDOWN and e.key == self.JUMP_KEY:
+                self.pressed_jump = True
+                break
 
     def update(self, keys, dt, blocks):
         """
@@ -152,7 +159,7 @@ class Player(pygame.sprite.Sprite):
             self.direction[0] += 1.0
 
     def update_dir_vertical(self, keys):
-        if keys[self.JUMP_KEY] and self.is_on_ground:
+        if self.pressed_jump and self.is_on_ground:
             self.direction[1] = -JUMP_FORCE
 
     def update_animation(self):
