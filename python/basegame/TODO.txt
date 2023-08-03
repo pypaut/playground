@@ -8,7 +8,11 @@
 [X] Jump if "just pressed" space
 [ ] Attack (animation)
 [ ] Enemy
-[ ] Enemy disappear if attacked
-[ ] Bigger level with moving camera
-[ ] Editable controls (config file)
+[ ] Enemy disappears if attacked
+[ ] Add menus
+[ ] Editable controls (config file) + controller support
+[ ] 2 players (local)
+[ ] Bigger level with moving camera ?
 [ ] Better error handling (alert boxes)
+[ ] Multiplayer
+[ ] Dockerize client and use K8S for server
