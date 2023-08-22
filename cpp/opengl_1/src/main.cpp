@@ -1,10 +1,34 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
 #include <fstream>
-#include <string>
+#include <iostream>
+#include <signal.h>
 #include <sstream>
+#include <string>
+
+#define ASSERT(x) if (!(x)) raise(SIGTRAP);
+#define GLCall(x) GLClearError();\
+    x;\
+    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+static void GLClearError() {
+    while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char *function, const char *file, int line) {
+    while (GLenum error = glGetError()) {
+        std::cout
+            << "[OpenGL Error] (" << error << ") "
+            << function << " at "
+            << file << ":"
+            << line
+            << std::endl;
+        return false;
+    }
+
+    return true;
+}
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -127,17 +151,17 @@ int main(void) {
 
     /* Setup data buffer to send input to shaders */
     unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
+    GLCall(glGenBuffers(1, &buffer));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW));
 
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
 
     unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    GLCall(glGenBuffers(1, &ibo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
 
     ShaderProgramSource source = ParseShaders("res/shaders/basic.shader");
     unsigned int program = CreateProgram(source.VertexSource, source.FragmentSource);
@@ -147,18 +171,20 @@ int main(void) {
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+
+        GLClearError();
+        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         /* Swap front and back buffers */
-        glfwSwapBuffers(window);
+        GLCall(glfwSwapBuffers(window));
 
         /* Poll for and process events */
-        glfwPollEvents();
+        GLCall(glfwPollEvents());
     }
 
-    glDeleteProgram(program);
+    GLCall(glDeleteProgram(program));
 
-    glfwTerminate();
+    GLCall(glfwTerminate());
     return 0;
 }
