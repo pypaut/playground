@@ -128,6 +128,8 @@ int main(void) {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
 
+    glfwSwapInterval(1);
+
     /* Initialize GLEW */
     if (glewInit() != GLEW_OK) {
         std::cerr << "glewInit() error!" << std::endl;
@@ -165,7 +167,18 @@ int main(void) {
 
     ShaderProgramSource source = ParseShaders("res/shaders/basic.shader");
     unsigned int program = CreateProgram(source.VertexSource, source.FragmentSource);
-    glUseProgram(program);
+    GLCall(glUseProgram(program));
+
+    GLCall(int location = glGetUniformLocation(program, "u_Color"));
+    ASSERT(location != -1);
+    GLCall(glUniform4f(location, 0.2f, 0.3f, 0.3f, 0.5f));
+
+    float r = 0.0f;
+    float g = 0.5f;
+    float b = 1.0f;
+    float r_increment = 0.03f;
+    float g_increment = 0.05f;
+    float b_increment = 0.07f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -173,8 +186,20 @@ int main(void) {
         /* Render here */
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
 
-        GLClearError();
+        GLCall(glUniform4f(location, r, g, b, 0.5f));
         GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        if (r < 0.0f || r > 1.0f)
+            r_increment *= -1;
+        r += r_increment;
+
+        if (g < 0.0f || g > 1.0f)
+            g_increment *= -1;
+        g += g_increment;
+
+        if (b < 0.0f || b > 1.0f)
+            b_increment *= -1;
+        b += b_increment;
 
         /* Swap front and back buffers */
         GLCall(glfwSwapBuffers(window));
