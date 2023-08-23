@@ -107,6 +107,10 @@ int main(void) {
         return -1;
     }
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
     TEST_OPENGL_ERROR();
@@ -144,6 +148,10 @@ int main(void) {
     };
 
     /* Setup data buffer to send input to shaders */
+    unsigned int vao;
+    glGenVertexArrays(1, &vao); TEST_OPENGL_ERROR();
+    glBindVertexArray(vao); TEST_OPENGL_ERROR();
+
     unsigned int buffer;
     glGenBuffers(1, &buffer); TEST_OPENGL_ERROR();
     glBindBuffer(GL_ARRAY_BUFFER, buffer); TEST_OPENGL_ERROR();
@@ -172,6 +180,11 @@ int main(void) {
     ASSERT(location != -1);
     glUniform4f(location, 0.2f, 0.3f, 0.3f, 0.5f); TEST_OPENGL_ERROR();
 
+    glBindVertexArray(0); TEST_OPENGL_ERROR();
+    glUseProgram(0); TEST_OPENGL_ERROR();
+    glBindBuffer(GL_ARRAY_BUFFER, 0); TEST_OPENGL_ERROR();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); TEST_OPENGL_ERROR();
+
     float r = 0.0f;
     float g = 0.5f;
     float b = 1.0f;
@@ -185,7 +198,12 @@ int main(void) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); TEST_OPENGL_ERROR();
 
+        glUseProgram(program); TEST_OPENGL_ERROR();
         glUniform4f(location, r, g, b, 0.5f); TEST_OPENGL_ERROR();
+
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); TEST_OPENGL_ERROR();
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
         TEST_OPENGL_ERROR();
 
