@@ -7,28 +7,18 @@
 #include <sstream>
 #include <string>
 
+
+#define TEST_OPENGL_ERROR()\
+  do {\
+    GLenum err = glGetError();\
+    if (err != GL_NO_ERROR) {\
+      std::cerr << "ERROR! At " << __FILE__ << ":" << __LINE__ << std::endl;\
+      raise(SIGTRAP);\
+    }\
+  } while(0)
+
 #define ASSERT(x) if (!(x)) raise(SIGTRAP);
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 
-static void GLClearError() {
-    while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char *function, const char *file, int line) {
-    while (GLenum error = glGetError()) {
-        std::cout
-            << "[OpenGL Error] (" << error << ") "
-            << function << " at "
-            << file << ":"
-            << line
-            << std::endl;
-        return false;
-    }
-
-    return true;
-}
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -66,23 +56,23 @@ static ShaderProgramSource ParseShaders(const std::string& filepath) {
 static unsigned int CompileShader(unsigned int type, const std::string& source) {
     unsigned int id = glCreateShader(type);
     const char *src = source.c_str();
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
+    glShaderSource(id, 1, &src, nullptr); TEST_OPENGL_ERROR();
+    glCompileShader(id); TEST_OPENGL_ERROR();
 
     int result;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(id, GL_COMPILE_STATUS, &result); TEST_OPENGL_ERROR();
     if (result == GL_FALSE) {
         int length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length); TEST_OPENGL_ERROR();
         char *message = (char*)alloca(length * sizeof(char));
-        glGetShaderInfoLog(id, length, &length, message);
+        glGetShaderInfoLog(id, length, &length, message); TEST_OPENGL_ERROR();
         std::cout
             << "Failed to compile "
             << (type == GL_VERTEX_SHADER ? "vertex" : "fragment")
             << " shader!" << std::endl;
         std::cout << message << std::endl;
 
-        glDeleteShader(id);
+        glDeleteShader(id); TEST_OPENGL_ERROR();
         return 0;
     }
 
@@ -93,17 +83,17 @@ static int CreateProgram(
         const std::string& vertexShader,
         const std::string& fragmentShader
 ) {
-    unsigned int program = glCreateProgram();
+    unsigned int program = glCreateProgram(); TEST_OPENGL_ERROR();
     unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
     unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
 
-    glAttachShader(program, vs);
-    glAttachShader(program, fs);
-    glLinkProgram(program);
-    glValidateProgram(program);
+    glAttachShader(program, vs);    TEST_OPENGL_ERROR();
+    glAttachShader(program, fs);    TEST_OPENGL_ERROR();
+    glLinkProgram(program);         TEST_OPENGL_ERROR();
+    glValidateProgram(program);     TEST_OPENGL_ERROR();
 
-    glDeleteShader(vs);
-    glDeleteShader(fs);
+    glDeleteShader(vs); TEST_OPENGL_ERROR();
+    glDeleteShader(fs); TEST_OPENGL_ERROR();
 
     return program;
 }
@@ -119,6 +109,7 @@ int main(void) {
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    TEST_OPENGL_ERROR();
     if (!window)
     {
         glfwTerminate();
@@ -126,9 +117,10 @@ int main(void) {
     }
 
     /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(window); TEST_OPENGL_ERROR();
 
-    glfwSwapInterval(1);
+    /* Linked to the refresh rate */
+    glfwSwapInterval(1); TEST_OPENGL_ERROR();
 
     /* Initialize GLEW */
     if (glewInit() != GLEW_OK) {
@@ -153,25 +145,32 @@ int main(void) {
 
     /* Setup data buffer to send input to shaders */
     unsigned int buffer;
-    GLCall(glGenBuffers(1, &buffer));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW));
+    glGenBuffers(1, &buffer); TEST_OPENGL_ERROR();
+    glBindBuffer(GL_ARRAY_BUFFER, buffer); TEST_OPENGL_ERROR();
+    glBufferData(GL_ARRAY_BUFFER, 8 * sizeof(float), positions, GL_STATIC_DRAW);
+    TEST_OPENGL_ERROR();
 
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
+    glEnableVertexAttribArray(0); TEST_OPENGL_ERROR();
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
+    TEST_OPENGL_ERROR();
 
     unsigned int ibo;
-    GLCall(glGenBuffers(1, &ibo));
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
-    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW));
+    glGenBuffers(1, &ibo); TEST_OPENGL_ERROR();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); TEST_OPENGL_ERROR();
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER,
+        6 * sizeof(unsigned int), 
+        indices,
+        GL_STATIC_DRAW
+    ); TEST_OPENGL_ERROR();
 
     ShaderProgramSource source = ParseShaders("res/shaders/basic.shader");
     unsigned int program = CreateProgram(source.VertexSource, source.FragmentSource);
-    GLCall(glUseProgram(program));
+    glUseProgram(program); TEST_OPENGL_ERROR();
 
-    GLCall(int location = glGetUniformLocation(program, "u_Color"));
+    int location = glGetUniformLocation(program, "u_Color"); TEST_OPENGL_ERROR();
     ASSERT(location != -1);
-    GLCall(glUniform4f(location, 0.2f, 0.3f, 0.3f, 0.5f));
+    glUniform4f(location, 0.2f, 0.3f, 0.3f, 0.5f); TEST_OPENGL_ERROR();
 
     float r = 0.0f;
     float g = 0.5f;
@@ -184,10 +183,11 @@ int main(void) {
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+        glClear(GL_COLOR_BUFFER_BIT); TEST_OPENGL_ERROR();
 
-        GLCall(glUniform4f(location, r, g, b, 0.5f));
-        GLCall(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+        glUniform4f(location, r, g, b, 0.5f); TEST_OPENGL_ERROR();
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        TEST_OPENGL_ERROR();
 
         if (r < 0.0f || r > 1.0f)
             r_increment *= -1;
@@ -202,14 +202,14 @@ int main(void) {
         b += b_increment;
 
         /* Swap front and back buffers */
-        GLCall(glfwSwapBuffers(window));
+        glfwSwapBuffers(window); TEST_OPENGL_ERROR();
 
         /* Poll for and process events */
-        GLCall(glfwPollEvents());
+        glfwPollEvents(); TEST_OPENGL_ERROR();
     }
 
-    GLCall(glDeleteProgram(program));
+    glDeleteProgram(program); TEST_OPENGL_ERROR();
 
-    GLCall(glfwTerminate());
+    glfwTerminate(); TEST_OPENGL_ERROR();
     return 0;
 }
