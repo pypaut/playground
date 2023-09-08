@@ -7,11 +7,13 @@ import (
 )
 
 func main() {
+	// Load scene from conf
 	myScene, err := scene.NewScene("scene.yaml")
 	Check(err)
 
 	fmt.Printf("%+v\n", myScene)
 
+	// Render to image file
 	err = myScene.RenderToImageFile("rendered.png")
 	Check(err)
 
