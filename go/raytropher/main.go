@@ -11,6 +11,10 @@ func main() {
 	Check(err)
 
 	fmt.Printf("%+v\n", myScene)
+
+	err = myScene.RenderToImageFile("rendered.png")
+	Check(err)
+
 	return
 }
 
