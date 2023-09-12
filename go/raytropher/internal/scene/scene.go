@@ -15,6 +15,33 @@ type Vec3 struct {
 	Z float64 `yaml:"z"`
 }
 
+func (u *Vec3) Add(v Vec3) {
+	u.X += v.X
+	u.Y += v.Y
+	u.Z += v.Z
+}
+
+func (v *Vec3) Times(x float64) (vResult Vec3) {
+	vResult.X = v.X * x
+	vResult.Y = v.Y * x
+	vResult.Z = v.Z * x
+	return
+}
+
+func (v *Vec3) Minus(u Vec3) (vResult Vec3) {
+	vResult.X = v.X - u.X
+	vResult.Y = v.Y - u.Y
+	vResult.Z = v.Z - u.Z
+	return
+}
+
+func (u *Vec3) Cross(v Vec3) (p Vec3) {
+	p.X = u.Y*v.Z - u.Z*v.Y
+	p.Y = u.Z*v.X - u.X*v.Z
+	p.Z = u.X*v.Y - u.Y*v.X
+	return
+}
+
 type Sphere struct {
 	Position Vec3    `yaml:"position"`
 	Radius   float64 `yaml:"radius"`
@@ -75,19 +102,68 @@ func (s *Scene) RenderToImage() (img draw.Image, err error) {
 	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
 	draw.Draw(img, img.Bounds(), &image.Uniform{C: black}, image.Point{}, draw.Src)
 
+	pixelSize := 0.01
+
 	// For each pixel of the screen
 	for y := 0; y < s.Camera.ScreenHeight; y++ {
 		for x := 0; x < s.Camera.ScreenWidth; x++ {
-			// Find which object is visible
-			// Compute color to display (formulae with light, texture, blabla)
-			img.Set(x, y, color.NRGBA{
-				R: uint8((x + y) & 255),
-				G: uint8((x + y) << 1 & 255),
-				B: uint8((x + y) << 2 & 255),
-				A: 255,
-			})
+			// Compute ray direction
+			var screenPixelPosition Vec3
+			screenPixelPosition.Add(s.Camera.Position)
+			screenPixelPosition.Add(s.Camera.Forward.Times(s.Camera.ScreenDistance))
+			screenPixelPosition.Add(s.Camera.Up.Times(float64(s.Camera.ScreenHeight/2-y) * pixelSize))
+			left := s.Camera.Up.Cross(s.Camera.Forward)
+			screenPixelPosition.Add(left.Times(float64(s.Camera.ScreenWidth/2+x) * pixelSize))
+			rayDirection := screenPixelPosition.Minus(s.Camera.Position)
+
+			intersects, _ := s.Sphere.IntersectsRay(s.Camera.Position, rayDirection)
+			if intersects {
+				c := color.NRGBA{
+					R: uint8((x + y) & 255),
+					G: uint8((x + y) << 1 & 255),
+					B: uint8((x + y) << 2 & 255),
+					A: 255,
+				}
+				img.Set(x, y, c)
+
+			}
 		}
 	}
 
 	return img, err
+}
+
+func (s *Scene) CheckRayCollisionWithSphere(x, y int) (c color.Color, err error) {
+	// Compute color to display (formulae with light, texture, blabla)
+	c = color.NRGBA{
+		R: uint8((x + y) & 255),
+		G: uint8((x + y) << 1 & 255),
+		B: uint8((x + y) << 2 & 255),
+		A: 255,
+	}
+	return c, nil
+}
+
+/*
+** Proof **
+Line :
+x(t) = vect_x * t + pt_x
+y(t) = vect_y * t + pt_y
+z(t) = vect_z * t + pt_z
+
+Sphere :
+(x - c_x)**2 + (y - c_y)**2 + (z - c_z)**2 = r**2
+
+We get a 2nd degree polynom with substitution method,
+and the answer we seek depends on the discriminant's sign.
+
+Return the intersection point, if any.
+If there are two, we return the closest to pos.
+
+a, b and c are the same as in ax**2 + b*x + c = 0.
+*/
+func (s *Sphere) IntersectsRay(
+	rayPosition, rayDirection Vec3,
+) (intersects bool, point Vec3) {
+	return false, Vec3{0, 0, 0}
 }
