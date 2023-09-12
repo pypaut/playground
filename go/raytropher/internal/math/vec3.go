@@ -32,3 +32,11 @@ func (u *Vec3) Cross(v Vec3) (p Vec3) {
 	p.Z = u.X*v.Y - u.Y*v.X
 	return
 }
+
+func (u *Vec3) Equals(v Vec3) bool {
+	if u.X == v.X && u.Y == v.Y && u.Z == v.Z {
+		return true
+	}
+
+	return false
+}
