@@ -48,23 +48,10 @@ func NewScene(sceneFile string) (scene *Scene, err error) {
 	return scene, nil
 }
 
-func (s *Scene) RenderToImageFile(imageName string) (err error) {
-	// Init image
-	myImg := image.NewRGBA(image.Rect(0, 0, s.Camera.ScreenWidth, s.Camera.ScreenHeight))
-	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
-	draw.Draw(myImg, myImg.Bounds(), &image.Uniform{C: black}, image.Point{}, draw.Src)
-
-	// TODO: Render image using raytracing
-
-	for y := 0; y < s.Camera.ScreenHeight; y++ {
-		for x := 0; x < s.Camera.ScreenWidth; x++ {
-			myImg.Set(x, y, color.NRGBA{
-				R: uint8((x + y) & 255),
-				G: uint8((x + y) << 1 & 255),
-				B: uint8((x + y) << 2 & 255),
-				A: 255,
-			})
-		}
+func (s *Scene) RenderToFile(imageName string) (err error) {
+	img, err := s.RenderToImage()
+	if err != nil {
+		return err
 	}
 
 	// Export image file
@@ -73,11 +60,34 @@ func (s *Scene) RenderToImageFile(imageName string) (err error) {
 		return err
 	}
 
-	err = png.Encode(out, myImg)
+	err = png.Encode(out, img)
 	if err != nil {
 		return err
 	}
 
 	out.Close()
 	return nil
+}
+
+func (s *Scene) RenderToImage() (img draw.Image, err error) {
+	// Init image
+	img = image.NewRGBA(image.Rect(0, 0, s.Camera.ScreenWidth, s.Camera.ScreenHeight))
+	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
+	draw.Draw(img, img.Bounds(), &image.Uniform{C: black}, image.Point{}, draw.Src)
+
+	// For each pixel of the screen
+	for y := 0; y < s.Camera.ScreenHeight; y++ {
+		for x := 0; x < s.Camera.ScreenWidth; x++ {
+			// Find which object is visible
+			// Compute color to display (formulae with light, texture, blabla)
+			img.Set(x, y, color.NRGBA{
+				R: uint8((x + y) & 255),
+				G: uint8((x + y) << 1 & 255),
+				B: uint8((x + y) << 2 & 255),
+				A: 255,
+			})
+		}
+	}
+
+	return img, err
 }

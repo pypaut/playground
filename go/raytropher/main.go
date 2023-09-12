@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"raytropher/internal/scene"
 )
@@ -11,10 +10,10 @@ func main() {
 	myScene, err := scene.NewScene("scene.yaml")
 	Check(err)
 
-	fmt.Printf("%+v\n", myScene)
+	// fmt.Printf("%+v\n", myScene)
 
 	// Render to image file
-	err = myScene.RenderToImageFile("rendered.png")
+	err = myScene.RenderToFile("rendered.png")
 	Check(err)
 
 	return
