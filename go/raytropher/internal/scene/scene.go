@@ -56,7 +56,11 @@ func (s *Scene) RenderToFile(imageName string) (err error) {
 		return err
 	}
 
-	out.Close()
+	err = out.Close()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
