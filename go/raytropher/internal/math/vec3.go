@@ -40,3 +40,7 @@ func (u *Vec3) Equals(v Vec3) bool {
 
 	return false
 }
+
+func (v *Vec3) Dot(u Vec3) float64 {
+	return v.X*u.X + v.Y*u.Y + v.Z*u.Z
+}

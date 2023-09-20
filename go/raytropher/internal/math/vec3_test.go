@@ -67,3 +67,35 @@ func TestVec3Cross(t *testing.T) {
 		}
 	}
 }
+
+func TestVec3Dot(t *testing.T) {
+	cases := []struct {
+		u        Vec3
+		v        Vec3
+		expected float64
+	}{
+		{
+			Vec3{},
+			Vec3{},
+			0,
+		},
+		{
+			Vec3{1, 0, 0},
+			Vec3{0, 1, 0},
+			0,
+		},
+		{
+			Vec3{1, 0, 1},
+			Vec3{0, 1, 0},
+			0,
+		},
+	}
+
+	for _, c := range cases {
+		result := c.u.Dot(c.v)
+		if result != c.expected {
+			t.Logf("error: should be %+v, but got %+v", c.expected, c.u)
+			t.Fail()
+		}
+	}
+}
