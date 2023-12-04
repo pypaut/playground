@@ -5,10 +5,24 @@ import "testing"
 func TestFindFirstDigit(t *testing.T) {
 	lines := []string{
 		"kld3lasdk93",
+		"two1nine",
+		"eightwothree",
+		"abcone2threexyz",
+		"xtwone3four",
+		"4nineeightseven2",
+		"zoneight234",
+		"7pqrstsixteen",
 		"10394203",
 	}
 	expected := []string{
 		"3",
+		"2",
+		"8",
+		"1",
+		"2",
+		"4",
+		"1",
+		"7",
 		"1",
 	}
 
@@ -27,10 +41,24 @@ func TestFindFirstDigit(t *testing.T) {
 func TestFindLastDigit(t *testing.T) {
 	lines := []string{
 		"kld3lasdk94",
+		"two1nine",
+		"eightwothree",
+		"abcone2threexyz",
+		"xtwone3four",
+		"4nineeightseven2",
+		"zoneight234",
+		"7pqrstsixteen",
 		"10394203",
 	}
 	expected := []string{
 		"4",
+		"9",
+		"3",
+		"3",
+		"4",
+		"2",
+		"4",
+		"6",
 		"3",
 	}
 
@@ -51,6 +79,13 @@ func TestComputeTwoDigitStrings(t *testing.T) {
 		"kld3lasdk94",
 		"10394203",
 		"oifjoiwe3092358kj2jih35kljkjkjdhksehf3kjdvksdujnfksundfgkdnsifug9",
+		"two1nine",
+		"eightwothree",
+		"abcone2threexyz",
+		"xtwone3four",
+		"4nineeightseven2",
+		"zoneight234",
+		"7pqrstsixteen",
 	}
 
 	result, err := computeTwoDigitStrings(lines)
@@ -62,6 +97,13 @@ func TestComputeTwoDigitStrings(t *testing.T) {
 		"34",
 		"13",
 		"39",
+		"29",
+		"83",
+		"13",
+		"24",
+		"42",
+		"14",
+		"76",
 	}
 
 	for i := range result {

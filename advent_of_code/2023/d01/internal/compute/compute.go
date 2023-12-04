@@ -6,6 +6,9 @@ import (
 	"strconv"
 )
 
+var literals = []string{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
+var digits = []string{"1", "2", "3", "4", "5", "6", "7", "8", "9"}
+
 func Compute(lines []string) (sum int, err error) {
 	twoDigitsNumbers, err := computeTwoDigitStrings(lines)
 	if err != nil {
@@ -64,9 +67,17 @@ func computeTwoDigitStrings(lines []string) (twoDigits []string, err error) {
 }
 
 func findFirstDigit(line string) (digit string, err error) {
-	for _, character := range line {
-		if _, err := strconv.ParseInt(string(character), 10, 64); err == nil {
-			return string(character), nil
+	for indexLine := range line {
+		// Check if literal digit
+		for indexLiterals, lit := range literals {
+			if indexLine+len(lit) <= len(line) && line[indexLine:indexLine+len(lit)] == lit {
+				return digits[indexLiterals], nil
+			}
+		}
+
+		// Check if digit
+		if _, err := strconv.ParseInt(string(line[indexLine]), 10, 64); err == nil {
+			return string(line[indexLine]), nil
 		}
 	}
 
@@ -74,10 +85,18 @@ func findFirstDigit(line string) (digit string, err error) {
 }
 
 func findLastDigit(line string) (digit string, err error) {
-	for index := len(line) - 1; index >= 0; index-- {
-		character := line[index]
-		if _, err := strconv.ParseInt(string(character), 10, 64); err == nil {
-			return string(character), nil
+	for indexLine := len(line) - 1; indexLine >= 0; indexLine-- {
+
+		// Check if literal digit
+		for indexLiterals, lit := range literals {
+			if indexLine+len(lit) <= len(line) && line[indexLine:indexLine+len(lit)] == lit {
+				return digits[indexLiterals], nil
+			}
+		}
+
+		// Check if digit
+		if _, err := strconv.ParseInt(string(line[indexLine]), 10, 64); err == nil {
+			return string(line[indexLine]), nil
 		}
 	}
 
