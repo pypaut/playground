@@ -3,8 +3,8 @@
 
 
 int main() {
-    int W = 1920;
-    int H = 1080;
+    int W = 1920 / 2;
+    int H = 1080 / 2;
 
     game *g = init_game(W, H);
 

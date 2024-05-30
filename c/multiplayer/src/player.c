@@ -30,14 +30,6 @@ void destroy_player(player *p) {
     free(p);
 }
 
-void update_player(player *p) {
-    p = p;
-}
-
-void draw_player(player *p) {
-    p = p;
-}
-
 void update_player_rect(player *p) {
     p->rect->x = (int)p->x;
     p->rect->y = (int)p->y;
