@@ -2,7 +2,7 @@
 
 
 int main() {
-    char buffer[1024] = { 0 };
+    char *buffer = calloc(1024, sizeof(char));
     int pos_x = 0;
     int pos_y = 0;
     char *pos = calloc(256, sizeof(char));
@@ -19,18 +19,24 @@ int main() {
     }
 
     for (;;) {
-        // Get client input
-        read(client_socket_fd, buffer, 1024 - 1);
-        printf("%s\n", buffer);
+        /* Receive from client */
+        memset(buffer, 0, 1024);
+        read(client_socket_fd, buffer, 1023);
 
-        // TODO Update client position
+        /* Extract dir */
+        float dir_x = 0;
+        float dir_y = 0;
+        extract_dir(buffer, &dir_x, &dir_y);
 
-        // Send client position
+        /* Update client position */
+
+        /* Send to client */
         sprintf(pos, "x:%d,y:%d", pos_x, pos_y);
         send(client_socket_fd, pos, strlen(pos), 0);
     }
  
     free(pos);
+    free(buffer);
     close(client_socket_fd);
     close(server_socket_fd);
 
@@ -66,4 +72,45 @@ void init_server(int *server_socket_fd, struct sockaddr_in *address) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
+}
+
+void extract_dir(char *buffer, float *dir_x, float *dir_y) {
+    // Format : "x:0.000000,y:0.0000000"
+
+    // Extract direction from string
+    char *dir_x_string = calloc(20, sizeof(char));
+    char *dir_y_string = calloc(20, sizeof(char));
+
+    size_t buffer_i = 0;
+    while (buffer[buffer_i] != ':') {
+        buffer_i++;
+    }
+    buffer_i++;
+
+    size_t dir_i = 0;
+    while (buffer[buffer_i] != ',') {
+        dir_x_string[dir_i] = buffer[buffer_i];
+        buffer_i++;
+        dir_i++;
+    }
+    buffer_i++;
+
+    while (buffer[buffer_i] != ':') {
+        buffer_i++;
+    }
+    buffer_i++;
+
+    dir_i = 0;
+    while (buffer[buffer_i]) {
+        dir_y_string[dir_i] = buffer[buffer_i];
+        buffer_i++;
+        dir_i++;
+    }
+
+    // Convert to float
+    *dir_x = atof(dir_x_string);
+    *dir_y = atof(dir_y_string);
+
+    free(dir_x_string);
+    free(dir_y_string);
 }
