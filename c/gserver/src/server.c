@@ -31,6 +31,8 @@ int main() {
         /* Update client position */
         pos_x += dir_x;
         pos_y += dir_y;
+        pos_x = clamp(pos_x, 0, W * SCALE);
+        pos_y = clamp(pos_y, 0, H * SCALE);
 
         /* Send to client */
         sprintf(pos, "x:%f,y:%f", pos_x, pos_y);
@@ -74,4 +76,9 @@ void init_server(int *server_socket_fd, struct sockaddr_in *address) {
         perror("listen");
         exit(EXIT_FAILURE);
     }
+}
+
+double clamp(double d, double min, double max) {
+  const double t = d < min ? min : d;
+  return t > max ? max : t;
 }

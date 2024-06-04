@@ -6,8 +6,9 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#define PORT 8080
 
-#include "include.h"
+#include "constants.h"
+#include "extract.h"
 
 void init_server(int *server_socket_fd, struct sockaddr_in *address);
+double clamp(double d, double min, double max);
