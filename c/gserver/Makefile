@@ -17,4 +17,4 @@ build_server:
 	$(CC) $(CFLAGS) $(SERVER_OBJS) $(COMMON_OBJS) -o $(SERVER_BIN) $(LIBS)
 
 clean:
-	$(RM) $(BIN)
+	$(RM) $(CLIENT_BIN) $(SERVER_BIN)

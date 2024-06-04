@@ -12,7 +12,6 @@ void extract_x_y(char *buffer, float *dir_x, float *dir_y) {
     /* Convert to float */
     *dir_x = atof(dir_x_string);
     *dir_y = atof(dir_y_string);
-    printf("%f,%f\n", *dir_x, *dir_y);
 
     free(dir_x_string);
     free(dir_y_string);

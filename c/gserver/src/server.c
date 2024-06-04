@@ -29,8 +29,8 @@ int main() {
         extract_x_y(buffer, &dir_x, &dir_y);
 
         /* Update client position */
-        pos_x += dir_x;
-        pos_y += dir_y;
+        pos_x += dir_x * PLAYER_SPEED;
+        pos_y += dir_y * PLAYER_SPEED;
         pos_x = clamp(pos_x, 0, W * SCALE);
         pos_y = clamp(pos_y, 0, H * SCALE);
 

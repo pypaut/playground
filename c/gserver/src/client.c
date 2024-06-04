@@ -19,6 +19,18 @@ int main()
     SDL_Window **window = calloc(1, sizeof(SDL_Window**));
     SDL_Renderer **renderer = calloc(1, sizeof(SDL_Renderer**));
 
+    SDL_Color color;
+    color.r = 200;
+    color.g = 200;
+    color.b = 200;
+    color.a = 255;
+
+    SDL_Rect rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = 50;
+    rect.h = 50;
+
     if (SDL_CreateWindowAndRenderer(W * SCALE, H * SCALE, 0, window, renderer)) {
         fprintf(stderr, "%s\n", "error: SDL_CreateWindowAndRenderer\0");
         close(client_socket_fd);
@@ -49,15 +61,15 @@ int main()
 
         /* Receive from server */
         read(client_socket_fd, buffer, 1023);
-        // printf("%s\n", buffer);
 
         /* Extract pos */
         float pos_x = 0;
         float pos_y = 0;
         extract_x_y(buffer, &pos_x, &pos_y);
-        // printf("%f,%f\n", pos_x, pos_y);
+        rect.x = (int)pos_x;
+        rect.y = (int)pos_y;
 
-        if (draw(renderer)) {
+        if (draw(renderer, &rect, &color)) {
             break;
         }
     }
@@ -152,7 +164,8 @@ int check_quit_events(const Uint8 *keys) {
     return 0;
 }
 
-int draw(SDL_Renderer **renderer) {
+int draw(SDL_Renderer **renderer, SDL_Rect *rect, SDL_Color *color) {
+    /* Background */
     if (SDL_SetRenderDrawColor(*renderer, 0, 0, 0, 255)) {
         fprintf(stderr, "%s\n", "error: SDL_SetRenderDrawColor\0");
         return 1;
@@ -162,6 +175,19 @@ int draw(SDL_Renderer **renderer) {
         fprintf(stderr, "%s\n", "error: SDL_RenderClear\0");
         return 1;
     }
+
+    /* Player */
+    if (SDL_SetRenderDrawColor(
+        *renderer,
+        color->r,
+        color->g,
+        color->b,
+        color->a)) {
+        fprintf(stderr, "%s\n", "Error Renderer.SetRendererDrawColor\0");
+        return 1;
+    }
+
+    SDL_RenderFillRect(*renderer, rect);
 
     SDL_RenderPresent(*renderer);
     return 0;
