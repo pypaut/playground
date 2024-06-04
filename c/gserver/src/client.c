@@ -50,26 +50,7 @@ int main()
 
         float dir_x = 0;
         float dir_y = 0;
-
-        // Go right
-        if (keys[SDL_SCANCODE_D]) {
-            dir_x++;
-        }
-
-        // Go left
-        if (keys[SDL_SCANCODE_A]) {
-            dir_x--;
-        }
-
-        // Go down
-        if (keys[SDL_SCANCODE_S]) {
-            dir_y++;
-        }
-
-        // Go up
-        if (keys[SDL_SCANCODE_W]) {
-            dir_y--;
-        }
+        get_dir(keys, &dir_x, &dir_y);
 
         // Send direction/input to server
         // memset(dir, 0, len(dir));
@@ -145,4 +126,33 @@ Uint64 clock_tick(Uint64 current_tick) {
     }
 
     return current_tick;
+}
+
+void get_dir(const Uint8 *keys, float *dir_x, float *dir_y) {
+    // Go right
+    if (keys[SDL_SCANCODE_D]) {
+        (*dir_x)++;
+    }
+
+    // Go left
+    if (keys[SDL_SCANCODE_A]) {
+        (*dir_x)--;
+    }
+
+    // Go down
+    if (keys[SDL_SCANCODE_S]) {
+        (*dir_y)++;
+    }
+
+    // Go up
+    if (keys[SDL_SCANCODE_W]) {
+        (*dir_y)--;
+    }
+
+    // Normalize direction
+    float norm = sqrt(pow(*dir_x, 2) + pow(*dir_y, 2));
+    if (norm != 0) {
+        *dir_x = *dir_x / norm;
+        *dir_y = *dir_y / norm;
+    }
 }
