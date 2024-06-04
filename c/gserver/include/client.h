@@ -7,7 +7,13 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "include.h"
+
 #define PORT 8080
+
+const int W = 1920;
+const int H = 1080;
+const float SCALE = 0.5;
 
 void init_client(int *client_socket_fd);
 Uint64 clock_tick(Uint64 current_tick);

@@ -1,5 +1,5 @@
 #include "client.h"
-#include "include.h"
+
 
 int main()
 {
@@ -49,11 +49,17 @@ int main()
 
         /* Receive from server */
         read(client_socket_fd, buffer, 1023);
+        // printf("%s\n", buffer);
+
+        /* Extract pos */
+        float pos_x = 0;
+        float pos_y = 0;
+        extract_x_y(buffer, &pos_x, &pos_y);
+        // printf("%f,%f\n", pos_x, pos_y);
 
         if (draw(renderer)) {
             break;
         }
-
     }
 
     close(client_socket_fd);

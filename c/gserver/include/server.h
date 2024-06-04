@@ -8,6 +8,6 @@
 #include <unistd.h>
 #define PORT 8080
 
+#include "include.h"
+
 void init_server(int *server_socket_fd, struct sockaddr_in *address);
-void extract_dir(char *buffer, float *dir_x, float *dir_y);
-void extract_dir_str(char *buffer, char *dir_x_string, char *dir_y_string);
