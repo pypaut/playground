@@ -29,10 +29,10 @@ int main() {
         extract_x_y(buffer, &dir_x, &dir_y);
 
         /* Update client position */
-        pos_x += dir_x * PLAYER_SPEED;
-        pos_y += dir_y * PLAYER_SPEED;
-        pos_x = clamp(pos_x, 0, W * SCALE);
-        pos_y = clamp(pos_y, 0, H * SCALE);
+        pos_x += dir_x * PLAYER_SPEED * SCALE;
+        pos_y += dir_y * PLAYER_SPEED * SCALE;
+        pos_x = clamp(pos_x, 0, (W - PLAYER_SIZE) * SCALE);
+        pos_y = clamp(pos_y, 0, (H - PLAYER_SIZE) * SCALE);
 
         /* Send to client */
         sprintf(pos, "x:%f,y:%f", pos_x, pos_y);

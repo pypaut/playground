@@ -28,8 +28,8 @@ int main()
     SDL_Rect rect;
     rect.x = 0;
     rect.y = 0;
-    rect.w = 50;
-    rect.h = 50;
+    rect.w = PLAYER_SIZE * SCALE;
+    rect.h = PLAYER_SIZE * SCALE;
 
     if (SDL_CreateWindowAndRenderer(W * SCALE, H * SCALE, 0, window, renderer)) {
         fprintf(stderr, "%s\n", "error: SDL_CreateWindowAndRenderer\0");
