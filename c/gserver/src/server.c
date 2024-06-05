@@ -29,10 +29,7 @@ int main() {
         extract_x_y(buffer, &dir_x, &dir_y);
 
         /* Update client position */
-        pos_x += dir_x * PLAYER_SPEED * SCALE;
-        pos_y += dir_y * PLAYER_SPEED * SCALE;
-        pos_x = clamp(pos_x, 0, (W - PLAYER_SIZE) * SCALE);
-        pos_y = clamp(pos_y, 0, (H - PLAYER_SIZE) * SCALE);
+        update_pos(&pos_x, &pos_y, dir_x, dir_y);
 
         /* Send to client */
         sprintf(pos, "x:%f,y:%f", pos_x, pos_y);
@@ -81,4 +78,11 @@ void init_server(int *server_socket_fd, struct sockaddr_in *address) {
 double clamp(double d, double min, double max) {
   const double t = d < min ? min : d;
   return t > max ? max : t;
+}
+
+void update_pos(float *pos_x, float *pos_y, float dir_x, float dir_y) {
+    *pos_x += dir_x * PLAYER_SPEED * SCALE;
+    *pos_y += dir_y * PLAYER_SPEED * SCALE;
+    *pos_x = clamp(*pos_x, 0, (W - PLAYER_SIZE) * SCALE);
+    *pos_y = clamp(*pos_y, 0, (H - PLAYER_SIZE) * SCALE);
 }

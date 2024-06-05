@@ -12,3 +12,4 @@
 
 void init_server(int *server_socket_fd, struct sockaddr_in *address);
 double clamp(double d, double min, double max);
+void update_pos(float *pos_x, float *pos_y, float dir_x, float dir_y);
