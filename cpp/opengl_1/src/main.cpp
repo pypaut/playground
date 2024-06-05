@@ -7,18 +7,7 @@
 #include <sstream>
 #include <string>
 
-
-#define TEST_OPENGL_ERROR()\
-  do {\
-    GLenum err = glGetError();\
-    if (err != GL_NO_ERROR) {\
-      std::cerr << "ERROR! At " << __FILE__ << ":" << __LINE__ << std::endl;\
-      raise(SIGTRAP);\
-    }\
-  } while(0)
-
-#define ASSERT(x) if (!(x)) raise(SIGTRAP);
-
+#include <renderer.h>
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -201,7 +190,7 @@ int main(void) {
         glUseProgram(program); TEST_OPENGL_ERROR();
         glUniform4f(location, r, g, b, 0.5f); TEST_OPENGL_ERROR();
 
-        glBindVertexArray(vao);
+        glBindVertexArray(vao); TEST_OPENGL_ERROR();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); TEST_OPENGL_ERROR();
 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
