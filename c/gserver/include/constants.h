@@ -1,9 +1,11 @@
 #pragma once
 
 #define PORT 8080
+#define MAX_CLIENTS 30
 
-const int W = 1920;
-const int H = 1080;
-const float SCALE = 0.5;
-const float PLAYER_SPEED = 10;
-const float PLAYER_SIZE = 100;
+#define W 1920
+#define H 1080
+
+#define SCALE 0.5
+#define PLAYER_SPEED 10
+#define PLAYER_SIZE 100
