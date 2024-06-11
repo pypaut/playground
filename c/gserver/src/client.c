@@ -4,14 +4,10 @@
 int main()
 {
     /* Variables */
-    char buffer[1024] = { 0 };
+    char *buffer = calloc(1024, sizeof(char));
     char* dir = calloc(1024, sizeof(char));
 
     Uint64 current_tick = 0;
-
-    /* Socket components */
-    int client_socket_fd;
-    init_client(&client_socket_fd);
 
     /* SDL components */
     SDL_Init(SDL_INIT_VIDEO);
@@ -33,12 +29,16 @@ int main()
 
     if (SDL_CreateWindowAndRenderer(W * SCALE, H * SCALE, 0, window, renderer)) {
         fprintf(stderr, "%s\n", "error: SDL_CreateWindowAndRenderer\0");
-        close(client_socket_fd);
         free(dir);
+        free(buffer);
         free(window);
         free(renderer);
         return 1;
     }
+
+    /* Socket components */
+    int client_socket_fd;
+    init_client(&client_socket_fd);
 
     /* Main loop */
     for (;;) {
@@ -69,6 +69,7 @@ int main()
         rect.x = (int)pos_x;
         rect.y = (int)pos_y;
 
+        /* Draw */
         if (draw(renderer, &rect, &color)) {
             break;
         }
@@ -76,6 +77,7 @@ int main()
 
     close(client_socket_fd);
     free(dir);
+    free(buffer);
     free(window);
     free(renderer);
 
@@ -113,8 +115,8 @@ Uint64 clock_tick(Uint64 current_tick) {
     Uint64 last_tick = current_tick;
     current_tick = SDL_GetTicks();
     Uint64 dt = current_tick - last_tick;
-    if (dt < 1000 / 60) {
-        SDL_Delay(1000 / 60 - dt);
+    if (dt < 1000 / 30) {
+        SDL_Delay(1000 / 30 - dt);
     }
 
     return current_tick;
