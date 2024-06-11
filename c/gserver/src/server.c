@@ -3,9 +3,7 @@
 
 int main() {
     char *buffer = calloc(1024, sizeof(char));
-    float pos_x = 0;
-    float pos_y = 0;
-    char *pos = calloc(256, sizeof(char));
+    player_pos *positions = calloc(MAX_CLIENTS + 1, sizeof(player_pos));
 
     int max_sd, activity, new_client_socket;
 
@@ -51,13 +49,12 @@ int main() {
                 client_sockets_fds,
                 &readfds,
                 &address,
-                &pos_x,
-                &pos_y
+                positions
             );
         }
     }
  
-    free(pos);
+    free(positions);
     free(buffer);
     close(server_socket_fd);
 
@@ -168,8 +165,7 @@ void handle_clients_messages(
     int *client_sockets,
     fd_set *readfds,
     struct sockaddr_in *address,
-    float *pos_x,
-    float *pos_y
+    player_pos *positions
 ) {
     int addrlen = sizeof(address);
     char *buffer = calloc(1024, sizeof(char));
@@ -210,11 +206,16 @@ void handle_clients_messages(
                 extract_x_y(buffer, &dir_x, &dir_y);
 
                 /* Update client position */
-                update_pos(pos_x, pos_y, dir_x, dir_y);
+                update_pos(
+                    &(positions[i].pos_x),
+                    &(positions[i].pos_y),
+                    dir_x,
+                    dir_y
+                );
 
                 /* Send to client */
                 char *pos = calloc(1024, sizeof(char));
-                sprintf(pos, "x:%f,y:%f", *pos_x, *pos_y);
+                sprintf(pos, "x:%f,y:%f", positions[i].pos_x, positions[i].pos_y);
                 send(sd, pos, strlen(pos), 0);
                 printf(
                     "[ID: %ld, IP: %s, PORT: %d]: send \"%s\"\n",
