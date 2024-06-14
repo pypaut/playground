@@ -5,7 +5,9 @@ LIBS = -lSDL2 -lm
 CLIENT_OBJS = src/client.c
 CLIENT_BIN = client
 SERVER_OBJS = src/server.c
-COMMON_OBJS = src/extract.c
+COMMON_OBJS = src/extract.c \
+			  src/message.c \
+			  src/player_pos.c
 SERVER_BIN = server
 
 all: build_client build_server

@@ -3,7 +3,7 @@
 
 int main() {
     char *buffer = calloc(1024, sizeof(char));
-    player_pos *positions = calloc(MAX_CLIENTS + 1, sizeof(player_pos));
+    player_pos **positions = new_player_pos_list();
 
     int max_sd, activity, new_client_socket;
 
@@ -165,7 +165,7 @@ void handle_clients_messages(
     int *client_sockets,
     fd_set *readfds,
     struct sockaddr_in *address,
-    player_pos *positions
+    player_pos **positions
 ) {
     int addrlen = sizeof(address);
     char *buffer = calloc(1024, sizeof(char));
@@ -190,6 +190,7 @@ void handle_clients_messages(
                 // Close the socket and mark as 0 in list for reuse
                 close(sd);
                 client_sockets[i] = 0;
+                positions[i] = NULL;
             } else {
                 // The buffer contains data from client
                 printf(
@@ -207,27 +208,30 @@ void handle_clients_messages(
 
                 /* Update client position */
                 update_pos(
-                    &(positions[i].pos_x),
-                    &(positions[i].pos_y),
+                    &(positions[i]->x),
+                    &(positions[i]->y),
                     dir_x,
                     dir_y
                 );
 
                 /* Send to client */
-                char *pos = calloc(1024, sizeof(char));
-                sprintf(pos, "x:%f,y:%f", positions[i].pos_x, positions[i].pos_y);
-                send(sd, pos, strlen(pos), 0);
+                char *message = calloc(1024, sizeof(char));
+                build_server_message(message, positions, i);
+                // char *pos = calloc(1024, sizeof(char));
+                // sprintf(pos, "x:%f,y:%f", positions[i].x, positions[i].y);
+                send(sd, message, strlen(message), 0);
                 printf(
                     "[ID: %ld, IP: %s, PORT: %d]: send \"%s\"\n",
                     i,
                     inet_ntoa(address->sin_addr),
                     ntohs(address->sin_port),
-                    pos
+                    message
                 );
-                free(pos);
+                free(message);
             }
         }
     }
 
+    free_player_pos_list(positions);
     free(buffer);
 }

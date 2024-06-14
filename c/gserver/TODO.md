@@ -5,4 +5,4 @@
 # server
 
 - [X] use `select()` for several clients
-- [ ] display all players in all clients
+- [ ] display all players in all clients -> done, need to test
