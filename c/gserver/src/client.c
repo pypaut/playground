@@ -21,12 +21,6 @@ int main()
     color.b = 200;
     color.a = 255;
 
-    // SDL_Rect rect;
-    // rect.x = 0;
-    // rect.y = 0;
-    // rect.w = PLAYER_SIZE * SCALE;
-    // rect.h = PLAYER_SIZE * SCALE;
-
     player_pos **positions = new_player_pos_list();
 
     if (SDL_CreateWindowAndRenderer(W * SCALE, H * SCALE, 0, window, renderer)) {
@@ -64,16 +58,8 @@ int main()
         /* Receive from server */
         read(client_socket_fd, buffer, 1023);
 
-        /* Extract pos */
-        // float pos_x = 0;
-        // float pos_y = 0;
-        // extract_x_y(buffer, &pos_x, &pos_y);
-        // rect.x = (int)pos_x;
-        // rect.y = (int)pos_y;
-
         /* Extract positions */
         parse_server_message(positions, buffer);
-
 
         /* Draw */
         if (draw(renderer, positions, &color)) {
@@ -186,15 +172,19 @@ int draw(SDL_Renderer **renderer, player_pos **positions, SDL_Color *color) {
     }
 
     /* Players */
+    if (SDL_SetRenderDrawColor(
+        *renderer,
+        color->r,
+        color->g,
+        color->b,
+        color->a)) {
+        fprintf(stderr, "%s\n", "Error Renderer.SetRendererDrawColor\0");
+        return 1;
+    }
+
     for (size_t i = 0; i < MAX_CLIENTS; i++) {
-        if (SDL_SetRenderDrawColor(
-            *renderer,
-            color->r,
-            color->g,
-            color->b,
-            color->a)) {
-            fprintf(stderr, "%s\n", "Error Renderer.SetRendererDrawColor\0");
-            return 1;
+        if (!positions[i]->enabled) {
+            continue;
         }
 
         SDL_Rect rect;

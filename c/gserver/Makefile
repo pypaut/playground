@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -pedantic -std=c99 -Iinclude
+CFLAGS = -Wall -Werror -Wextra -pedantic -std=c99 -Iinclude -g
 LIBS = -lSDL2 -lm
 
 CLIENT_OBJS = src/client.c

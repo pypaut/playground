@@ -5,6 +5,7 @@
 #include "constants.h"
 
 typedef struct player_pos {
+    int enabled;
     float x;
     float y;
 } player_pos;

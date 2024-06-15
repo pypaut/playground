@@ -42,7 +42,8 @@ int main() {
                 &new_client_socket,
                 &server_socket_fd,
                 client_sockets_fds,
-                &address
+                &address,
+                positions
             );
         } else {
             handle_clients_messages(
@@ -105,11 +106,11 @@ double clamp(double d, double min, double max) {
   return t > max ? max : t;
 }
 
-void update_pos(float *pos_x, float *pos_y, float dir_x, float dir_y) {
-    *pos_x += dir_x * PLAYER_SPEED * SCALE;
-    *pos_y += dir_y * PLAYER_SPEED * SCALE;
-    *pos_x = clamp(*pos_x, 0, (W - PLAYER_SIZE) * SCALE);
-    *pos_y = clamp(*pos_y, 0, (H - PLAYER_SIZE) * SCALE);
+void update_pos(player_pos *pos, float dir_x, float dir_y) {
+    pos->x += dir_x * PLAYER_SPEED * SCALE;
+    pos->y += dir_y * PLAYER_SPEED * SCALE;
+    pos->x = clamp(pos->x, 0, (W - PLAYER_SIZE) * SCALE);
+    pos->y = clamp(pos->y, 0, (H - PLAYER_SIZE) * SCALE);
 }
 
 void add_child_sockets_to_set(
@@ -135,7 +136,8 @@ void handle_new_client(
     int *new_socket,
     int *server_socket_fd,
     int *client_sockets,
-    struct sockaddr_in *address
+    struct sockaddr_in *address,
+    player_pos **positions
 ) {
     int addrlen = sizeof(*address);
     *new_socket = accept(
@@ -150,6 +152,8 @@ void handle_new_client(
 
     // Add new socket to array of sockets
     for (int i = 0; i < MAX_CLIENTS; i++) {
+        positions[i]->enabled = 1;
+
         if (client_sockets[i] == 0) {
             client_sockets[i] = *new_socket;
             printf(
@@ -208,19 +212,17 @@ void handle_clients_messages(
 
                 /* Update client position */
                 update_pos(
-                    &(positions[i]->x),
-                    &(positions[i]->y),
+                    positions[i],
                     dir_x,
                     dir_y
                 );
 
                 /* Send to client */
                 char *message = calloc(1024, sizeof(char));
-                build_server_message(message, positions, i);
-                // char *pos = calloc(1024, sizeof(char));
-                // sprintf(pos, "x:%f,y:%f", positions[i].x, positions[i].y);
+                build_server_message(message, positions);
                 send(sd, message, strlen(message), 0);
-                printf(
+                fprintf(
+                    stderr,
                     "[ID: %ld, IP: %s, PORT: %d]: send \"%s\"\n",
                     i,
                     inet_ntoa(address->sin_addr),
@@ -232,6 +234,5 @@ void handle_clients_messages(
         }
     }
 
-    free_player_pos_list(positions);
     free(buffer);
 }

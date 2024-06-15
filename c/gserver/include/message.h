@@ -8,5 +8,5 @@
 #include "extract.h"
 #include "player_pos.h"
 
-void build_server_message(char *message, player_pos **positions, size_t player_i);
+void build_server_message(char *message, player_pos **positions);
 void parse_server_message(player_pos **positions, char *message);
