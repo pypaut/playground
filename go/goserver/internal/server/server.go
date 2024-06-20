@@ -7,6 +7,8 @@ import (
 	"net"
 	"strconv"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 type Server struct {
@@ -14,6 +16,12 @@ type Server struct {
 
 	posX float64
 	posY float64
+
+	winW int
+	winH int
+
+	playerSize  int
+	playerSpeed float64
 }
 
 func NewServer() *Server {
@@ -28,10 +36,20 @@ func NewServer() *Server {
 		log.Fatal(err)
 	}
 
+	viper.SetConfigFile("../goserver.yml")
+	err = viper.ReadInConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return &Server{
-		conn: conn,
-		posX: 0,
-		posY: 0,
+		conn:        conn,
+		posX:        0,
+		posY:        0,
+		winW:        viper.GetInt("window.width"),
+		winH:        viper.GetInt("window.height"),
+		playerSize:  viper.GetInt("player.size"),
+		playerSpeed: viper.GetFloat64("player.speed"),
 	}
 }
 
@@ -51,11 +69,11 @@ func (s *Server) Serve() {
 			log.Fatal(err)
 		}
 
-		s.posX += dirX
-		s.posY += dirY
+		s.posX += dirX * s.playerSpeed
+		s.posY += dirY * s.playerSpeed
 
-		s.posX = clamp(s.posX, 0, 800)
-		s.posY = clamp(s.posY, 0, 1000)
+		s.posX = clamp(s.posX, 0, float64(s.winH-s.playerSize))
+		s.posY = clamp(s.posY, 0, float64(s.winW-s.playerSize))
 
 		/* Send player's positions to client */
 		posStr := fmt.Sprintf("x:%f,y:%f", s.posX, s.posY)

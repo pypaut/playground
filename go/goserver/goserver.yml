@@ -1,0 +1,7 @@
+window:
+  width: 1000
+  height: 800
+
+player:
+  size: 50
+  speed: 10

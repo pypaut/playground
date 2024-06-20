@@ -8,6 +8,7 @@ import (
 	"net"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/spf13/viper"
 )
 
 type Client struct {
@@ -23,9 +24,15 @@ func NewClient() *Client {
 		log.Fatal(err)
 	}
 
+	viper.SetConfigFile("../goserver.yml")
+	err = viper.ReadInConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return &Client{
-		WinW: 1000,
-		WinH: 800,
+		WinW: viper.GetInt("window.width"),
+		WinH: viper.GetInt("window.height"),
 		conn: conn,
 	}
 }
