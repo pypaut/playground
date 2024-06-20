@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"strings"
 )
 
 func main() {
@@ -21,12 +20,17 @@ func main() {
 	}
 
 	for {
-		message, err := bufio.NewReader(conn).ReadString('\n')
+		msgFromClient, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Print("Message Received:", string(message))
-		newmessage := strings.ToUpper(message)
-		conn.Write([]byte(newmessage + "\n"))
+		fmt.Print("Message from client: " + msgFromClient)
+
+		posX, posY := 0.0, 0.0
+		posStr := fmt.Sprintf("x:%f,y:%f", posX, posY)
+		_, err = conn.Write([]byte(posStr + "\n"))
+		if err != nil {
+			return
+		}
 	}
 }

@@ -31,46 +31,51 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
-
 	/* Compute direction */
-	dir_x := 0.0
-	dir_y := 0.0
+	dirX, dirY := computePlayerDir()
+	dirStr := fmt.Sprintf("x:%f,y:%f\n", dirX, dirY)
 
-	if ebiten.IsKeyPressed(ebiten.KeyW) {
-		dir_y--
+	/* Send message */
+	_, err := fmt.Fprintf(g.conn, dirStr+"\n")
+	if err != nil {
+		return err
 	}
 
-	if ebiten.IsKeyPressed(ebiten.KeyA) {
-		dir_x--
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyS) {
-		dir_y++
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyD) {
-		dir_x++
-	}
-
-	dir_x, dir_y = normalized(dir_x, dir_y)
-	fmt.Printf("x:%f,y:%f\n", dir_x, dir_y)
-
-	/* Server communication */
-	text := "message from client"
-	fmt.Fprintf(g.conn, text+"\n")
+	/* Read message */
 	message, _ := bufio.NewReader(g.conn).ReadString('\n')
 	fmt.Print("Message from server: " + message)
 
 	return nil
 }
 
-func normalized(dir_x, dir_y float64) (float64, float64) {
-	if dir_x == 0 && dir_y == 0 {
+func computePlayerDir() (dirX, dirY float64) {
+
+	if ebiten.IsKeyPressed(ebiten.KeyW) {
+		dirY--
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyA) {
+		dirX--
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyS) {
+		dirY++
+	}
+
+	if ebiten.IsKeyPressed(ebiten.KeyD) {
+		dirX++
+	}
+
+	return normalized(dirX, dirY)
+}
+
+func normalized(dirX, dirY float64) (float64, float64) {
+	if dirX == 0 && dirY == 0 {
 		return 0, 0
 	}
 
-	norm := math.Sqrt(math.Pow(dir_x, 2) + math.Pow(dir_y, 2))
-	return dir_x / norm, dir_y / norm
+	norm := math.Sqrt(math.Pow(dirX, 2) + math.Pow(dirY, 2))
+	return dirX / norm, dirY / norm
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
