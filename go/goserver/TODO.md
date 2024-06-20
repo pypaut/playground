@@ -1,0 +1,3 @@
+- [ ] Draw player in client
+- [ ] Support multiple clients
+- [ ] Allow different window resolutions between different clients
