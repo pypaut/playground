@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
-	"goserver/internal/client"
 	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
+
+	"goserver/internal/client"
 )
 
 func main() {
