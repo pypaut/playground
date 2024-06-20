@@ -1,8 +1,11 @@
 package client
 
 import (
+	"bufio"
 	"fmt"
+	"log"
 	"math"
+	"net"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -10,17 +13,26 @@ import (
 type Game struct {
 	Width  int
 	Height int
+
+	conn net.Conn
 }
 
 func NewGame() *Game {
+	conn, err := net.Dial("tcp", "localhost:8000")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return &Game{
 		Width:  1000,
 		Height: 800,
+		conn:   conn,
 	}
 }
 
 func (g *Game) Update() error {
 
+	/* Compute direction */
 	dir_x := 0.0
 	dir_y := 0.0
 
@@ -42,6 +54,12 @@ func (g *Game) Update() error {
 
 	dir_x, dir_y = normalized(dir_x, dir_y)
 	fmt.Printf("x:%f,y:%f\n", dir_x, dir_y)
+
+	/* Server communication */
+	text := "message from client"
+	fmt.Fprintf(g.conn, text+"\n")
+	message, _ := bufio.NewReader(g.conn).ReadString('\n')
+	fmt.Print("Message from server: " + message)
 
 	return nil
 }

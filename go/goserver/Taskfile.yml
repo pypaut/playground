@@ -4,3 +4,6 @@ tasks:
   run:client:
     cmds:
       - go run main/client.go
+  run:server:
+    cmds:
+      - go run main/server.go

@@ -7,19 +7,19 @@ import (
 )
 
 type Client struct {
-	Game *Game
+	game *Game
 }
 
 func NewClient() *Client {
 	g := NewGame()
-	return &Client{Game: g}
+	return &Client{game: g}
 }
 
 func (c *Client) Run() {
-	ebiten.SetWindowSize(c.Game.Width, c.Game.Height)
+	ebiten.SetWindowSize(c.game.Width, c.game.Height)
 	ebiten.SetWindowTitle("Client")
 
-	if err := ebiten.RunGame(c.Game); err != nil {
+	if err := ebiten.RunGame(c.game); err != nil {
 		log.Fatal(err)
 	}
 
