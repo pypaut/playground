@@ -1,0 +1,6 @@
+version: '3'
+
+tasks:
+  run:client:
+    cmds:
+      - go run main/client.go
