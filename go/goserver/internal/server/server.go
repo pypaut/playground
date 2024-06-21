@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"strconv"
 	"strings"
 
 	"github.com/spf13/viper"
+
+	"goserver/internal/parser"
 )
 
 type Server struct {
@@ -53,15 +54,15 @@ func (s *Server) Serve() {
 
 	for {
 		/* Receive player's direction from client */
-		msgFromClient, err := bufio.NewReader(conn).ReadString('\n')
+		playerDirStr, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Print("Message from client: " + msgFromClient)
-		msgFromClient = strings.TrimSuffix(msgFromClient, "\n")
+		fmt.Print("Message from client: " + playerDirStr)
+		playerDirStr = strings.TrimSuffix(playerDirStr, "\n")
 
 		/* Update player's position */
-		dirX, dirY, err := parseStrDir(msgFromClient)
+		dirX, dirY, err := parser.ParseXandY(playerDirStr)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -79,25 +80,6 @@ func (s *Server) Serve() {
 			return
 		}
 	}
-}
-
-func parseStrDir(msgFromClient string) (dirX, dirY float64, err error) {
-	// Format: x:0.000000,y:0.000000
-	dirs := strings.Split(msgFromClient, ",")
-	dirXStr := strings.Split(dirs[0], ":")[1]
-	dirYStr := strings.Split(dirs[1], ":")[1]
-
-	dirX, err = strconv.ParseFloat(dirXStr, 8)
-	if err != nil {
-		return 0, 0, err
-	}
-
-	dirY, err = strconv.ParseFloat(dirYStr, 8)
-	if err != nil {
-		return 0, 0, err
-	}
-
-	return dirX, dirY, nil
 }
 
 func clamp(value, min, max float64) float64 {

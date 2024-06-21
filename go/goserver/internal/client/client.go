@@ -3,17 +3,27 @@ package client
 import (
 	"bufio"
 	"fmt"
+	"image/color"
 	"log"
 	"math"
 	"net"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/spf13/viper"
+
+	"goserver/internal/parser"
 )
 
 type Client struct {
 	WinW int
 	WinH int
+
+	playerPosX  float64
+	playerPosY  float64
+	playerSize  float64
+	playerColor color.Color
 
 	conn net.Conn
 }
@@ -31,9 +41,11 @@ func NewClient() *Client {
 	}
 
 	return &Client{
-		WinW: viper.GetInt("window.width"),
-		WinH: viper.GetInt("window.height"),
-		conn: conn,
+		WinW:        viper.GetInt("window.width"),
+		WinH:        viper.GetInt("window.height"),
+		playerSize:  viper.GetFloat64("player.size"),
+		playerColor: color.RGBA{150, 0, 150, 255},
+		conn:        conn,
 	}
 }
 
@@ -49,8 +61,12 @@ func (c *Client) Update() error {
 	}
 
 	/* Get player's position from server */
-	message, _ := bufio.NewReader(c.conn).ReadString('\n')
-	fmt.Print("Message from server: " + message)
+	playerPosStr, _ := bufio.NewReader(c.conn).ReadString('\n')
+	playerPosStr = strings.TrimSuffix(playerPosStr, "\n")
+	c.playerPosX, c.playerPosY, err = parser.ParseXandY(playerPosStr)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -86,6 +102,9 @@ func normalized(dirX, dirY float64) (float64, float64) {
 }
 
 func (c *Client) Draw(screen *ebiten.Image) {
+	ebitenutil.DrawRect(
+		screen, c.playerPosX, c.playerPosY, c.playerSize, c.playerSize, c.playerColor,
+	)
 	return
 }
 
