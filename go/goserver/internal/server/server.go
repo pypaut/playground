@@ -10,15 +10,11 @@ import (
 	"github.com/spf13/viper"
 
 	"goserver/internal/parser"
+	"goserver/internal/player"
 )
 
-type PlayerPos struct {
-	X float64
-	Y float64
-}
-
 type Server struct {
-	positions []*PlayerPos
+	players []*player.Player
 
 	winW int
 	winH int
@@ -35,7 +31,7 @@ func NewServer() *Server {
 	}
 
 	return &Server{
-		positions:   []*PlayerPos{},
+		players:     []*player.Player{},
 		winW:        viper.GetInt("window.width"),
 		winH:        viper.GetInt("window.height"),
 		playerSize:  viper.GetInt("player.size"),
@@ -60,7 +56,7 @@ func (s *Server) Serve() {
 		}
 
 		logMessage(clientId, conn, "Connected")
-		s.positions = append(s.positions, &PlayerPos{X: 0, Y: 0})
+		s.players = append(s.players, &player.Player{X: 0, Y: 0})
 
 		go s.handleConnection(conn, clientId)
 		clientId++
@@ -84,14 +80,27 @@ func (s *Server) handleConnection(conn net.Conn, clientId int) {
 			log.Fatal(err)
 		}
 
-		s.positions[clientId].X += dirX * s.playerSpeed
-		s.positions[clientId].Y += dirY * s.playerSpeed
+		s.players[clientId].X += dirX * s.playerSpeed
+		s.players[clientId].Y += dirY * s.playerSpeed
 
-		s.positions[clientId].X = clamp(s.positions[clientId].X, 0, float64(s.winH-s.playerSize))
-		s.positions[clientId].Y = clamp(s.positions[clientId].Y, 0, float64(s.winW-s.playerSize))
+		s.players[clientId].X = clamp(
+			s.players[clientId].X, 0, float64(s.winH-s.playerSize),
+		)
+		s.players[clientId].Y = clamp(
+			s.players[clientId].Y, 0, float64(s.winW-s.playerSize),
+		)
 
-		/* Send player's positions to client */
-		posStr := fmt.Sprintf("x:%f,y:%f", s.positions[clientId].X, s.positions[clientId].Y)
+		/* Send players' players to client */
+
+		posStr := ""
+		for _, pos := range s.players {
+			posStr += fmt.Sprintf(";x:%f,y:%f", pos.X, pos.Y)
+		}
+
+		// posStr := fmt.Sprintf(
+		// 	"x:%f,y:%f", s.players[clientId].X, s.players[clientId].Y,
+		// )
+
 		_, err = conn.Write([]byte(posStr + "\n"))
 		if err != nil {
 			return

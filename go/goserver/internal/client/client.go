@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/viper"
 
 	"goserver/internal/parser"
+	"goserver/internal/player"
 )
 
 type Client struct {
@@ -22,6 +23,7 @@ type Client struct {
 
 	playerPosX  float64
 	playerPosY  float64
+	players     []*player.Player
 	playerSize  float64
 	playerColor color.Color
 
@@ -60,13 +62,27 @@ func (c *Client) Update() error {
 		return err
 	}
 
-	/* Get player's position from server */
-	playerPosStr, _ := bufio.NewReader(c.conn).ReadString('\n')
-	playerPosStr = strings.TrimSuffix(playerPosStr, "\n")
-	c.playerPosX, c.playerPosY, err = parser.ParseXandY(playerPosStr)
-	if err != nil {
-		return err
+	/* Get players' positions from server */
+	playersPosStr, _ := bufio.NewReader(c.conn).ReadString('\n')
+	playersPosStr = strings.TrimSuffix(playersPosStr, "\n")
+
+	c.players = []*player.Player{}
+	playersPosSplit := strings.Split(playersPosStr, ";")
+	fmt.Printf("%d\n", len(playersPosSplit))
+	for _, playerPosStr := range playersPosSplit {
+		fmt.Printf("%s\n", playerPosStr)
+		x, y, err := parser.ParseXandY(playerPosStr)
+		if err != nil {
+			return err
+		}
+
+		c.players = append(c.players, &player.Player{X: x, Y: y})
 	}
+
+	// c.playerPosX, c.playerPosY, err = parser.ParseXandY(playerPosStr)
+	// if err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
@@ -102,9 +118,14 @@ func normalized(dirX, dirY float64) (float64, float64) {
 }
 
 func (c *Client) Draw(screen *ebiten.Image) {
-	ebitenutil.DrawRect(
-		screen, c.playerPosX, c.playerPosY, c.playerSize, c.playerSize, c.playerColor,
-	)
+	for _, p := range c.players {
+		ebitenutil.DrawRect(
+			screen, p.X, p.Y, c.playerSize, c.playerSize, c.playerColor,
+		)
+	}
+	// ebitenutil.DrawRect(
+	// 	screen, c.playerPosX, c.playerPosY, c.playerSize, c.playerSize, c.playerColor,
+	// )
 	return
 }
 
