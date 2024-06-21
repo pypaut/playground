@@ -24,7 +24,7 @@ func NewClient() *Client {
 		log.Fatal(err)
 	}
 
-	viper.SetConfigFile("../goserver.yml")
+	viper.SetConfigFile("goserver.yml")
 	err = viper.ReadInConfig()
 	if err != nil {
 		log.Fatal(err)
