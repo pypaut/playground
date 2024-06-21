@@ -12,9 +12,13 @@ import (
 	"goserver/internal/parser"
 )
 
+type PlayerPos struct {
+	X float64
+	Y float64
+}
+
 type Server struct {
-	posX float64
-	posY float64
+	positions []*PlayerPos
 
 	winW int
 	winH int
@@ -31,8 +35,7 @@ func NewServer() *Server {
 	}
 
 	return &Server{
-		posX:        0,
-		posY:        0,
+		positions:   []*PlayerPos{},
 		winW:        viper.GetInt("window.width"),
 		winH:        viper.GetInt("window.height"),
 		playerSize:  viper.GetInt("player.size"),
@@ -47,18 +50,32 @@ func (s *Server) Serve() {
 	}
 	fmt.Println("Listening on port 8000")
 
-	conn, err := ln.Accept()
-	if err != nil {
-		log.Fatal(err)
-	}
+	clientId := 0
 
+	for {
+		/* Accept connection from new client */
+		conn, err := ln.Accept()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		logMessage(clientId, conn, "Connected")
+		s.positions = append(s.positions, &PlayerPos{X: 0, Y: 0})
+
+		go s.handleConnection(conn, clientId)
+		clientId++
+	}
+}
+
+func (s *Server) handleConnection(conn net.Conn, clientId int) {
 	for {
 		/* Receive player's direction from client */
 		playerDirStr, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
-			log.Fatal(err)
+			logMessage(clientId, conn, "Disconnected")
+			conn.Close()
+			return
 		}
-		fmt.Print("Message from client: " + playerDirStr)
 		playerDirStr = strings.TrimSuffix(playerDirStr, "\n")
 
 		/* Update player's position */
@@ -67,14 +84,14 @@ func (s *Server) Serve() {
 			log.Fatal(err)
 		}
 
-		s.posX += dirX * s.playerSpeed
-		s.posY += dirY * s.playerSpeed
+		s.positions[clientId].X += dirX * s.playerSpeed
+		s.positions[clientId].Y += dirY * s.playerSpeed
 
-		s.posX = clamp(s.posX, 0, float64(s.winH-s.playerSize))
-		s.posY = clamp(s.posY, 0, float64(s.winW-s.playerSize))
+		s.positions[clientId].X = clamp(s.positions[clientId].X, 0, float64(s.winH-s.playerSize))
+		s.positions[clientId].Y = clamp(s.positions[clientId].Y, 0, float64(s.winW-s.playerSize))
 
 		/* Send player's positions to client */
-		posStr := fmt.Sprintf("x:%f,y:%f", s.posX, s.posY)
+		posStr := fmt.Sprintf("x:%f,y:%f", s.positions[clientId].X, s.positions[clientId].Y)
 		_, err = conn.Write([]byte(posStr + "\n"))
 		if err != nil {
 			return
@@ -92,4 +109,8 @@ func clamp(value, min, max float64) float64 {
 	}
 
 	return value
+}
+
+func logMessage(clientId int, conn net.Conn, message string) {
+	log.Printf("[ID: %d, ADDR: %s]: %s\n", clientId, conn.RemoteAddr().String(), message)
 }

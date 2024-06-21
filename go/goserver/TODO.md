@@ -1,3 +1,5 @@
 - [X] Draw player in client
 - [ ] Support multiple clients
+    - [X] Allow multiple connections
+    - [ ] Display all players in each window
 - [ ] Allow different window resolutions between different clients
