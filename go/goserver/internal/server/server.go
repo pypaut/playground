@@ -91,15 +91,10 @@ func (s *Server) handleConnection(conn net.Conn, clientId int) {
 		)
 
 		/* Send players' players to client */
-
 		posStr := ""
 		for _, pos := range s.players {
-			posStr += fmt.Sprintf(";x:%f,y:%f", pos.X, pos.Y)
+			posStr += fmt.Sprintf("x:%f,y:%f;", pos.X, pos.Y)
 		}
-
-		// posStr := fmt.Sprintf(
-		// 	"x:%f,y:%f", s.players[clientId].X, s.players[clientId].Y,
-		// )
 
 		_, err = conn.Write([]byte(posStr + "\n"))
 		if err != nil {

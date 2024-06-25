@@ -68,9 +68,10 @@ func (c *Client) Update() error {
 
 	c.players = []*player.Player{}
 	playersPosSplit := strings.Split(playersPosStr, ";")
-	fmt.Printf("%d\n", len(playersPosSplit))
 	for _, playerPosStr := range playersPosSplit {
-		fmt.Printf("%s\n", playerPosStr)
+		if playerPosStr == "" {
+			continue
+		}
 		x, y, err := parser.ParseXandY(playerPosStr)
 		if err != nil {
 			return err
@@ -79,16 +80,10 @@ func (c *Client) Update() error {
 		c.players = append(c.players, &player.Player{X: x, Y: y})
 	}
 
-	// c.playerPosX, c.playerPosY, err = parser.ParseXandY(playerPosStr)
-	// if err != nil {
-	// 	return err
-	// }
-
 	return nil
 }
 
 func computePlayerDir() (dirX, dirY float64) {
-
 	if ebiten.IsKeyPressed(ebiten.KeyW) {
 		dirY--
 	}
