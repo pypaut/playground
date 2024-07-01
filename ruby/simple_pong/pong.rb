@@ -19,6 +19,19 @@ on :key_held do |event|
   when "s"
     p1.y += player_speed
   end
+
+  p1.y = p1.y.clamp(0, Window.height - 150)
+end
+
+on :key_held do |event|
+  case event.key
+  when "i"
+    p2.y -= player_speed
+  when "k"
+    p2.y += player_speed
+  end
+
+  p2.y = p2.y.clamp(0, Window.height - 150)
 end
 
 show
