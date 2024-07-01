@@ -4,7 +4,8 @@ class Player
 
   def initialize(x, color, up_key, down_key)
     @speed = 10
-    @rect = Rectangle.new(x: x, y: 100, width: 25, height: 150, color: color)
+    y = (HEIGHT - PLAYER_HEIGHT) / 2
+    @rect = Rectangle.new(x: x, y: y, width: PLAYER_WIDTH, height: PLAYER_HEIGHT, color: color)
     @up_key = up_key
     @down_key = down_key
   end
