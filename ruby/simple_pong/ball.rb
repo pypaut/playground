@@ -16,7 +16,14 @@ class Ball
   end
 
   def update
-    # FIXME: update dir
+    # Wall collisions
+    if @shape.x - @shape.radius < 0 or WIDTH < @shape.x + @shape.radius
+      @dir[0] *= -1
+    end
+
+    if @shape.y - @shape.radius < 0 or HEIGHT < @shape.y + @shape.radius
+      @dir[1] *= -1
+    end
 
     # Update pos
     @shape.x += @dir[0] * @speed
