@@ -1,5 +1,7 @@
 import configparser
+import json
 import pygame
+import socket
 
 from pygame.locals import QUIT, KEYDOWN
 
@@ -22,6 +24,10 @@ class Client:
 
         self.window = pygame.display.set_mode((self.W, self.H))
         self.clock = pygame.time.Clock()
+
+        # Network
+        self.socket = socket.socket()
+        self.socket.connect(('', 12350))
 
     def run(self):
         while True:
@@ -49,5 +55,6 @@ class Client:
                 if keys[pygame.K_d]:
                     player_dir[0] += 1
 
-                print(player_dir)
-
+                if player_dir != [0, 0]:
+                    player_dir = json.dumps({'x': player_dir[0], 'y': player_dir[1]})
+                    self.socket.send(f"{json.dumps(player_dir)}".encode('utf-8'))
