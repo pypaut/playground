@@ -5,16 +5,17 @@ import socket
 
 from pygame.locals import QUIT, KEYDOWN
 
+
 class Client:
     def __init__(self):
         # Read config
         config = configparser.ConfigParser()
-        with open('config.ini', 'r') as configfile:
+        with open("config.ini", "r") as configfile:
             config.read_file(configfile)
 
-        self.H = config.getint('CLIENT', 'H')
-        self.W = config.getint('CLIENT', 'W')
-        self.FPS = config.getint('CLIENT', 'FPS')
+        self.H = config.getint("CLIENT", "H")
+        self.W = config.getint("CLIENT", "W")
+        self.FPS = config.getint("CLIENT", "FPS")
 
         # Init PyGame
         pygame.display.init()
@@ -27,7 +28,7 @@ class Client:
 
         # Network
         self.socket = socket.socket()
-        self.socket.connect(('', 12350))
+        self.socket.connect(("", 12350))
 
     def run(self):
         while True:
@@ -56,5 +57,5 @@ class Client:
                     player_dir[0] += 1
 
                 if player_dir != [0, 0]:
-                    player_dir = json.dumps({'x': player_dir[0], 'y': player_dir[1]})
-                    self.socket.send(f"{json.dumps(player_dir)}".encode('utf-8'))
+                    player_dir = json.dumps({"x": player_dir[0], "y": player_dir[1]})
+                    self.socket.send(f"{json.dumps(player_dir)}".encode("utf-8"))
