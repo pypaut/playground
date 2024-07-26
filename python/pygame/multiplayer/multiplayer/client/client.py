@@ -11,7 +11,7 @@ class Client:
     def __init__(self):
         # Read config
         config = configparser.ConfigParser()
-        with open("config.ini", "r") as configfile:
+        with open("client.ini", "r") as configfile:
             config.read_file(configfile)
 
         self.H = config.getint("CLIENT", "H")
@@ -32,7 +32,7 @@ class Client:
         self.socket.connect(("", 12350))
         print("Connected to server")
 
-        # Game engine
+        # Game logic
         self.player_pos = {"x": 0, "y": 0}
 
     def run(self):
@@ -49,36 +49,43 @@ class Client:
             if keys[pygame.K_ESCAPE]:
                 break
 
-            player_dir = {"x": 0., "y": 0.}
+            player_dir = self.get_player_dir(keys)
+            self.send_direction(player_dir)
+            self.receive_position()
+            self.draw()
 
-            if keys[pygame.K_w]:
-                player_dir["y"] -= 1
-            if keys[pygame.K_a]:
-                player_dir["x"] -= 1
-            if keys[pygame.K_s]:
-                player_dir["y"] += 1
-            if keys[pygame.K_d]:
-                player_dir["x"] += 1
+    def get_player_dir(self, keys):
+        player_dir = {"x": 0.0, "y": 0.0}
 
-            norm = math.sqrt(sum([x**2 for x in player_dir.values()]))
-            if norm:
-                player_dir["x"] /= norm
-                player_dir["y"] /= norm
+        if keys[pygame.K_w]:
+            player_dir["y"] -= 1
+        if keys[pygame.K_a]:
+            player_dir["x"] -= 1
+        if keys[pygame.K_s]:
+            player_dir["y"] += 1
+        if keys[pygame.K_d]:
+            player_dir["x"] += 1
 
-            # Send direction
-            # if player_dir["x"] or player_dir["y"]:
-            self.socket.send(f"{json.dumps(player_dir)}".encode("utf-8"))
+        norm = math.sqrt(sum([x**2 for x in player_dir.values()]))
+        if norm:
+            player_dir["x"] /= norm
+            player_dir["y"] /= norm
 
-            # Receive position
-            server_msg = self.socket.recv(1024)
-            if server_msg != b"":
-                self.player_pos = json.loads(server_msg)
+        return player_dir
 
-            # Draw
-            self.window.fill((0, 0, 0))
-            pygame.draw.rect(
-                self.window,
-                (200, 200, 200),
-                pygame.Rect(self.player_pos["x"], self.player_pos["y"], 50, 50),
-            )
-            pygame.display.flip()
+    def send_direction(self, player_dir):
+        self.socket.send(f"{json.dumps(player_dir)}".encode("utf-8"))
+
+    def receive_position(self):
+        server_msg = self.socket.recv(1024)
+        if server_msg != b"":
+            self.player_pos = json.loads(server_msg)
+
+    def draw(self):
+        self.window.fill((0, 0, 0))
+        pygame.draw.rect(
+            self.window,
+            (200, 200, 200),
+            pygame.Rect(self.player_pos["x"], self.player_pos["y"], 50, 50),
+        )
+        pygame.display.flip()
