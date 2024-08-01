@@ -8,11 +8,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 pygame = "^2.6.0"
+ruff = "^0.5.5"
 configparser = "^7.0.0"
 
 [tool.poetry.scripts]
 server = "multiplayer.server.main:main"
 client = "multiplayer.client.main:main"
+lint = "lint:main"
 
 [build-system]
 requires = ["poetry-core"]
