@@ -34,11 +34,7 @@ class Server:
         print("Server running")
 
         while True:
-            socks_to_read, _, _ = select.select(
-                self.socks,
-                [],
-                [],
-            )
+            socks_to_read, _, _ = select.select(self.socks, [], [])
 
             for s in socks_to_read:
                 if s == self.socket:
@@ -68,28 +64,36 @@ class Server:
 
     def handle_new_client(self):
         conn, addr = self.socket.accept()
-
         self.log(conn, "connected")
+
+        # Load direction from client
         message = conn.recv(1024)
         player_dir = json.loads(message)
+
+        # Add new player, update pos, send pos
         self.players[conn.fileno()] = {"x": 0, "y": 0}
         self.update_position(conn.fileno(), player_dir)
-        self.socks.append(conn)
         self.send_position(conn)
+
+        self.socks.append(conn)
 
     def handle_client_message(self, s):
         message = s.recv(1024)
 
         if not message:
-            del self.players[s.fileno()]
-            self.log(s, "disconnected")
-            s.close()
-            self.socks.remove(s)
+            self.disconnect_client(s)
             return
 
+        # Load direction from client
         player_dir = json.loads(message)
         self.update_position(s.fileno(), player_dir)
         self.send_position(s)
 
     def log(self, sock, message):
         print(f"{sock.fileno()} : {message}")
+
+    def disconnect_client(self, sock):
+        del self.players[sock.fileno()]
+        self.log(sock, "disconnected")
+        sock.close()
+        self.socks.remove(sock)
