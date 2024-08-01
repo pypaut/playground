@@ -4,7 +4,7 @@ import math
 import pygame
 import socket
 
-from pygame.locals import QUIT, KEYDOWN
+from pygame.locals import QUIT
 
 
 class Client:

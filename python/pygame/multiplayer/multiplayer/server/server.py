@@ -1,5 +1,6 @@
 import configparser
 import json
+import select
 import socket
 
 
@@ -14,7 +15,7 @@ class Server:
         self.W = config.getint("SERVER", "W")
 
         address = config["SERVER"]["ADDRESS"]
-        if address == None:
+        if address is None:
             address = ""
         port = config.getint("SERVER", "PORT")
 
@@ -23,37 +24,38 @@ class Server:
         self.socket = socket.socket()
         self.socket.bind((address, port))
         self.socket.listen(5)
+        self.socks = [self.socket]
 
         # Game logic
-        self.player_pos = {"x": 0, "y": 0}
         self.player_speed = 10
+        self.players = {self.socket.fileno(): {"x": 0, "y": 0}}
 
     def run(self):
         print("Server running")
-        conn, _ = self.socket.accept()
 
         while True:
-            client_msg = self.receive_direction(conn)
-            if not client_msg:
-                break
+            socks_to_read, _, _ = select.select(
+                self.socks,
+                [],
+                [],
+            )
 
-            player_dir = json.loads(client_msg)
-            self.update_position(player_dir)
+            for s in socks_to_read:
+                if s == self.socket:
+                    self.handle_new_client()
+                else:
+                    self.handle_client_message(s)
 
-            self.send_position(conn)
-
-        conn.close()
-
-    def update_position(self, player_dir):
+    def update_position(self, index, player_dir):
         # Update position
-        self.player_pos["x"] += player_dir["x"] * self.player_speed
-        self.player_pos["y"] += player_dir["y"] * self.player_speed
+        self.players[index]["x"] += player_dir["x"] * self.player_speed
+        self.players[index]["y"] += player_dir["y"] * self.player_speed
 
         # Clamp
-        self.player_pos["x"] = max(0, self.player_pos["x"])
-        self.player_pos["x"] = min(self.W - 50, self.player_pos["x"])
-        self.player_pos["y"] = max(0, self.player_pos["y"])
-        self.player_pos["y"] = min(self.H - 50, self.player_pos["y"])
+        self.players[index]["x"] = max(0, self.players[index]["x"])
+        self.players[index]["x"] = min(self.W - 50, self.players[index]["x"])
+        self.players[index]["y"] = max(0, self.players[index]["y"])
+        self.players[index]["y"] = min(self.H - 50, self.players[index]["y"])
 
     def receive_direction(self, conn):
         client_msg = conn.recv(1024)
@@ -62,4 +64,32 @@ class Server:
         return client_msg
 
     def send_position(self, conn):
-        conn.send(f"{json.dumps(self.player_pos)}".encode("utf-8"))
+        conn.send(f"{json.dumps(self.players[conn.fileno()])}".encode("utf-8"))
+
+    def handle_new_client(self):
+        conn, addr = self.socket.accept()
+
+        self.log(conn, "connected")
+        message = conn.recv(1024)
+        player_dir = json.loads(message)
+        self.players[conn.fileno()] = {"x": 0, "y": 0}
+        self.update_position(conn.fileno(), player_dir)
+        self.socks.append(conn)
+        self.send_position(conn)
+
+    def handle_client_message(self, s):
+        message = s.recv(1024)
+
+        if not message:
+            del self.players[s.fileno()]
+            self.log(s, "disconnected")
+            s.close()
+            self.socks.remove(s)
+            return
+
+        player_dir = json.loads(message)
+        self.update_position(s.fileno(), player_dir)
+        self.send_position(s)
+
+    def log(self, sock, message):
+        print(f"{sock.fileno()} : {message}")
