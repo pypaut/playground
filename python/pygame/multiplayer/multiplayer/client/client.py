@@ -33,7 +33,7 @@ class Client:
         print("Connected to server")
 
         # Game logic
-        self.player_pos = {"x": 0, "y": 0}
+        self.players = {}
 
     def run(self):
         while True:
@@ -51,7 +51,7 @@ class Client:
 
             player_dir = self.get_player_dir(keys)
             self.send_direction(player_dir)
-            self.receive_position()
+            self.receive_positions()
             self.draw()
 
     def get_player_dir(self, keys):
@@ -76,16 +76,17 @@ class Client:
     def send_direction(self, player_dir):
         self.socket.send(f"{json.dumps(player_dir)}".encode("utf-8"))
 
-    def receive_position(self):
+    def receive_positions(self):
         server_msg = self.socket.recv(1024)
         if server_msg != b"":
-            self.player_pos = json.loads(server_msg)
+            self.players = json.loads(server_msg)
 
     def draw(self):
         self.window.fill((0, 0, 0))
-        pygame.draw.rect(
-            self.window,
-            (200, 200, 200),
-            pygame.Rect(self.player_pos["x"], self.player_pos["y"], 50, 50),
-        )
+        for _, p in self.players.items():
+            pygame.draw.rect(
+                self.window,
+                (200, 200, 200),
+                pygame.Rect(p["x"], p["y"], 50, 50),
+            )
         pygame.display.flip()

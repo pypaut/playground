@@ -28,7 +28,7 @@ class Server:
 
         # Game logic
         self.player_speed = 10
-        self.players = {self.socket.fileno(): {"x": 0, "y": 0}}
+        self.players = {}
 
     def run(self):
         print("Server running")
@@ -59,8 +59,8 @@ class Server:
             return False
         return client_msg
 
-    def send_position(self, conn):
-        conn.send(f"{json.dumps(self.players[conn.fileno()])}".encode("utf-8"))
+    def send_positions(self, conn):
+        conn.send(f"{json.dumps(self.players)}".encode("utf-8"))
 
     def handle_new_client(self):
         conn, addr = self.socket.accept()
@@ -73,7 +73,7 @@ class Server:
         # Add new player, update pos, send pos
         self.players[conn.fileno()] = {"x": 0, "y": 0}
         self.update_position(conn.fileno(), player_dir)
-        self.send_position(conn)
+        self.send_positions(conn)
 
         self.socks.append(conn)
 
@@ -87,7 +87,7 @@ class Server:
         # Load direction from client
         player_dir = json.loads(message)
         self.update_position(s.fileno(), player_dir)
-        self.send_position(s)
+        self.send_positions(s)
 
     def log(self, sock, message):
         print(f"{sock.fileno()} : {message}")
