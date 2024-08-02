@@ -20,7 +20,7 @@ def handle_new_client(s, socks):
     socks.append(conn)
     log(conn, "connected")
     message = conn.recv(1024)
-    conn.send(b'Hello client!')
+    conn.send(b"Hello client!")
 
 
 def handle_client_message(s, socks):
@@ -31,17 +31,15 @@ def handle_client_message(s, socks):
         socks.remove(s)
         return
 
-    s.send(b'Hello client!')
+    s.send(b"Hello client!")
 
 
 def main():
-    master_sock = init_master_sock('127.0.0.1', 9998)
+    master_sock = init_master_sock("127.0.0.1", 9998)
     socks = [master_sock]
 
     while True:
-        socks_to_read, _, _ = select.select(
-            socks, [], [],
-        )
+        socks_to_read, _, _ = select.select(socks, [], [])
 
         for s in socks_to_read:
             if s == master_sock:
