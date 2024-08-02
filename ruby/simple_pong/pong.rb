@@ -23,7 +23,7 @@ on :key_held do |event|
 end
 
 update do
-  ball.update
+  ball.update(p1, p2)
 end
 
 

@@ -15,7 +15,7 @@ class Ball
     @speed = 10
   end
 
-  def update
+  def update(p1, p2)
     # Wall collisions
     if @shape.x - @shape.radius < 0 or WIDTH < @shape.x + @shape.radius
       @dir[0] *= -1
@@ -23,6 +23,11 @@ class Ball
 
     if @shape.y - @shape.radius < 0 or HEIGHT < @shape.y + @shape.radius
       @dir[1] *= -1
+    end
+
+    # Player collision
+    if @shape.intersects?(p1.rect) or @shape.intersects?(p2.rect)
+      @dir[0] *= -1
     end
 
     # Update pos

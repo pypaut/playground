@@ -2,6 +2,8 @@ require './constants.rb'
 
 class Player
 
+  attr_reader :rect
+
   def initialize(x, color, up_key, down_key)
     @speed = 10
     y = (HEIGHT - PLAYER_HEIGHT) / 2
