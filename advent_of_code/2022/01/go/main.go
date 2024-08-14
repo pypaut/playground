@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	file := LoadFile("input")
+	file := LoadFile("../input")
 	defer file.Close()
 
 	elves := []int{0}

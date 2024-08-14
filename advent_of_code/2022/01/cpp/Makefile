@@ -9,11 +9,15 @@ all: build
 debug: build_debug
 	gdb ./$(BIN)
 
-build:
+build: format
 	$(CC) $(CFLAGS) $(OBJS) -o $(BIN) $(LIBS)
 
-build_debug:
+build_debug: format
 	$(CC) $(CFLAGS) -g $(OBJS) -o $(BIN) $(LIBS)
+
+format:
+	clang-format main.cpp > tmp
+	mv tmp main.cpp
 
 clean:
 	$(RM) $(BIN)
