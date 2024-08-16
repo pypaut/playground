@@ -4,9 +4,9 @@ int test_at() {
     log_title("at()");
 
     struct list *my_list = new_list();
-    my_list = push_front(my_list, 1);
-    my_list = push_front(my_list, 213);
-    my_list = push_front(my_list, 42);
+    push_front(&my_list, 1);
+    push_front(&my_list, 213);
+    push_front(&my_list, 42);
 
     if (test((int)(at(my_list, 0) == 42), "value should be 42")) {
         return 1;

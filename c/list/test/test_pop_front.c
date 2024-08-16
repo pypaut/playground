@@ -4,9 +4,9 @@ int test_pop_front() {
     log_title("pop_front()");
 
     struct list *my_list = new_list();
-    my_list = push_front(my_list, 1);
-    my_list = push_front(my_list, 213);
-    my_list = push_front(my_list, 42);
+    push_front(&my_list, 1);
+    push_front(&my_list, 213);
+    push_front(&my_list, 42);
 
     int first_value = pop_front(&my_list);
     int second_value = pop_front(&my_list);

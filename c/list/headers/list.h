@@ -18,7 +18,7 @@ int pop_back(struct list *l);
 int pop_front(struct list **l);
 
 struct list *push_back(struct list *l, int value);
-struct list *push_front(struct list *l, int value);
+void push_front(struct list **l, int value);
 
 struct list *concat(struct list *l1, struct list *l2);
 

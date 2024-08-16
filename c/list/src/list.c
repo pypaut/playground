@@ -58,11 +58,11 @@ struct list *push_back(struct list *l, int value) {
     return NULL;
 }
 
-struct list *push_front(struct list *l, int value) {
+void push_front(struct list **l, int value) {
     struct list *new_head = calloc(1, sizeof(struct list));
-    new_head->next = l;
+    new_head->next = *l;
     new_head->value = value;
-    return new_head;
+    *l = new_head;
 }
 
 size_t len(struct list *l) {

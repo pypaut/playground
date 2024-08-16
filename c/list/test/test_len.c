@@ -8,16 +8,16 @@ int test_len() {
         return 1;
     }
 
-    my_list = push_front(my_list, 3);
+    push_front(&my_list, 3);
     if (test((int)(len(my_list) == 1), "len should be 1")) {
         return 1;
     }
 
-    my_list = push_front(my_list, 3);
-    my_list = push_front(my_list, 3);
-    my_list = push_front(my_list, 3);
-    my_list = push_front(my_list, 3);
-    my_list = push_front(my_list, 3);
+    push_front(&my_list, 3);
+    push_front(&my_list, 3);
+    push_front(&my_list, 3);
+    push_front(&my_list, 3);
+    push_front(&my_list, 3);
     if (test((int)(len(my_list) == 6), "len should be 6")) {
         return 1;
     }
