@@ -16,9 +16,12 @@ void free_list(struct list *l) {
 }
 
 int at(struct list *l, size_t index) {
-    l = l;
-    index = index;
-    return 0;
+    struct list *current = l;
+    for (size_t i = 0; i < index; i++) {
+        current = current->next;
+    }
+
+    return current->value;
 }
 
 void remove_at(struct list *l, size_t index) {

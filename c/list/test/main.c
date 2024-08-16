@@ -17,5 +17,9 @@ int main() {
         return 1;
     }
 
+    if (test_at()) {
+        return 1;
+    }
+
     return 0;
 }

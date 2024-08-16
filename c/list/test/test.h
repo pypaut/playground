@@ -15,5 +15,9 @@ int test(int condition, char *message);
 
 int test_free_list();
 int test_new_list();
+
+int test_at();
+
 int test_push_front();
+
 int test_pop_front();

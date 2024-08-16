@@ -7,6 +7,7 @@ BIN = bin
 
 TEST_MAIN = test/main.c
 TEST_CFILES = test/test.c \
+			  test/test_at.c \
 			  test/test_free_list.c \
 			  test/test_new_list.c \
 			  test/test_pop_front.c \
