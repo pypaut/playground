@@ -11,6 +11,8 @@ void log_title(char *msg);
 void log_err(char *msg);
 void log_success(char *msg);
 
+int test(int condition, char *message);
+
 int test_free_list();
 int test_new_list();
 int test_push_front();

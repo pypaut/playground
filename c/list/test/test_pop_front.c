@@ -12,25 +12,16 @@ int test_pop_front() {
     int second_value = pop_front(&my_list);
     int third_value = pop_front(&my_list);
 
-    if (first_value != 42) {
-        log_err("value should be 42");
+    if (test((int)(first_value == 42), "value should be 42")) {
         return 1;
-    } else {
-        log_success("value should be 42");
     }
 
-    if (second_value != 213) {
-        log_err("value should be 213");
+    if (test((int)(second_value == 213), "value should be 213")) {
         return 1;
-    } else {
-        log_success("value should be 213");
     }
 
-    if (third_value != 1) {
-        log_err("value should be 1");
+    if (test((int)(third_value == 1), "value should be 1")) {
         return 1;
-    } else {
-        log_success("value should be 1");
     }
 
     return 0;
