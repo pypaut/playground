@@ -1,8 +1,9 @@
 #include "test.h"
 
 int test_push_front() {
-    struct list *my_list = new_list();
+    log_title("push_front()");
 
+    struct list *my_list = new_list();
     my_list = push_front(my_list, 1);
 
     if (my_list->value != 1) {

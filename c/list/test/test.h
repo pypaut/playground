@@ -14,3 +14,4 @@ void log_success(char *msg);
 int test_free_list();
 int test_new_list();
 int test_push_front();
+int test_pop_front();

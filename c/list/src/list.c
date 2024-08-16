@@ -31,9 +31,19 @@ int pop_back(struct list *l) {
     return 0;
 }
 
-int pop_front(struct list *l) {
-    l = l;
-    return 0;
+int pop_front(struct list **l) {
+    int value = (*l)->value;
+
+    struct list *old_head;
+    struct list *new_head;
+
+    old_head = *l;
+    new_head = (*l)->next;
+
+    free(old_head);
+    *l = new_head;
+
+    return value;
 }
 
 struct list *push_back(struct list *l, int value) {

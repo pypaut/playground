@@ -9,6 +9,7 @@ TEST_MAIN = test/main.c
 TEST_CFILES = test/test.c \
 			  test/test_free_list.c \
 			  test/test_new_list.c \
+			  test/test_pop_front.c \
 			  test/test_push_front.c
 TEST_BIN = test_list
 
@@ -26,6 +27,9 @@ build_debug:
 
 test: build_test
 	./${TEST_BIN}
+
+test_debug: build_test
+	gdb ./${TEST_BIN}
 
 build_test:
 	${CC} ${CFLAGS} ${TEST_MAIN} ${TEST_CFILES} ${CFILES} -I$(HEADERS) -Itest -o ${TEST_BIN} -g
