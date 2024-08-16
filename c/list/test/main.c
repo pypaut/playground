@@ -21,5 +21,9 @@ int main() {
         return 1;
     }
 
+    if (test_len()) {
+        return 1;
+    }
+
     return 0;
 }

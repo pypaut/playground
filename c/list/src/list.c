@@ -1,17 +1,20 @@
 #include <list.h>
 
 struct list *new_list() {
-    struct list *new_list = calloc(1, sizeof(struct list));
+    struct list *new_list = NULL;
     return new_list;
 }
 
 void free_list(struct list *l) {
-    struct list *prev;
+    if (!l) {
+        return;
+    }
 
-    while (l->next) {
-        prev = l;
+    struct list *old_head;
+    while (l) {
+        old_head = l;
         l = l->next;
-        free(prev);
+        free(old_head);
     }
 }
 
@@ -56,8 +59,22 @@ struct list *push_back(struct list *l, int value) {
 }
 
 struct list *push_front(struct list *l, int value) {
-    struct list *new_head = new_list();
+    struct list *new_head = calloc(1, sizeof(struct list));
     new_head->next = l;
     new_head->value = value;
     return new_head;
+}
+
+size_t len(struct list *l) {
+    if (!l) {
+        return 0;
+    }
+
+    size_t len = 1;
+    while (l->next) {
+        len++;
+        l = l->next;
+    }
+
+    return len;
 }

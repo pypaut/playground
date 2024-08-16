@@ -17,6 +17,7 @@ int test_free_list();
 int test_new_list();
 
 int test_at();
+int test_len();
 
 int test_push_front();
 
