@@ -9,5 +9,9 @@ int main() {
         return 1;
     }
 
+    if (test_push_front()) {
+        return 1;
+    }
+
     return 0;
 }

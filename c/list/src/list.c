@@ -36,12 +36,15 @@ int pop_front(struct list *l) {
     return 0;
 }
 
-void push_back(struct list *l, int element) {
+struct list *push_back(struct list *l, int value) {
     l = l;
-    element = element;
+    value = value;
+    return NULL;
 }
 
-void push_front(struct list *l, int element) {
-    l = l;
-    element = element;
+struct list *push_front(struct list *l, int value) {
+    struct list *new_head = new_list();
+    new_head->next = l;
+    new_head->value = value;
+    return new_head;
 }
