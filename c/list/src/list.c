@@ -27,9 +27,23 @@ int at(struct list *l, size_t index) {
     return current->value;
 }
 
-void remove_at(struct list *l, size_t index) {
-    l = l;
-    index = index;
+int pop_at(struct list *l, size_t index) {
+    struct list *current = l;
+    int value = 0;
+
+    // Get value
+    for (size_t i = 0; i < index; i++) {
+        current = current->next;
+    }
+    value = current->value;
+
+    // Rm list element
+    current = l;
+    for (size_t i = 0; i < index-1; i++) {
+        current = current->next;
+    }
+    current->next = current->next->next;
+    return value;
 }
 
 int pop_back(struct list *l) {
