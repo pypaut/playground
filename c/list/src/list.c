@@ -78,3 +78,32 @@ size_t len(struct list *l) {
 
     return len;
 }
+
+void pprint(struct list *l) {
+    if (!l) {
+        printf("[]\n");
+        return;
+    }
+
+    char *to_print = calloc(1024, sizeof(char));
+    char *to_concat = calloc(1024, sizeof(char));
+    strcat(to_print, "[");
+
+    // Head
+    sprintf(to_concat, "%d", l->value);
+    strcat(to_print, to_concat);
+    l = l->next;
+
+    // Tail (with arrows)
+    while (l) {
+        sprintf(to_concat, " -> %d", l->value);
+        strcat(to_print, to_concat);
+        l = l->next;
+    }
+
+    strcat(to_print, "]");
+    printf("%s\n", to_print);
+
+    free(to_concat);
+    free(to_print);
+}

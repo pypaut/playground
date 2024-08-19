@@ -22,3 +22,5 @@ int test_len();
 int test_push_front();
 
 int test_pop_front();
+
+int test_pprint();

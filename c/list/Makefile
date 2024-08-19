@@ -12,6 +12,7 @@ TEST_CFILES = test/test.c \
 			  test/test_len.c \
 			  test/test_new_list.c \
 			  test/test_pop_front.c \
+			  test/test_pprint.c \
 			  test/test_push_front.c
 TEST_BIN = test_list
 

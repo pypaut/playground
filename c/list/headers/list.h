@@ -1,7 +1,9 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 struct list {
     int value;
@@ -28,3 +30,4 @@ int max(struct list *l);
 int min(struct list *l);
 
 void map(struct list *l, int (*f)(int));
+void pprint(struct list *l);
