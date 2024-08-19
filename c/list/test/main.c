@@ -13,6 +13,10 @@ int main() {
         return 1;
     }
 
+    if (test_push_back()) {
+        return 1;
+    }
+
     if (test_pop_front()) {
         return 1;
     }

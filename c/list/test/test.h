@@ -19,6 +19,7 @@ int test_new_list();
 int test_at();
 int test_len();
 
+int test_push_back();
 int test_push_front();
 int test_pop_front();
 int test_pop_at();

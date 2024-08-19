@@ -14,6 +14,7 @@ TEST_CFILES = test/test.c \
 			  test/test_pop_at.c \
 			  test/test_pop_front.c \
 			  test/test_pprint.c \
+			  test/test_push_back.c \
 			  test/test_push_front.c
 TEST_BIN = test_list
 

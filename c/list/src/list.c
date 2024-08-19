@@ -66,10 +66,21 @@ int pop_front(struct list **l) {
     return value;
 }
 
-struct list *push_back(struct list *l, int value) {
-    l = l;
-    value = value;
-    return NULL;
+void push_back(struct list **l, int value) {
+    struct list *tail = calloc(1, sizeof(struct list));
+    tail->value = value;
+
+    if (!(*l)) {
+        *l = tail;
+        return;
+    }
+
+    struct list *current = *l;
+    while (current->next) {
+        current = current->next;
+    }
+
+    current->next = tail;
 }
 
 void push_front(struct list **l, int value) {
@@ -120,4 +131,35 @@ void pprint(struct list *l) {
 
     free(to_concat);
     free(to_print);
+}
+
+int max(struct list *l) {
+    l = l;
+    return 0;
+}
+
+int min(struct list *l) {
+    l = l;
+    return 0;
+}
+
+size_t max_index(struct list *l) {
+    l = l;
+    return 0;
+}
+
+size_t min_index(struct list *l) {
+    l = l;
+    return 0;
+}
+
+struct list *concat(struct list *l1, struct list *l2) {
+    l1 = l1;
+    l2 = l2;
+    return l1;
+}
+
+void map(struct list *l, int (*f)(int)) {
+    l = l;
+    f = f;
 }
