@@ -154,9 +154,19 @@ size_t min_index(struct list *l) {
 }
 
 struct list *concat(struct list *l1, struct list *l2) {
-    l1 = l1;
-    l2 = l2;
-    return l1;
+    struct list *new = NULL;
+
+    while (l1) {
+        push_back(&new, l1->value);
+        l1 = l1->next;
+    }
+
+    while (l2) {
+        push_back(&new, l2->value);
+        l2 = l2->next;
+    }
+
+    return new;
 }
 
 void map(struct list *l, int (*f)(int)) {

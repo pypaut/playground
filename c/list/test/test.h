@@ -24,4 +24,6 @@ int test_push_front();
 int test_pop_front();
 int test_pop_at();
 
+int test_concat();
+
 int test_pprint();
