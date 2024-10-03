@@ -1,0 +1,69 @@
+[gd_scene load_steps=4 format=3 uid="uid://n71cdm4upo8e"]
+
+[ext_resource type="Script" path="res://main_menu/play_button.gd" id="1_oukgh"]
+[ext_resource type="Script" path="res://main_menu/quit_button.gd" id="2_qxus0"]
+[ext_resource type="Script" path="res://main_menu/options_button.gd" id="2_we63l"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PlayButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -131.0
+offset_right = 100.0
+offset_bottom = -51.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Play"
+script = ExtResource("1_oukgh")
+
+[node name="OptionsButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Options"
+script = ExtResource("2_we63l")
+
+[node name="QuitButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = 51.0
+offset_right = 100.0
+offset_bottom = 131.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Quit"
+script = ExtResource("2_qxus0")
+
+[connection signal="mouse_entered" from="PlayButton" to="PlayButton" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="OptionsButton" to="OptionsButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="OptionsButton" to="OptionsButton" method="_on_pressed"]
+[connection signal="mouse_entered" from="QuitButton" to="QuitButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="QuitButton" to="QuitButton" method="_on_pressed"]

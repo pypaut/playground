@@ -1,0 +1,95 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds5v0unpor1vl"]
+
+[ext_resource type="Script" path="res://options_menu/back_button.gd" id="1_8btp6"]
+[ext_resource type="Script" path="res://options_menu/volume_button.gd" id="1_bo778"]
+[ext_resource type="Script" path="res://options_menu/volume_slider.gd" id="1_yukvy"]
+[ext_resource type="Script" path="res://options_menu/window_button.gd" id="2_lbss8"]
+
+[node name="OptionsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VolumeButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -131.0
+offset_right = 100.0
+offset_bottom = -51.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Volume"
+script = ExtResource("1_bo778")
+
+[node name="VolumeSlider" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -186.0
+offset_right = 100.0
+offset_bottom = -106.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yukvy")
+
+[node name="WindowButton" type="OptionButton" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -40.0
+offset_right = 100.0
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Fullscreen"
+popup/item_1/text = "Windowed"
+popup/item_1/id = 1
+script = ExtResource("2_lbss8")
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = 52.0
+offset_right = 100.0
+offset_bottom = 132.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Back"
+script = ExtResource("1_8btp6")
+
+[connection signal="mouse_entered" from="VolumeButton" to="VolumeButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="VolumeButton" to="VolumeButton" method="_on_pressed"]
+[connection signal="ready" from="VolumeButton" to="VolumeButton" method="_on_ready"]
+[connection signal="drag_ended" from="VolumeSlider" to="VolumeSlider" method="_on_drag_ended"]
+[connection signal="mouse_entered" from="VolumeSlider" to="VolumeSlider" method="_on_mouse_entered"]
+[connection signal="ready" from="VolumeSlider" to="VolumeSlider" method="_on_ready"]
+[connection signal="item_selected" from="WindowButton" to="WindowButton" method="_on_item_selected"]
+[connection signal="mouse_entered" from="WindowButton" to="WindowButton" method="_on_mouse_entered"]
+[connection signal="mouse_entered" from="BackButton" to="BackButton" method="_on_mouse_entered"]
+[connection signal="pressed" from="BackButton" to="BackButton" method="_on_pressed"]
