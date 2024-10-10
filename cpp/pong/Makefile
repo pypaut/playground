@@ -3,7 +3,8 @@ CFLAGS = -Wall -Werror -Wextra -pedantic -Iinclude
 LIBS = -lSDL2 -lm
 OBJS = \
 	   src/main.cpp \
-	   src/error.cpp
+	   src/error.cpp \
+	   src/game.cpp
 BIN = bin
 
 all: build
