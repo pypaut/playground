@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <clock.h>
 
 
 class Game {
@@ -13,4 +14,5 @@ class Game {
     private:
         SDL_Window *window;
         SDL_Renderer *renderer;
+        Clock *clock;
 };

@@ -6,7 +6,7 @@
 Game::Game(int W, int H) {
     SDL_Init(SDL_INIT_VIDEO);
 
-    // Create window
+    // Window
     this->window = SDL_CreateWindow(
         "Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W, H, 0
     );
@@ -14,14 +14,18 @@ Game::Game(int W, int H) {
         log_error("SDL_CreateWindow");
     }
 
-    // Create renderer
+    // Renderer
     this->renderer = SDL_CreateRenderer(window, -1, 0);
     if (!this->renderer) {
         log_error("SDL_CreateRenderer");
     }
+
+    // Clock
+    this->clock = new Clock();
 }
 
 Game::~Game() {
+    delete(this->clock);
     SDL_Quit();
 }
 

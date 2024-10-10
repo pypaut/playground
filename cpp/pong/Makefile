@@ -2,9 +2,10 @@ CC = g++
 CFLAGS = -Wall -Werror -Wextra -pedantic -Iinclude
 LIBS = -lSDL2 -lm
 OBJS = \
-	   src/main.cpp \
+	   src/clock.cpp \
 	   src/error.cpp \
-	   src/game.cpp
+	   src/game.cpp \
+	   src/main.cpp
 BIN = bin
 
 all: build
