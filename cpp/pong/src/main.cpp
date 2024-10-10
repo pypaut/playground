@@ -9,7 +9,5 @@ int main() {
     int H = 1080;
 
     Game g = Game(W, H);
-    g.Run();
-
-    return 0;
+    return g.Run();
 }

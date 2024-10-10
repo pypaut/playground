@@ -2,17 +2,19 @@
 
 #include <SDL2/SDL.h>
 #include <clock.h>
+#include <player.h>
 
 
 class Game {
     public:
         Game(int W, int H);
         ~Game();
-        void Draw();
-        void Run();
+        int Draw();
+        int Run();
 
     private:
         SDL_Window *window;
         SDL_Renderer *renderer;
         Clock *clock;
+        Player *player1;
 };

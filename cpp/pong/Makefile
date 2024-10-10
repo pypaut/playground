@@ -5,7 +5,8 @@ OBJS = \
 	   src/clock.cpp \
 	   src/error.cpp \
 	   src/game.cpp \
-	   src/main.cpp
+	   src/main.cpp \
+	   src/player.cpp
 BIN = bin
 
 all: build
