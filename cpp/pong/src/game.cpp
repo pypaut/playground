@@ -4,6 +4,43 @@
 #include <player.h>
 
 
+Player *BuildDefaultPlayer1(int win_height, int win_width) {
+    Player *p1 = new Player();
+    p1->SetColor(255, 255, 255, 255);
+
+    int player_w = win_width / 100;
+    int player_x = win_width / 20;
+
+    int player_h = win_height / 5;
+    int player_y = (win_height - player_h) / 2;
+
+    p1->SetRect(player_x, player_y, player_w, player_h);
+    p1->SetKeys(SDL_SCANCODE_W, SDL_SCANCODE_S);
+
+    return p1;
+}
+
+Player *BuildDefaultPlayer2(int win_height, int win_width) {
+    Player *p2 = new Player();
+    p2->SetColor(255, 255, 255, 255);
+
+    int player_w = win_width / 100;
+    int player_x = win_width - (win_width/20) - player_w;
+
+    int player_h = win_height / 5;
+    int player_y = (win_height - player_h) / 2;
+
+    p2->SetRect(
+            player_x,
+            player_y,
+            player_w,
+            player_h
+    );
+    p2->SetKeys(SDL_SCANCODE_UP, SDL_SCANCODE_DOWN);
+
+    return p2;
+}
+
 Game::Game(int W, int H) {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -27,32 +64,8 @@ Game::Game(int W, int H) {
     // Clock
     this->clock = new Clock();
 
-    // Player 1
-    this->player1 = new Player();
-    this->player1->SetColor(255, 255, 255, 255);
-
-    int player_w = W / 100;
-    int player_x = W / 20;
-
-    int player_h = H / 5;
-    int player_y = (H - player_h) / 2;
-
-    this->player1->SetRect(player_x, player_y, player_w, player_h);
-
-    this->player1->SetKeys(SDL_SCANCODE_W, SDL_SCANCODE_S);
-
-    // Player 2
-    this->player2 = new Player();
-    this->player2->SetColor(255, 255, 255, 255);
-
-    this->player2->SetRect(
-            W - player_x - player_w,
-            player_y,
-            player_w,
-            player_h
-    );
-
-    this->player2->SetKeys(SDL_SCANCODE_UP, SDL_SCANCODE_DOWN);
+    this->player1 = BuildDefaultPlayer1(H, W);
+    this->player2 = BuildDefaultPlayer2(H, W);
 }
 
 Game::~Game() {
