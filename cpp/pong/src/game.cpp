@@ -30,7 +30,25 @@ Game::Game(int W, int H) {
     // Player 1
     this->player1 = new Player();
     this->player1->SetColor(255, 255, 255, 255);
-    this->player1->SetRect(200, 200, 200, 200);
+
+    int player_w = W / 100;
+    int player_x = W / 20;
+
+    int player_h = H / 5;
+    int player_y = (H - player_h) / 2;
+
+    this->player1->SetRect(player_x, player_y, player_w, player_h);
+
+    // Player 2
+    this->player2 = new Player();
+    this->player2->SetColor(255, 255, 255, 255);
+
+    this->player2->SetRect(
+            W - player_x - player_w,
+            player_y,
+            player_w,
+            player_h
+    );
 }
 
 Game::~Game() {
@@ -50,6 +68,10 @@ int Game::Draw() {
     }
 
     if (this->player1->Draw(this->renderer)) {
+        return 1;
+    }
+
+    if (this->player2->Draw(this->renderer)) {
         return 1;
     }
 
