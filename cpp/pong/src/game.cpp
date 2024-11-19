@@ -68,6 +68,9 @@ Game::Game(int W, int H) {
 
     this->player1 = BuildDefaultPlayer1(H, W);
     this->player2 = BuildDefaultPlayer2(H, W);
+
+    this->ball = new Ball();
+    this->ball->Build(W, H);
 }
 
 Game::~Game() {
@@ -75,11 +78,13 @@ Game::~Game() {
     delete(this->clock);
     delete(this->player1);
     delete(this->player2);
+    delete(this->ball);
     SDL_Quit();
 }
 
 void Game::Update(const Uint8 *keys) {
     Uint64 dt = this->clock->Tick();
+    this->ball->Update(this->W, this->H, dt);
     this->player1->Update(keys, this->H, dt);
     this->player2->Update(keys, this->H, dt);
 }
@@ -100,6 +105,10 @@ int Game::Draw() {
     }
 
     if (this->player2->Draw(this->renderer)) {
+        return 1;
+    }
+
+    if (this->ball->Draw(this->renderer)) {
         return 1;
     }
 

@@ -2,11 +2,12 @@ package game
 
 import (
 	"bataille/internal/deck"
-	"github.com/golang/freetype/truetype"
-	"golang.org/x/image/font"
 	"image/color"
 	"log"
 	"os"
+
+	"github.com/golang/freetype/truetype"
+	"golang.org/x/image/font"
 
 	"errors"
 	"fmt"

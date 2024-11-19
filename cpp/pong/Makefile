@@ -2,6 +2,7 @@ CC = g++
 CFLAGS = -Wall -Werror -Wextra -pedantic -Iinclude
 LIBS = -lSDL2 -lm
 OBJS = \
+	   src/ball.cpp \
 	   src/clock.cpp \
 	   src/error.cpp \
 	   src/game.cpp \

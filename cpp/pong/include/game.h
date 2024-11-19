@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <ball.h>
 #include <clock.h>
 #include <player.h>
 
@@ -24,4 +25,5 @@ class Game {
         Clock *clock;
         Player *player1;
         Player *player2;
+        Ball *ball;
 };
