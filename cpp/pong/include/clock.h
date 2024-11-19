@@ -6,7 +6,7 @@ class Clock {
     public:
         Clock();
         ~Clock();
-        void Tick();
+        Uint64 Tick();
 
     private:
         Uint64 current_tick;

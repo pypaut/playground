@@ -2,6 +2,8 @@
 #include <error.h>
 #include <player.h>
 
+#include <algorithm>
+
 
 Player::Player() {}
 
@@ -12,6 +14,10 @@ Player::~Player() {
 void Player::SetKeys(Uint8 up_key, Uint8 down_key) {
     this->up_key = up_key;
     this->down_key = down_key;
+}
+
+void Player::SetSpeed(int speed) {
+    this->speed = speed;
 }
 
 void Player::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
@@ -25,26 +31,16 @@ void Player::SetRect(int x, int y, int w, int h) {
     this->rect = new SDL_Rect{x, y, w, h};
 }
 
-void Player::Update(const Uint8 *keys, int win_height) {
+void Player::Update(const Uint8 *keys, int win_height, Uint64 dt) {
     if (keys[this->up_key]) {
-      this->MoveUp();
+        this->rect->y -= this->speed * dt;
     }
 
     if (keys[this->down_key]) {
-      this->MoveDown(win_height);
+        this->rect->y += this->speed * dt;
     }
-}
 
-void Player::MoveUp() {
-    if (this->rect->y > 0) {
-        this->rect->y--;
-    }
-}
-
-void Player::MoveDown(int window_height) {
-    if (this->rect->y + this->rect->h < window_height) {
-        this->rect->y++;
-    }
+    this->rect->y = std::clamp(this->rect->y, 0, win_height - this->rect->h);
 }
 
 int Player::Draw(SDL_Renderer *renderer) {

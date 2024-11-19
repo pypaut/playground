@@ -8,7 +8,7 @@ Clock::Clock() {
 
 Clock::~Clock() {}
 
-void Clock::Tick() {
+Uint64 Clock::Tick() {
     Uint64 last_tick = this->current_tick;
     this->current_tick = SDL_GetTicks();
 
@@ -16,4 +16,6 @@ void Clock::Tick() {
     if (dt < 1000 / 60) {
         SDL_Delay(1000 / 60 - dt);
     }
+
+    return dt;
 }

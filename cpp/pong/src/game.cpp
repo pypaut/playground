@@ -16,6 +16,7 @@ Player *BuildDefaultPlayer1(int win_height, int win_width) {
 
     p1->SetRect(player_x, player_y, player_w, player_h);
     p1->SetKeys(SDL_SCANCODE_W, SDL_SCANCODE_S);
+    p1->SetSpeed(1);
 
     return p1;
 }
@@ -37,6 +38,7 @@ Player *BuildDefaultPlayer2(int win_height, int win_width) {
             player_h
     );
     p2->SetKeys(SDL_SCANCODE_UP, SDL_SCANCODE_DOWN);
+    p2->SetSpeed(1);
 
     return p2;
 }
@@ -77,8 +79,9 @@ Game::~Game() {
 }
 
 void Game::Update(const Uint8 *keys) {
-    this->player1->Update(keys, this->H);
-    this->player2->Update(keys, this->H);
+    Uint64 dt = this->clock->Tick();
+    this->player1->Update(keys, this->H, dt);
+    this->player2->Update(keys, this->H, dt);
 }
 
 int Game::Draw() {
