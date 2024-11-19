@@ -9,6 +9,11 @@ Player::~Player() {
     delete(this->rect);
 }
 
+void Player::SetKeys(Uint8 up_key, Uint8 down_key) {
+    this->up_key = up_key;
+    this->down_key = down_key;
+}
+
 void Player::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     this->color_r = r;
     this->color_g = g;
@@ -21,11 +26,11 @@ void Player::SetRect(int x, int y, int w, int h) {
 }
 
 void Player::Update(const Uint8 *keys, int win_height) {
-    if (keys[SDL_SCANCODE_W]) {
+    if (keys[this->up_key]) {
       this->MoveUp();
     }
 
-    if (keys[SDL_SCANCODE_S]) {
+    if (keys[this->down_key]) {
       this->MoveDown(win_height);
     }
 }

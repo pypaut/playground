@@ -39,6 +39,8 @@ Game::Game(int W, int H) {
 
     this->player1->SetRect(player_x, player_y, player_w, player_h);
 
+    this->player1->SetKeys(SDL_SCANCODE_W, SDL_SCANCODE_S);
+
     // Player 2
     this->player2 = new Player();
     this->player2->SetColor(255, 255, 255, 255);
@@ -49,6 +51,8 @@ Game::Game(int W, int H) {
             player_w,
             player_h
     );
+
+    this->player2->SetKeys(SDL_SCANCODE_UP, SDL_SCANCODE_DOWN);
 }
 
 Game::~Game() {
@@ -58,6 +62,7 @@ Game::~Game() {
 
 void Game::Update(const Uint8 *keys) {
     this->player1->Update(keys, this->H);
+    this->player2->Update(keys, this->H);
 }
 
 int Game::Draw() {
