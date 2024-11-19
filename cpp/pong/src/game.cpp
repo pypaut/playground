@@ -69,7 +69,10 @@ Game::Game(int W, int H) {
 }
 
 Game::~Game() {
+    std::cout << "Freeing game resources" << std::endl;
     delete(this->clock);
+    delete(this->player1);
+    delete(this->player2);
     SDL_Quit();
 }
 
