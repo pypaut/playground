@@ -8,6 +8,9 @@ Game::Game(int W, int H) {
     SDL_Init(SDL_INIT_VIDEO);
 
     // Window
+    this->W = W;
+    this->H = H;
+
     this->window = SDL_CreateWindow(
         "Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W, H, 0
     );
@@ -69,8 +72,20 @@ int Game::Run() {
             break;
         }
 
+        // Input
+        const Uint8 *keys = SDL_GetKeyboardState(NULL);
+
+        if (keys[SDL_SCANCODE_W]) {
+          this->player1->MoveUp();
+        }
+
+        if (keys[SDL_SCANCODE_S]) {
+          this->player1->MoveDown(this->H);
+        }
+
+        // Draw
         if (this->Draw()) {
-            return 1;
+          return 1;
         }
     }
 

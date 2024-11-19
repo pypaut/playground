@@ -13,8 +13,12 @@ class Game {
         int Run();
 
     private:
+        int W;
+        int H;
+
         SDL_Window *window;
         SDL_Renderer *renderer;
+
         Clock *clock;
         Player *player1;
 };

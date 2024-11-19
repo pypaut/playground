@@ -7,8 +7,13 @@ class Player {
     public:
         Player();
         ~Player();
+
         void SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
         void SetRect(int x, int y, int w, int h);
+
+        void MoveUp();
+        void MoveDown(int window_height);
+
         int Draw(SDL_Renderer *renderer);
 
     private:

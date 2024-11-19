@@ -17,6 +17,3 @@ void Clock::Tick() {
         SDL_Delay(1000 / 60 - dt);
     }
 }
-
-
-

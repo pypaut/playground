@@ -20,6 +20,18 @@ void Player::SetRect(int x, int y, int w, int h) {
     this->rect = new SDL_Rect{x, y, w, h};
 }
 
+void Player::MoveUp() {
+    if (this->rect->y > 0) {
+        this->rect->y--;
+    }
+}
+
+void Player::MoveDown(int window_height) {
+    if (this->rect->y + this->rect->h < window_height) {
+        this->rect->y++;
+    }
+}
+
 int Player::Draw(SDL_Renderer *renderer) {
     if (SDL_SetRenderDrawColor(
                 renderer,
