@@ -56,6 +56,10 @@ Game::~Game() {
     SDL_Quit();
 }
 
+void Game::Update(const Uint8 *keys) {
+    this->player1->Update(keys, this->H);
+}
+
 int Game::Draw() {
     if (SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255)) {
         log_error("Game::Draw::SDL_SetRenderDrawColor");
@@ -96,14 +100,7 @@ int Game::Run() {
 
         // Input
         const Uint8 *keys = SDL_GetKeyboardState(NULL);
-
-        if (keys[SDL_SCANCODE_W]) {
-          this->player1->MoveUp();
-        }
-
-        if (keys[SDL_SCANCODE_S]) {
-          this->player1->MoveDown(this->H);
-        }
+        this->Update(keys);
 
         // Draw
         if (this->Draw()) {

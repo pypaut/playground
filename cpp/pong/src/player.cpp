@@ -20,6 +20,16 @@ void Player::SetRect(int x, int y, int w, int h) {
     this->rect = new SDL_Rect{x, y, w, h};
 }
 
+void Player::Update(const Uint8 *keys, int win_height) {
+    if (keys[SDL_SCANCODE_W]) {
+      this->MoveUp();
+    }
+
+    if (keys[SDL_SCANCODE_S]) {
+      this->MoveDown(win_height);
+    }
+}
+
 void Player::MoveUp() {
     if (this->rect->y > 0) {
         this->rect->y--;

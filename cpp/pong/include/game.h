@@ -9,6 +9,8 @@ class Game {
     public:
         Game(int W, int H);
         ~Game();
+
+        void Update(const Uint8 *keys);
         int Draw();
         int Run();
 

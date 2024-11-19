@@ -11,6 +11,7 @@ class Player {
         void SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a);
         void SetRect(int x, int y, int w, int h);
 
+        void Update(const Uint8 *keys, int win_height);
         void MoveUp();
         void MoveDown(int window_height);
 
