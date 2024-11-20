@@ -1,6 +1,8 @@
 #include <SDL2/SDL.h>
 #include <ball.h>
+#include <cmath>
 #include <error.h>
+#include <random>
 
 
 Ball::Ball() {}
@@ -25,9 +27,13 @@ void Ball::SetRect(int x, int y, int w, int h) {
 }
 
 void Ball::Update(int win_width, int win_height, Uint64 dt) {
+    this->NormalizeDir();
+
+    this->rect->x = this->rect->x + this->dir_x*this->speed*dt;
+    this->rect->y = this->rect->y + this->dir_y*this->speed*dt;
+
     win_width = win_width;
     win_height = win_height;
-    dt = dt;
 }
 
 int Ball::Draw(SDL_Renderer *renderer) {
@@ -57,4 +63,25 @@ void Ball::Build(int win_width, int win_height) {
 
     this->SetRect(ball_x, ball_y, ball_side, ball_side);
     this->SetColor(255, 255, 255, 255);
+    this->speed = 0.5;
+
+    // Random initial ball direction
+    std::random_device r;
+    std::default_random_engine e1(r());
+
+    std::uniform_int_distribution<int> uniform_dist_x(-80, 80);
+    std::uniform_int_distribution<int> uniform_dist_y(-80, 80);
+
+    int x = uniform_dist_x(e1);
+    int y = uniform_dist_y(e1);
+
+    this->dir_x = x;
+    this->dir_y = y;
+}
+
+void Ball::NormalizeDir() {
+    float norm = sqrt(pow(this->dir_x, 2) + pow(this->dir_y, 2));
+
+    this->dir_x = this->dir_x / norm;
+    this->dir_y = this->dir_y / norm;
 }

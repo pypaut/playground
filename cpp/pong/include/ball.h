@@ -15,10 +15,15 @@ class Ball {
         void Update(int win_width, int win_height, Uint64 dt);
         int Draw(SDL_Renderer *renderer);
 
+        void NormalizeDir();
+
     private:
         SDL_Rect *rect;
         
-        int speed;
+        float speed;
+
+        float dir_x;
+        float dir_y;
 
         Uint8 color_r;
         Uint8 color_g;
