@@ -3,8 +3,6 @@
 #include <game.h>
 #include <player.h>
 
-
-
 Game::Game(int W, int H) {
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -12,9 +10,8 @@ Game::Game(int W, int H) {
     this->W = W;
     this->H = H;
 
-    this->window = SDL_CreateWindow(
-        "Pong", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W, H, 0
-    );
+    this->window = SDL_CreateWindow("Pong", SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED, W, H, 0);
     if (!this->window) {
         log_error("SDL_CreateWindow");
     }
@@ -40,10 +37,10 @@ Game::Game(int W, int H) {
 
 Game::~Game() {
     std::cout << "Freeing game resources" << std::endl;
-    delete(this->clock);
-    delete(this->player1);
-    delete(this->player2);
-    delete(this->ball);
+    delete (this->clock);
+    delete (this->player1);
+    delete (this->player2);
+    delete (this->ball);
     SDL_Quit();
 }
 
@@ -102,7 +99,7 @@ int Game::Run() {
 
         // Draw
         if (this->Draw()) {
-          return 1;
+            return 1;
         }
     }
 

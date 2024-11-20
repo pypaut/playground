@@ -22,5 +22,8 @@ build:
 build_debug:
 	$(CC) $(CFLAGS) -g $(OBJS) -o $(BIN) $(LIBS)
 
+fmt:
+	sh format.sh
+
 clean:
 	$(RM) $(BIN)

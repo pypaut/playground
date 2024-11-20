@@ -5,25 +5,24 @@
 #include <clock.h>
 #include <player.h>
 
-
 class Game {
-    public:
-        Game(int W, int H);
-        ~Game();
+  public:
+    Game(int W, int H);
+    ~Game();
 
-        void Update(const Uint8 *keys);
-        int Draw();
-        int Run();
+    void Update(const Uint8 *keys);
+    int Draw();
+    int Run();
 
-    private:
-        int W;
-        int H;
+  private:
+    int W;
+    int H;
 
-        SDL_Window *window;
-        SDL_Renderer *renderer;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
 
-        Clock *clock;
-        Player *player1;
-        Player *player2;
-        Ball *ball;
+    Clock *clock;
+    Player *player1;
+    Player *player2;
+    Ball *ball;
 };

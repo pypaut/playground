@@ -3,7 +3,6 @@
 
 using namespace std;
 
-
 int main() {
     int W = 1920;
     int H = 1080;

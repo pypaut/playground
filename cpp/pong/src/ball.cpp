@@ -4,16 +4,11 @@
 #include <error.h>
 #include <random>
 
-
 Ball::Ball() {}
 
-Ball::~Ball() {
-    delete(this->rect);
-}
+Ball::~Ball() { delete (this->rect); }
 
-void Ball::SetSpeed(int speed) {
-    this->speed = speed;
-}
+void Ball::SetSpeed(int speed) { this->speed = speed; }
 
 void Ball::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
     this->color_r = r;
@@ -29,21 +24,16 @@ void Ball::SetRect(int x, int y, int w, int h) {
 void Ball::Update(int win_width, int win_height, Uint64 dt) {
     this->NormalizeDir();
 
-    this->rect->x = this->rect->x + this->dir_x*this->speed*dt;
-    this->rect->y = this->rect->y + this->dir_y*this->speed*dt;
+    this->rect->x = this->rect->x + this->dir_x * this->speed * dt;
+    this->rect->y = this->rect->y + this->dir_y * this->speed * dt;
 
     win_width = win_width;
     win_height = win_height;
 }
 
 int Ball::Draw(SDL_Renderer *renderer) {
-    if (SDL_SetRenderDrawColor(
-                renderer,
-                this->color_r,
-                this->color_g,
-                this->color_b,
-                this->color_a
-    )) {
+    if (SDL_SetRenderDrawColor(renderer, this->color_r, this->color_g,
+                               this->color_b, this->color_a)) {
         log_error("Ball::Draw::SDL_SetRenderDrawColor");
         return 1;
     }

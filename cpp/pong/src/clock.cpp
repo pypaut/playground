@@ -1,10 +1,7 @@
 #include <SDL2/SDL.h>
 #include <clock.h>
 
-
-Clock::Clock() {
-    this->current_tick = 0;
-}
+Clock::Clock() { this->current_tick = 0; }
 
 Clock::~Clock() {}
 
