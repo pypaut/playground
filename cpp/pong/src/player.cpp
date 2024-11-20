@@ -11,6 +11,39 @@ Player::~Player() {
     delete(this->rect);
 }
 
+void Player::BuildDefaultPlayer1(int win_height, int win_width) {
+    this->SetColor(255, 255, 255, 255);
+
+    int player_w = win_width / 100;
+    int player_x = win_width / 20;
+
+    int player_h = win_height / 5;
+    int player_y = (win_height - player_h) / 2;
+
+    this->SetRect(player_x, player_y, player_w, player_h);
+    this->SetKeys(SDL_SCANCODE_W, SDL_SCANCODE_S);
+    this->SetSpeed(1);
+}
+
+void Player::BuildDefaultPlayer2(int win_height, int win_width) {
+    this->SetColor(255, 255, 255, 255);
+
+    int player_w = win_width / 100;
+    int player_x = win_width - (win_width/20) - player_w;
+
+    int player_h = win_height / 5;
+    int player_y = (win_height - player_h) / 2;
+
+    this->SetRect(
+            player_x,
+            player_y,
+            player_w,
+            player_h
+    );
+    this->SetKeys(SDL_SCANCODE_UP, SDL_SCANCODE_DOWN);
+    this->SetSpeed(1);
+}
+
 void Player::SetKeys(Uint8 up_key, Uint8 down_key) {
     this->up_key = up_key;
     this->down_key = down_key;
