@@ -25,5 +25,9 @@ build_debug:
 fmt:
 	sh format.sh
 
+check_leaks:
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
+		--verbose --log-file=memcheck.log ./$(BIN)
+
 clean:
 	$(RM) $(BIN)
