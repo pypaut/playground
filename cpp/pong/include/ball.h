@@ -11,7 +11,7 @@ class Ball {
     void SetSpeed(int speed);
     void SetRect(int x, int y, int w, int h);
 
-    void Update(int win_width, int win_height, Uint64 dt);
+    bool Update(int win_width, int win_height, Uint64 dt);
     int Draw(SDL_Renderer *renderer);
 
     void NormalizeDir();

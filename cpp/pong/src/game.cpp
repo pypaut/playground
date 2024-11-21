@@ -44,11 +44,17 @@ Game::~Game() {
     SDL_Quit();
 }
 
-void Game::Update(const Uint8 *keys) {
+bool Game::Update(const Uint8 *keys) {
     Uint64 dt = this->clock->Tick();
-    this->ball->Update(this->W, this->H, dt);
+
+    if (!this->ball->Update(this->W, this->H, dt)) {
+        return false;
+    }
+
     this->player1->Update(keys, this->H, dt);
     this->player2->Update(keys, this->H, dt);
+
+    return true;
 }
 
 int Game::Draw() {
@@ -93,9 +99,11 @@ int Game::Run() {
             break;
         }
 
-        // Input
+        // Update
         const Uint8 *keys = SDL_GetKeyboardState(NULL);
-        this->Update(keys);
+        if (!this->Update(keys)) {
+            break;
+        }
 
         // Draw
         if (this->Draw()) {

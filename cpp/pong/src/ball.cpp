@@ -21,14 +21,29 @@ void Ball::SetRect(int x, int y, int w, int h) {
     this->rect = new SDL_Rect{x, y, w, h};
 }
 
-void Ball::Update(int win_width, int win_height, Uint64 dt) {
+bool Ball::Update(int win_width, int win_height, Uint64 dt) {
     this->NormalizeDir();
 
+    // Update position
     this->rect->x = this->rect->x + this->dir_x * this->speed * dt;
     this->rect->y = this->rect->y + this->dir_y * this->speed * dt;
 
-    win_width = win_width;
-    win_height = win_height;
+    // Check for vertical walls collision
+    if (this->rect->x < 0 || this->rect->x + this->rect->w > win_width) {
+        return false;
+    }
+
+    // Check for horizontal walls collision
+    // Two different conditions to avoid changing dir multiple times while
+    // the ball is still verifying this condition
+    if (this->rect->y < 0) {
+        this->dir_y = abs(this->dir_y);
+    }
+    if (this->rect->y + this->rect->h > win_height) {
+        this->dir_y = -abs(this->dir_y);
+    }
+
+    return true;
 }
 
 int Ball::Draw(SDL_Renderer *renderer) {
@@ -60,7 +75,7 @@ void Ball::Build(int win_width, int win_height) {
     std::default_random_engine e1(r());
 
     std::uniform_int_distribution<int> uniform_dist_x(-80, 80);
-    std::uniform_int_distribution<int> uniform_dist_y(-80, 80);
+    std::uniform_int_distribution<int> uniform_dist_y(-4, 4);
 
     int x = uniform_dist_x(e1);
     int y = uniform_dist_y(e1);
