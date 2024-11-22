@@ -21,6 +21,15 @@ void Ball::SetRect(int x, int y, int w, int h) {
     this->rect = new SDL_Rect{x, y, w, h};
 }
 
+void Ball::SetDir(float x, float y) {
+    this->dir_x = x;
+    this->dir_y = y;
+}
+
+float Ball::GetDirX() { return this->dir_x; }
+
+float Ball::GetDirY() { return this->dir_y; }
+
 bool Ball::Update(int win_width, int win_height, Uint64 dt) {
     this->NormalizeDir();
 

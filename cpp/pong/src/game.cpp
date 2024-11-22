@@ -47,12 +47,20 @@ Game::~Game() {
 bool Game::Update(const Uint8 *keys) {
     Uint64 dt = this->clock->Tick();
 
+    this->player1->Update(keys, this->H, dt);
+    this->player2->Update(keys, this->H, dt);
+
     if (!this->ball->Update(this->W, this->H, dt)) {
         return false;
     }
 
-    this->player1->Update(keys, this->H, dt);
-    this->player2->Update(keys, this->H, dt);
+    if (SDL_HasIntersection(this->player1->rect, this->ball->rect)) {
+        this->ball->SetDir(abs(this->ball->GetDirX()), this->ball->GetDirY());
+    }
+
+    else if (SDL_HasIntersection(this->player2->rect, this->ball->rect)) {
+        this->ball->SetDir(-abs(this->ball->GetDirX()), this->ball->GetDirY());
+    }
 
     return true;
 }
