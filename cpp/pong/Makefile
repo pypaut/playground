@@ -1,5 +1,7 @@
 CC = g++
 CFLAGS = -Wall -Werror -Wextra -pedantic -Iinclude
+ASAN_FLAGS = -fsanitize=address -fsanitize=leak
+VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes
 LIBS = -lSDL2 -lm
 OBJS = \
 	   src/ball.cpp \
@@ -16,18 +18,24 @@ all: build
 debug: build_debug
 	gdb ./$(BIN)
 
+leaks: build_leaks
+	./$(BIN)
+
+valgrind: build
+	valgrind $(VALGRIND_FLAGS) \
+		--log-file=memcheck.log ./$(BIN)
+
 build:
 	$(CC) $(CFLAGS) $(OBJS) -o $(BIN) $(LIBS)
 
 build_debug:
 	$(CC) $(CFLAGS) -g $(OBJS) -o $(BIN) $(LIBS)
 
+build_leaks:
+	$(CC) $(CFLAGS) -g $(ASAN_FLAGS) $(OBJS) -o $(BIN) $(LIBS)
+
 fmt:
 	sh format.sh
-
-check_leaks:
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes \
-		--verbose --log-file=memcheck.log ./$(BIN)
 
 clean:
 	$(RM) $(BIN)
