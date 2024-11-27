@@ -56,10 +56,23 @@ bool Game::Update(const Uint8 *keys) {
 
     if (SDL_HasIntersection(this->player1->rect, this->ball->rect)) {
         this->ball->SetDir(abs(this->ball->GetDirX()), this->ball->GetDirY());
+
+        // Let player play with direction
+        float coef = this->ball->rect->y + (this->ball->rect->h/2)
+            - (this->player1->rect->y + (this->player1->rect->h/2));
+        coef = coef/this->player1->rect->h;
+
+        this->ball->SetDir(this->ball->GetDirX(), coef);
     }
 
     else if (SDL_HasIntersection(this->player2->rect, this->ball->rect)) {
         this->ball->SetDir(-abs(this->ball->GetDirX()), this->ball->GetDirY());
+
+        // Let player play with direction
+        float coef = this->ball->rect->y + (this->ball->rect->h/2)
+            - (this->player2->rect->y + (this->player2->rect->h/2));
+        coef = coef/this->player2->rect->h;
+        this->ball->SetDir(this->ball->GetDirX(), coef);
     }
 
     return true;
