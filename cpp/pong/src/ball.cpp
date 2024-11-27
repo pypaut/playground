@@ -99,3 +99,7 @@ void Ball::NormalizeDir() {
     this->dir_x = this->dir_x / norm;
     this->dir_y = this->dir_y / norm;
 }
+
+float Ball::GetCenterY() {
+    return this->rect->y + (this->rect->h/2);
+}

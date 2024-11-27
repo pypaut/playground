@@ -14,6 +14,7 @@ class Ball {
 
     float GetDirX();
     float GetDirY();
+    float GetCenterY();
 
     bool Update(int win_width, int win_height, Uint64 dt);
     int Draw(SDL_Renderer *renderer);

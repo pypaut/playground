@@ -15,6 +15,8 @@ class Player {
     void SetKeys(Uint8 up_key, Uint8 down_key);
     void SetSpeed(int speed);
 
+    float GetCenterY();
+
     void Update(const Uint8 *keys, int win_height, Uint64 dt);
     int Draw(SDL_Renderer *renderer);
 

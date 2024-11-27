@@ -80,3 +80,7 @@ int Player::Draw(SDL_Renderer *renderer) {
 
     return 0;
 }
+
+float Player::GetCenterY() {
+    return this->rect->y + (this->rect->h/2);
+}
