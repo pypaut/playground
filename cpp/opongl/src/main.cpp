@@ -101,6 +101,35 @@ static int CreateProgram(
     return program;
 }
 
+void handle_input(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    window = window;
+    scancode = scancode;
+    mods = mods;
+
+    if (key == GLFW_KEY_W) {
+        if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+            // Set dir
+            std::cout << "Pressed W!" << std::endl;
+        }
+
+        if (action == GLFW_RELEASE) {
+            // Reset dir
+            std::cout << "Released W!" << std::endl;
+        }
+    }
+
+    if (key == GLFW_KEY_S) {
+        if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+            // Set dir
+            std::cout << "Pressed S!" << std::endl;
+        }
+
+        if (action == GLFW_RELEASE) {
+            // Reset dir
+            std::cout << "Released S!" << std::endl;
+        }
+    }
+}
 
 int main() {
     GLFWwindow* window;
@@ -231,6 +260,9 @@ int main() {
 
         /* Poll for and process events */
         glfwPollEvents(); TEST_OPENGL_ERROR();
+
+        /* Handle input with callback*/
+        glfwSetKeyCallback(window, handle_input);
     }
 
     glfwTerminate(); TEST_OPENGL_ERROR();
