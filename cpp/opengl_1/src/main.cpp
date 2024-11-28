@@ -124,16 +124,20 @@ int main(void) {
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 
     /* Data buffer */
+
+    /* Positions are x, y coordinates */
     float positions[8] = {
-        -0.5f, -0.5f,
+        -0.5f, -0.5f, // x, y
          0.5f,  0.5f,
          0.5f, -0.5f,
         -0.5f,  0.5f,
     };
 
+    /* Indices will select which set of positions to draw triangles to */
+    /* Here, we draw 2 triangles with 2 common vertices */
     unsigned int indices[] = {
-        0, 1, 2,
-        0, 1, 3,
+        0, 1, 2, // pos[0,1], pos[2,3], and pos[4,5] are the 3 points
+        0, 1, 3, // pos[0,1], pos[2,3], and pos[6,7] are the 3 points
     };
 
     /* Setup data buffer to send input to shaders */
@@ -156,7 +160,7 @@ int main(void) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo); TEST_OPENGL_ERROR();
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
-        6 * sizeof(unsigned int), 
+        6 * sizeof(unsigned int),
         indices,
         GL_STATIC_DRAW
     ); TEST_OPENGL_ERROR();
