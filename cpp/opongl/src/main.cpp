@@ -1,5 +1,6 @@
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
 
 #include <fstream>
 #include <iostream>
@@ -22,6 +23,10 @@
 #define WIN_W 1920
 #define WIN_H 1080
 
+
+void log_error(std::string func_name) {
+    std::cerr << "Error in " << func_name << ": " << SDL_GetError() << std::endl;
+}
 
 struct ShaderProgramSource {
     std::string VertexSource;
@@ -101,65 +106,23 @@ static int CreateProgram(
     return program;
 }
 
-void handle_input(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    window = window;
-    scancode = scancode;
-    mods = mods;
-
-    if (key == GLFW_KEY_W) {
-        if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            // Set dir
-            std::cout << "Pressed W!" << std::endl;
-        }
-
-        if (action == GLFW_RELEASE) {
-            // Reset dir
-            std::cout << "Released W!" << std::endl;
-        }
-    }
-
-    if (key == GLFW_KEY_S) {
-        if (action == GLFW_PRESS || action == GLFW_REPEAT) {
-            // Set dir
-            std::cout << "Pressed S!" << std::endl;
-        }
-
-        if (action == GLFW_RELEASE) {
-            // Reset dir
-            std::cout << "Released S!" << std::endl;
-        }
-    }
-}
-
 int main() {
-    GLFWwindow* window;
-
-    /* Initialize GLFW */
-    if (!glfwInit()) {
-        std::cerr << "glfwInit() error!" << std::endl;
-        return 1;
+    SDL_Window *window = SDL_CreateWindow(
+            "SDL & OpenGL!",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            WIN_W,
+            WIN_H,
+            SDL_WINDOW_OPENGL
+    );
+    if (!window) {
+        log_error("SDL_CreateWindow");
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    SDL_GLContext context = SDL_GL_CreateContext(window);
+    context = context;
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(WIN_W, WIN_H, "OponGL", NULL, NULL);
-    TEST_OPENGL_ERROR();
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window); TEST_OPENGL_ERROR();
-
-    /* Linked to the refresh rate */
-    glfwSwapInterval(1); TEST_OPENGL_ERROR();
-
-    /* Initialize GLEW */
+    /* Initialize GLEW: the window must initialized by now, or SEGFAULT */
     if (glewInit() != GLEW_OK) {
         std::cerr << "glewInit() error!" << std::endl;
     }
@@ -243,7 +206,20 @@ int main() {
     float b = 1.0f;
 
     /* Main loop */
-    while (!glfwWindowShouldClose(window)) {
+    while (true) {
+        /* Check for quit event */
+        SDL_Event event;
+        bool should_quit = false;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                should_quit = true;
+                break;
+            }
+        }
+        if (should_quit) {
+            break;
+        }
+
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT); TEST_OPENGL_ERROR();
         glUseProgram(program); TEST_OPENGL_ERROR();
@@ -255,16 +231,12 @@ int main() {
         glDrawElements(GL_TRIANGLES, nb_indices, GL_UNSIGNED_INT, nullptr);
         TEST_OPENGL_ERROR();
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window); TEST_OPENGL_ERROR();
+        glViewport(0, 0, WIN_W, WIN_H); TEST_OPENGL_ERROR();
+        glClearColor(0.f, 0.f, 0.f, 0.f); TEST_OPENGL_ERROR();
 
-        /* Poll for and process events */
-        glfwPollEvents(); TEST_OPENGL_ERROR();
-
-        /* Handle input with callback*/
-        glfwSetKeyCallback(window, handle_input);
+        SDL_GL_SwapWindow(window); TEST_OPENGL_ERROR();
     }
 
-    glfwTerminate(); TEST_OPENGL_ERROR();
+    SDL_Quit();
     return 0;
 }

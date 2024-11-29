@@ -4,8 +4,7 @@ CXX_FLAGS += -m64 -march=native
 CXX_FLAGS += -fopt-info-vec-optimized #-fopt-info-vec-missed -ftree-vectorize
 ASAN_FLAGS = -fsanitize=address -fsanitize=leak
 VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes
-# LIBS = -lSDL2 -lm
-LIBS = -lGL -lGLEW -lglut -lpthread -lglfw
+LIBS = -lGL -lGLEW -lglut -lpthread -lSDL2 -lm
 OBJS = src/main.cpp
 BIN = bin
 
