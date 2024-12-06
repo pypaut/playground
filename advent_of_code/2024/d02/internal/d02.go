@@ -54,6 +54,54 @@ func IsReportSafe(report []int) bool {
 	return true
 }
 
+func BuildSubReport(report []int, indexToRemove int) []int {
+	subReport1 := make([]int, indexToRemove)
+	_ = copy(subReport1, report[:indexToRemove])
+
+	subReport2 := make([]int, len(report)-indexToRemove-1)
+	_ = copy(subReport2, report[indexToRemove+1:])
+
+	return append(subReport1, subReport2...)
+}
+
+func IsStrictlyMonotonousWithDampener(report []int) (isMonotonous bool, unsafeLevelIndices []int) {
+	if IsStrictlyMonotonous(report) {
+		return true, nil
+	}
+
+	i := 0
+
+	for i < len(report) {
+		subReport := BuildSubReport(report, i)
+
+		if IsStrictlyMonotonous(subReport) {
+			unsafeLevelIndices = append(unsafeLevelIndices, i)
+		}
+
+		i++
+	}
+
+	if len(unsafeLevelIndices) > 0 {
+		return true, unsafeLevelIndices
+	}
+
+	return false, nil
+}
+
+func IsReportSafeWithDampener(report []int) (bool, int) {
+	isMonotonous, unsafeLevelIndex := IsStrictlyMonotonousWithDampener(report)
+	if !isMonotonous {
+		return false, unsafeLevelIndex
+	}
+
+	if unsafeLevelIndex != -1 {
+		subReport := BuildSubReport(report, unsafeLevelIndex)
+		return DiffersByMaxThree(subReport), unsafeLevelIndex
+	}
+
+	return DiffersByMaxThree(report), unsafeLevelIndex
+}
+
 func DiffersByMaxThree(report []int) bool {
 	for i, _ := range report {
 		if i == len(report)-1 {
@@ -102,6 +150,17 @@ func IsStrictlyMonotonous(report []int) bool {
 func NumberOfSafeReports(reports [][]int) (number int) {
 	for _, report := range reports {
 		if IsReportSafe(report) {
+			number++
+		}
+	}
+
+	return
+}
+
+func NumberOfSafeReportsWithDampener(reports [][]int) (number int) {
+	for _, report := range reports {
+		isSafe, _ := IsReportSafeWithDampener(report)
+		if isSafe {
 			number++
 		}
 	}
