@@ -14,5 +14,8 @@ func main() {
 	number := d02.NumberOfSafeReports(reports)
 	fmt.Printf("Number of safe reports: %d\n", number)
 
+	number = d02.NumberOfSafeReportsWithDampener(reports)
+	fmt.Printf("Number of safe reports with Dampener: %d\n", number)
+
 	return
 }

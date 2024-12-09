@@ -89,17 +89,50 @@ func IsStrictlyMonotonousWithDampener(report []int) (isMonotonous bool, unsafeLe
 }
 
 func IsReportSafeWithDampener(report []int) (bool, int) {
-	isMonotonous, unsafeLevelIndex := IsStrictlyMonotonousWithDampener(report)
+	isMonotonous, unsafeLevelsForMonotony := IsStrictlyMonotonousWithDampener(report)
+
+	// Could not find any safe configuration
 	if !isMonotonous {
-		return false, unsafeLevelIndex
+		return false, -1
 	}
 
-	if unsafeLevelIndex != -1 {
-		subReport := BuildSubReport(report, unsafeLevelIndex)
-		return DiffersByMaxThree(subReport), unsafeLevelIndex
+	// Monotonous by default
+	if unsafeLevelsForMonotony == nil {
+		// Report safe by default
+		if DiffersByMaxThree(report) {
+			return true, -1
+		}
+
+		// Else try with removed levels
+		indices := []int{0, len(report) - 1} // Only head and tail can actually be helpful to remove
+
+		for _, index := range indices {
+			subReport := BuildSubReport(report, index)
+
+			if DiffersByMaxThree(subReport) {
+				return true, index
+			}
+		}
+		// for i < len(report) {
+		// 	subReport := BuildSubReport(report, i)
+
+		// 	if DiffersByMaxThree(subReport) {
+		// 		return true, i
+		// 	}
+
+		// 	i++
+		// }
 	}
 
-	return DiffersByMaxThree(report), unsafeLevelIndex
+	// Not monotonous by default, thus indices constraint
+	for _, index := range unsafeLevelsForMonotony {
+		subReport := BuildSubReport(report, index)
+		if DiffersByMaxThree(subReport) {
+			return true, index
+		}
+	}
+
+	return DiffersByMaxThree(report), -1
 }
 
 func DiffersByMaxThree(report []int) bool {
