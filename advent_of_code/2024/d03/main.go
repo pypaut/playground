@@ -12,7 +12,7 @@ func main() {
 		panic(err)
 	}
 
-	sum := d03.ScanMemory(string(data))
+	sum := d03.ScanMemoryWithDos(string(data))
 	fmt.Printf("Total: %d\n", sum)
 
 	return

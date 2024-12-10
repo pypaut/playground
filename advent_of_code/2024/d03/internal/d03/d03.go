@@ -3,7 +3,21 @@ package d03
 import (
 	"regexp"
 	"strconv"
+	"strings"
 )
+
+func ScanMemoryWithDos(input string) (sum int) {
+	enabledParts := strings.Split(input, `do()`)
+	for _, enabledP := range enabledParts {
+		withoutDont := strings.Split(enabledP, `don't()`)[0]
+		instructions := ExtractMulInstructions(withoutDont)
+		for _, instruction := range instructions {
+			sum += ExecuteInstruction(instruction)
+		}
+	}
+
+	return
+}
 
 func ScanMemory(input string) (sum int) {
 	instructions := ExtractMulInstructions(input)

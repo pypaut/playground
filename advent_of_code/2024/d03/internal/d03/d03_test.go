@@ -49,3 +49,13 @@ func TestExecuteInstruction(t *testing.T) {
 	}
 
 }
+
+func TestScanMemoryWithDos(t *testing.T) {
+	inputMemory := "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"
+	expected := 48
+	got := ScanMemoryWithDos(inputMemory)
+
+	if got != expected {
+		t.Fatalf("expected %d, got %d", expected, got)
+	}
+}
