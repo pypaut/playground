@@ -28,6 +28,28 @@ MXMXAXMASX`
 	}
 }
 
+func TestCountMasInX(t *testing.T) {
+	input := `MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX`
+
+	lines := strings.Split(input, "\n")
+
+	want := 9
+	got := CountMasInX(lines)
+
+	if got != want {
+		t.Fatalf("got %d; want %d", got, want)
+	}
+}
+
 func TestSplitLines(t *testing.T) {
 	input := `MMMSXXMASM
 MSAMXMSMSA

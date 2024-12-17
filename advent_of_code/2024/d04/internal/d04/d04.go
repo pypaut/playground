@@ -1,5 +1,31 @@
 package d04
 
+func CountMasInX(lines []string) (nbXmas int) {
+	for lineNb, line := range lines {
+		for charNb := range line {
+			if charNb+2 < len(line) && lineNb+2 < len(lines) {
+				if (lines[lineNb][charNb] == 'M' &&
+					lines[lineNb+1][charNb+1] == 'A' &&
+					lines[lineNb+2][charNb+2] == 'S') ||
+					(lines[lineNb][charNb] == 'S' &&
+						lines[lineNb+1][charNb+1] == 'A' &&
+						lines[lineNb+2][charNb+2] == 'M') {
+					if (lines[lineNb][charNb+2] == 'M' &&
+						lines[lineNb+1][charNb+1] == 'A' &&
+						lines[lineNb+2][charNb] == 'S') ||
+						(lines[lineNb][charNb+2] == 'S' &&
+							lines[lineNb+1][charNb+1] == 'A' &&
+							lines[lineNb+2][charNb] == 'M') {
+						nbXmas++
+					}
+				}
+			}
+		}
+	}
+
+	return
+}
+
 func CountXmas(lines []string) (nbXmas int) {
 	for lineNb, line := range lines {
 		for charNb, char := range line {

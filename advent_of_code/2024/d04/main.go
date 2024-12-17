@@ -23,5 +23,7 @@ func main() {
 	}
 
 	fmt.Printf("Number of occurrences of XMAS: %d\n", d04.CountXmas(fixedLines))
+	fmt.Printf("Number of occurrences of MAS in X: %d\n", d04.CountMasInX(fixedLines))
+
 	return
 }
