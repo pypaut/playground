@@ -10,8 +10,11 @@ import (
 
 type Inventory struct {
 	Image       *ebiten.Image
+	HoverImage  *ebiten.Image
 	Items       []*item.Item
 	DrawOptions *ebiten.DrawImageOptions
+	InPadding   int
+	OutPadding  int
 }
 
 func NewInventory() *Inventory {
@@ -36,6 +39,10 @@ func NewInventory() *Inventory {
 	)
 	img.Fill(color.White)
 
+	// Hover image
+	hoverImg := ebiten.NewImage(itemSize+2*inPadding, itemSize+2*inPadding)
+	hoverImg.Fill(color.RGBA{R: 200, A: 255})
+
 	var items []*item.Item
 
 	for i := 0; i < widthItems; i++ {
@@ -47,16 +54,18 @@ func NewInventory() *Inventory {
 			// Setup draw options for position
 			drawOptions := &ebiten.DrawImageOptions{}
 			drawOptions.GeoM.Reset()
-			drawOptions.GeoM.Translate(
-				invPosX+float64(i*itemSize)+float64(outPadding)+float64(inPadding*i),
-				invPosY+float64(j*itemSize)+float64(outPadding)+float64(inPadding*j),
-			)
+			itemPosX := invPosX + float64(i*itemSize) + float64(outPadding) + float64(inPadding*i)
+			itemPosY := invPosY + float64(j*itemSize) + float64(outPadding) + float64(inPadding*j)
+			drawOptions.GeoM.Translate(itemPosX, itemPosY)
 
 			// Create the item
 			items = append(items, &item.Item{
 				Name:        fmt.Sprintf("item%d", i),
 				Image:       itemImg,
 				DrawOptions: drawOptions,
+				PosX:        itemPosX,
+				PosY:        itemPosY,
+				Size:        float64(itemSize),
 			})
 		}
 	}
@@ -69,15 +78,28 @@ func NewInventory() *Inventory {
 		Image:       img,
 		Items:       items,
 		DrawOptions: &drawOptions,
+		HoverImage:  hoverImg,
+		InPadding:   inPadding,
+		OutPadding:  outPadding,
 	}
 }
 
 func (i *Inventory) Draw(screen *ebiten.Image) {
+	// Draw background image
 	screen.DrawImage(i.Image, i.DrawOptions)
 
-	for _, i := range i.Items {
-		if i != nil {
-			i.Draw(screen)
+	// Draw each items
+	oneIsHovered := false // avoids useless calls to "IsHovered" once one item is already hovered
+	for _, it := range i.Items {
+		if !oneIsHovered && it.IsHovered() {
+			oneIsHovered = true
+			hoverDrawOptions := &ebiten.DrawImageOptions{}
+			hoverDrawOptions.GeoM.Translate(it.PosX-float64(i.InPadding), it.PosY-float64(i.InPadding))
+			screen.DrawImage(i.HoverImage, hoverDrawOptions)
+		}
+
+		if it != nil {
+			it.Draw(screen)
 		}
 	}
 
