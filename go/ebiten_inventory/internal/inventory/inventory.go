@@ -10,11 +10,14 @@ import (
 
 type Inventory struct {
 	Image       *ebiten.Image
-	HoverImage  *ebiten.Image
-	Items       []*item.Item
 	DrawOptions *ebiten.DrawImageOptions
-	InPadding   int
-	OutPadding  int
+
+	HoverImage     *ebiten.Image
+	HoverThickness int
+	Items          []*item.Item
+
+	InPadding  int
+	OutPadding int
 }
 
 func NewInventory() *Inventory {
@@ -34,13 +37,14 @@ func NewInventory() *Inventory {
 	width := itemSize * widthItems
 	height := itemSize * heightItems
 	img := ebiten.NewImage(
-		width+outPadding*2+inPadding*(widthItems-1),
-		height+outPadding*2+inPadding*(heightItems-1),
+		width+int(outPadding)*2+inPadding*(widthItems-1),
+		height+int(outPadding)*2+inPadding*(heightItems-1),
 	)
 	img.Fill(color.White)
 
 	// Hover image
-	hoverImg := ebiten.NewImage(itemSize+2*inPadding, itemSize+2*inPadding)
+	hoverThickness := inPadding - 2
+	hoverImg := ebiten.NewImage(itemSize+2*hoverThickness, itemSize+2*hoverThickness)
 	hoverImg.Fill(color.RGBA{R: 200, A: 255})
 
 	var items []*item.Item
@@ -53,9 +57,8 @@ func NewInventory() *Inventory {
 
 			// Setup draw options for position
 			drawOptions := &ebiten.DrawImageOptions{}
-			drawOptions.GeoM.Reset()
-			itemPosX := invPosX + float64(i*itemSize) + float64(outPadding) + float64(inPadding*i)
-			itemPosY := invPosY + float64(j*itemSize) + float64(outPadding) + float64(inPadding*j)
+			itemPosX := invPosX + float64(i*itemSize+outPadding+inPadding*i)
+			itemPosY := invPosY + float64(j*itemSize+outPadding+inPadding*j)
 			drawOptions.GeoM.Translate(itemPosX, itemPosY)
 
 			// Create the item
@@ -63,24 +66,26 @@ func NewInventory() *Inventory {
 				Name:        fmt.Sprintf("item%d", i),
 				Image:       itemImg,
 				DrawOptions: drawOptions,
-				PosX:        itemPosX,
-				PosY:        itemPosY,
-				Size:        float64(itemSize),
+				PosX:        int(itemPosX),
+				PosY:        int(itemPosY),
+				Size:        itemSize,
 			})
 		}
 	}
 
 	drawOptions := ebiten.DrawImageOptions{}
-	drawOptions.GeoM.Reset()
 	drawOptions.GeoM.Translate(invPosX, invPosY)
 
 	return &Inventory{
 		Image:       img,
-		Items:       items,
 		DrawOptions: &drawOptions,
-		HoverImage:  hoverImg,
-		InPadding:   inPadding,
-		OutPadding:  outPadding,
+
+		HoverImage:     hoverImg,
+		HoverThickness: hoverThickness,
+		Items:          items,
+
+		InPadding:  inPadding,
+		OutPadding: outPadding,
 	}
 }
 
@@ -89,12 +94,13 @@ func (i *Inventory) Draw(screen *ebiten.Image) {
 	screen.DrawImage(i.Image, i.DrawOptions)
 
 	// Draw each items
-	oneIsHovered := false // avoids useless calls to "IsHovered" once one item is already hovered
 	for _, it := range i.Items {
-		if !oneIsHovered && it.IsHovered() {
-			oneIsHovered = true
+		if it.IsHovered() {
 			hoverDrawOptions := &ebiten.DrawImageOptions{}
-			hoverDrawOptions.GeoM.Translate(it.PosX-float64(i.InPadding), it.PosY-float64(i.InPadding))
+			hoverDrawOptions.GeoM.Translate(
+				float64(it.PosX-i.HoverThickness),
+				float64(it.PosY-i.HoverThickness),
+			)
 			screen.DrawImage(i.HoverImage, hoverDrawOptions)
 		}
 

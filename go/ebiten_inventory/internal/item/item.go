@@ -6,8 +6,8 @@ type Item struct {
 	Name        string
 	Image       *ebiten.Image
 	DrawOptions *ebiten.DrawImageOptions
-	PosX, PosY  float64
-	Size        float64
+	PosX, PosY  int
+	Size        int
 }
 
 func (i *Item) Draw(screen *ebiten.Image) {
@@ -16,6 +16,6 @@ func (i *Item) Draw(screen *ebiten.Image) {
 
 func (i *Item) IsHovered() bool {
 	mouseX, mouseY := ebiten.CursorPosition()
-	return (int(i.PosX) < mouseX && mouseX < int(i.PosX+i.Size)) &&
-		(int(i.PosY) < mouseY && mouseY < int(i.PosY+i.Size))
+	return (i.PosX < mouseX && mouseX < i.PosX+i.Size) &&
+		(i.PosY < mouseY && mouseY < i.PosY+i.Size)
 }
