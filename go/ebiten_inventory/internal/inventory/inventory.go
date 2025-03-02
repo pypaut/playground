@@ -3,6 +3,7 @@ package inventory
 import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"image/color"
 	"inventory/internal/item"
 	"math/rand/v2"
@@ -18,6 +19,8 @@ type Inventory struct {
 
 	InPadding  int
 	OutPadding int
+
+	DraggedItem *item.Item
 }
 
 func NewInventory() *Inventory {
@@ -95,17 +98,31 @@ func (i *Inventory) Draw(screen *ebiten.Image) {
 
 	// Draw each items
 	for _, it := range i.Items {
+		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
+			i.DraggedItem = nil
+		} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
+			i.DraggedItem = it
+		}
+
 		if it.IsHovered() {
 			hoverDrawOptions := &ebiten.DrawImageOptions{}
 			hoverDrawOptions.GeoM.Translate(
 				float64(it.PosX-i.HoverThickness),
 				float64(it.PosY-i.HoverThickness),
 			)
+
 			screen.DrawImage(i.HoverImage, hoverDrawOptions)
 		}
 
 		if it != nil {
 			it.Draw(screen)
+		}
+
+		if i.DraggedItem != nil {
+			drawOptions := &ebiten.DrawImageOptions{}
+			mouseX, mouseY := ebiten.CursorPosition()
+			drawOptions.GeoM.Translate(float64(mouseX), float64(mouseY))
+			screen.DrawImage(i.DraggedItem.Image, drawOptions)
 		}
 	}
 
