@@ -10,6 +10,7 @@ import (
 type Game struct {
 	IsInventoryOpened bool
 	Inventory         *inventory.Inventory
+	GamepadEnabled    bool
 }
 
 func NewGame() *Game {
@@ -29,6 +30,23 @@ func (g *Game) Update() error {
 		} else {
 			g.IsInventoryOpened = false
 		}
+	}
+
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
+		g.GamepadEnabled = false
+		ebiten.SetCursorMode(ebiten.CursorModeVisible)
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyW) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyA) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyS) ||
+		inpututil.IsKeyJustPressed(ebiten.KeyD) {
+		g.GamepadEnabled = true
+		ebiten.SetCursorMode(ebiten.CursorModeHidden)
+	}
+
+	if err := g.Inventory.Update(g.GamepadEnabled); err != nil {
+		return err
 	}
 
 	return nil
