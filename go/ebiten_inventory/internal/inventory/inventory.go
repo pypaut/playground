@@ -19,11 +19,12 @@ type Inventory struct {
 	HoverImage       *ebiten.Image
 	HoverThickness   int
 	HoverDrawOptions *ebiten.DrawImageOptions
+	HoverIndex       int
 	IsHovered        bool
 
-	DraggedItem            *item.Item
-	DraggedItemDrawOptions *ebiten.DrawImageOptions
-	Items                  []*item.Item
+	SelectedItem            *item.Item
+	SelectedItemDrawOptions *ebiten.DrawImageOptions
+	Items                   []*item.Item
 }
 
 func NewInventory() *Inventory {
@@ -92,41 +93,67 @@ func NewInventory() *Inventory {
 		HoverImage:       hoverImg,
 		HoverThickness:   hoverThickness,
 		HoverDrawOptions: &ebiten.DrawImageOptions{},
+		HoverIndex:       -1,
 
-		DraggedItemDrawOptions: &ebiten.DrawImageOptions{},
+		SelectedItemDrawOptions: &ebiten.DrawImageOptions{},
 
 		Items: items,
 	}
 }
 
 func (i *Inventory) Update(gamepadEnabled bool) error {
-	i.IsHovered = false
+	if !gamepadEnabled {
+		i.IsHovered = false
 
-	for _, it := range i.Items {
-		// Check if an item is mouse dragged
+		for index, it := range i.Items {
+			// Check hovered item
+			if it.IsHovered() {
+				i.HoverDrawOptions.GeoM.Reset()
+				i.HoverDrawOptions.GeoM.Translate(
+					float64(it.PosX-i.HoverThickness),
+					float64(it.PosY-i.HoverThickness),
+				)
+
+				i.IsHovered = true
+				i.HoverIndex = index
+				break
+			}
+		}
+
+		// Check if an item is selected
 		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
-			i.DraggedItem = nil
-		} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) {
-			i.DraggedItem = it
+			i.SelectedItem = nil
+		} else if inpututil.IsMouseButtonJustPressed(ebiten.MouseButton0) && i.IsHovered {
+			i.SelectedItem = i.Items[i.HoverIndex]
+		}
+	} else {
+		i.IsHovered = true
+
+		if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+			if i.HoverIndex < len(i.Items)-1 {
+				i.HoverIndex++
+			}
 		}
 
-		// Check hovered item
-		if it.IsHovered() {
-			i.HoverDrawOptions.GeoM.Reset()
-			i.HoverDrawOptions.GeoM.Translate(
-				float64(it.PosX-i.HoverThickness),
-				float64(it.PosY-i.HoverThickness),
-			)
-
-			i.IsHovered = true
-			break
+		if inpututil.IsKeyJustPressed(ebiten.KeyA) {
+			if i.HoverIndex > 0 {
+				i.HoverIndex--
+			}
 		}
+
+		i.HoverDrawOptions.GeoM.Reset()
+		i.HoverDrawOptions.GeoM.Translate(
+			float64(i.Items[i.HoverIndex].PosX-i.HoverThickness),
+			float64(i.Items[i.HoverIndex].PosY-i.HoverThickness),
+		)
 	}
 
-	if i.DraggedItem != nil {
-		mouseX, mouseY := ebiten.CursorPosition()
-		i.DraggedItemDrawOptions.GeoM.Reset()
-		i.DraggedItemDrawOptions.GeoM.Translate(float64(mouseX), float64(mouseY))
+	if i.SelectedItem != nil {
+		if !gamepadEnabled {
+			mouseX, mouseY := ebiten.CursorPosition()
+			i.SelectedItemDrawOptions.GeoM.Reset()
+			i.SelectedItemDrawOptions.GeoM.Translate(float64(mouseX), float64(mouseY))
+		}
 	}
 
 	return nil
@@ -148,8 +175,9 @@ func (i *Inventory) Draw(screen *ebiten.Image) {
 		}
 	}
 
-	if i.DraggedItem != nil {
-		screen.DrawImage(i.DraggedItem.Image, i.DraggedItemDrawOptions)
+	// Draw selected item (while dragging for example)
+	if i.SelectedItem != nil {
+		screen.DrawImage(i.SelectedItem.Image, i.SelectedItemDrawOptions)
 	}
 
 	return
