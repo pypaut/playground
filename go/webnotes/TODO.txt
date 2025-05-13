@@ -1,0 +1,5 @@
+- [ ] "new note" button
+    - [ ] url
+    - [ ] handler
+    - [ ] html button (at root)
+    - [ ] html template (creation form)
