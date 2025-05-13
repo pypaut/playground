@@ -1,0 +1,7 @@
+<h1>Notes</h1>
+
+<ul>
+    {{ range . }}
+        <li><a href="/view/{{.Title}}">{{ .Title}}</a></li>
+    {{ end }}
+</ul>
