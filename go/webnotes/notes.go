@@ -13,12 +13,13 @@ import (
 )
 
 var templateDir = "templates"
-var validPath = regexp.MustCompile("^/(edit|save|view)/([a-zA-Z0-9_]+)$")
+var validPath = regexp.MustCompile("^/(edit|save|view|new)/([a-zA-Z0-9_]+)$")
 
 var templates = template.Must(template.ParseFiles(
 	templateDir+"/root.html",
 	templateDir+"/view.html",
 	templateDir+"/edit.html",
+	templateDir+"/new.html",
 ))
 
 type Note struct {
@@ -110,6 +111,12 @@ func editHandler(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "edit", n)
 }
 
+func newHandler(w http.ResponseWriter, r *http.Request) {
+	if err := templates.ExecuteTemplate(w, "new.html", nil); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 func saveHandler(w http.ResponseWriter, r *http.Request) {
 	title, err := getTitle(w, r)
 	if err != nil {
@@ -127,10 +134,25 @@ func saveHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
 
+func createHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.FormValue("title")
+	body := r.FormValue("body")
+	n := &Note{Title: title, Body: []byte(body)}
+
+	err := n.save()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	http.Redirect(w, r, "/save/"+title, http.StatusFound)
+}
+
 func main() {
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/view/", viewHandler)
 	http.HandleFunc("/edit/", editHandler)
 	http.HandleFunc("/save/", saveHandler)
+	http.HandleFunc("/new/", newHandler)
+	http.HandleFunc("/create/", createHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
