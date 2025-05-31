@@ -5,6 +5,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"math"
 	"math/rand"
+	"pongiten/src/player"
 
 	"image/color"
 )
@@ -34,7 +35,11 @@ func NewBall(screenWidth, screenHeight float64) *Ball {
 	}
 }
 
-func (b *Ball) Update(screenWidth, screenHeight float64, isRunning, hasStarted bool) (isStillRunning bool) {
+func (b *Ball) Update(
+	screenWidth, screenHeight float64,
+	isRunning, hasStarted bool,
+	player1, player2 *player.Player,
+) (isStillRunning bool) {
 	b.DirX, b.DirY = normalize(b.DirX, b.DirY)
 
 	if hasStarted && isRunning {
@@ -49,6 +54,20 @@ func (b *Ball) Update(screenWidth, screenHeight float64, isRunning, hasStarted b
 	// Wall collision
 	if b.PosY < 0 || screenHeight < b.PosY+b.Size {
 		b.DirY = -b.DirY
+	}
+
+	// Player 1 collision
+	if b.PosX < player1.PosX+player1.Width &&
+		b.PosY < player1.PosY+player1.Height+b.Size &&
+		player1.PosY-b.Size < b.PosY {
+		b.DirX = -b.DirX
+	}
+
+	// Player 2 collision
+	if player2.PosX < b.PosX+b.Size &&
+		b.PosY < player2.PosY+player2.Height+b.Size &&
+		player2.PosY-b.Size < b.PosY {
+		b.DirX = -b.DirX
 	}
 
 	return true
