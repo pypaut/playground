@@ -30,7 +30,7 @@ func NewGame() *Game {
 		10.0,
 		100.0,
 		10,
-		color.RGBA{150, 0, 150, 255},
+		color.RGBA{R: 150, B: 150, A: 255},
 		1,
 	)
 
@@ -40,18 +40,18 @@ func NewGame() *Game {
 		10.0,
 		100.0,
 		10,
-		color.RGBA{150, 0, 150, 255},
+		color.RGBA{R: 150, B: 150, A: 255},
 		2,
 	)
 
-	ball := ball.NewBall(float64(width), float64(height))
+	b := ball.NewBall(float64(width), float64(height))
 
 	return &Game{
 		Width:      width,
 		Height:     height,
 		Player1:    player1,
 		Player2:    player2,
-		Ball:       ball,
+		Ball:       b,
 		HasStarted: false,
 		IsRunning:  true,
 	}
@@ -68,8 +68,9 @@ func (g *Game) Update() error {
 	g.Player2.Update(float64(g.Width), float64(g.Height))
 	g.IsRunning = g.Ball.Update(float64(g.Width), float64(g.Height), g.IsRunning, g.HasStarted)
 	if !g.IsRunning {
-		return errors.New("Game's done")
+		return errors.New("game's done")
 	}
+
 	return nil
 }
 

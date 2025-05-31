@@ -3,6 +3,8 @@ package ball
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"math"
+	"math/rand"
 
 	"image/color"
 )
@@ -18,25 +20,36 @@ type Ball struct {
 }
 
 func NewBall(screenWidth, screenHeight float64) *Ball {
+	dirX := rand.Float64() - 0.5
+	dirY := rand.Float64() - 0.5
+
 	return &Ball{
 		PosX:  screenWidth/2 - 5,
 		PosY:  screenHeight/2 - 5,
-		DirX:  0.0,
-		DirY:  0.0,
+		DirX:  dirX,
+		DirY:  dirY,
 		Size:  10,
 		Speed: 10,
-		Color: color.RGBA{150, 0, 150, 255},
+		Color: color.RGBA{R: 150, B: 150, A: 255},
 	}
 }
 
 func (b *Ball) Update(screenWidth, screenHeight float64, isRunning, hasStarted bool) (isStillRunning bool) {
+	b.DirX, b.DirY = normalize(b.DirX, b.DirY)
+
 	if hasStarted && isRunning {
 		// Ball update here
-		b.moveVector(b.Speed/2, b.Speed/2)
+		b.moveVector(b.DirX*b.Speed/2, b.DirY*b.Speed/2)
 	}
 
 	isStillRunning = true
+
 	return
+}
+
+func normalize(x, y float64) (float64, float64) {
+	norm := math.Sqrt(math.Pow(x, 2) + math.Pow(y, 2))
+	return x / norm, y / norm
 }
 
 func (b *Ball) moveVector(dirX, dirY float64) {
