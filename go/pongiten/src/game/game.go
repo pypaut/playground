@@ -68,7 +68,7 @@ func (g *Game) Update() error {
 	g.Player2.Update(float64(g.Width), float64(g.Height))
 	g.IsRunning = g.Ball.Update(float64(g.Width), float64(g.Height), g.IsRunning, g.HasStarted)
 	if !g.IsRunning {
-		return errors.New("game's done")
+		return errors.New("game over")
 	}
 
 	return nil

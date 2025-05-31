@@ -38,13 +38,15 @@ func (b *Ball) Update(screenWidth, screenHeight float64, isRunning, hasStarted b
 	b.DirX, b.DirY = normalize(b.DirX, b.DirY)
 
 	if hasStarted && isRunning {
-		// Ball update here
 		b.moveVector(b.DirX*b.Speed/2, b.DirY*b.Speed/2)
 	}
 
-	isStillRunning = true
+	// Check if the ball is out
+	if b.PosX < 0-b.Size || screenWidth < b.PosX {
+		return false
+	}
 
-	return
+	return true
 }
 
 func normalize(x, y float64) (float64, float64) {
