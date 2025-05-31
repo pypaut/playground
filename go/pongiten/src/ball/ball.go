@@ -46,6 +46,11 @@ func (b *Ball) Update(screenWidth, screenHeight float64, isRunning, hasStarted b
 		return false
 	}
 
+	// Wall collision
+	if b.PosY < 0 || screenHeight < b.PosY+b.Size {
+		b.DirY = -b.DirY
+	}
+
 	return true
 }
 
