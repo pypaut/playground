@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://ds5v0unpor1vl"]
 
-[ext_resource type="Script" path="res://options_menu/back_button.gd" id="1_8btp6"]
-[ext_resource type="Script" path="res://options_menu/volume_button.gd" id="1_bo778"]
-[ext_resource type="Script" path="res://options_menu/volume_slider.gd" id="1_yukvy"]
-[ext_resource type="Script" path="res://options_menu/window_button.gd" id="2_lbss8"]
+[ext_resource type="Script" uid="uid://5ox36or7kq3h" path="res://options_menu/back_button.gd" id="1_8btp6"]
+[ext_resource type="Script" uid="uid://chli2x15j0y0g" path="res://options_menu/volume_button.gd" id="1_bo778"]
+[ext_resource type="Script" uid="uid://uun110rgoc8w" path="res://options_menu/volume_slider.gd" id="1_yukvy"]
+[ext_resource type="Script" uid="uid://deh0pmc2yl7qf" path="res://options_menu/window_button.gd" id="2_lbss8"]
 
 [node name="OptionsMenu" type="Control"]
 layout_mode = 3
@@ -63,6 +63,7 @@ grow_vertical = 2
 selected = 0
 item_count = 2
 popup/item_0/text = "Fullscreen"
+popup/item_0/id = 0
 popup/item_1/text = "Windowed"
 popup/item_1/id = 1
 script = ExtResource("2_lbss8")

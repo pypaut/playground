@@ -160,8 +160,8 @@ int main() {
         // Player 2
         4, 5, 6,
         4, 5, 7,
-
     };
+
     size_t nb_indices = 12;
 
     unsigned int vao;
@@ -216,8 +216,19 @@ int main() {
                 break;
             }
         }
+
+        const Uint8 *keys = SDL_GetKeyboardState(NULL);
+        if (keys[SDL_SCANCODE_ESCAPE]) {
+            should_quit = true;
+        }
+
         if (should_quit) {
             break;
+        }
+
+        if (keys[SDL_SCANCODE_W]) {
+            // Move p1 up
+            positions[0] = positions[0] + 0.1;
         }
 
         /* Render here */
