@@ -20,6 +20,7 @@ struct Buttons {
 
 const BALL_SPEED: f32 = 300.;
 const PLAYER_SPEED: f32 = 500.;
+const PLAYER_SIZE: f32 = 120.;
 
 fn main() {
     App::new()
@@ -27,6 +28,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(Update, players_handle_kb_events)
         .add_systems(Update, players_update)
+        .add_systems(Update, players_handle_collision)
         .add_systems(Update, ball_handle_kb_events)
         .add_systems(Update, ball_update)
         .run();
@@ -55,7 +57,7 @@ fn setup(
             Mesh2d(meshes.add(Rectangle::default())),
             MeshMaterial2d(materials.add(Color::from(PURPLE))),
             Transform::from_xyz(-500., 0., 0.)
-                .with_scale(Vec3::new(15., 120., 0.)),
+                .with_scale(Vec3::new(15., PLAYER_SIZE, 0.)),
         ))
         .insert(Player)
         .insert(Direction { x: 0., y: 0. })
@@ -70,7 +72,7 @@ fn setup(
             Mesh2d(meshes.add(Rectangle::default())),
             MeshMaterial2d(materials.add(Color::from(PURPLE))),
             Transform::from_xyz(500., 0., 0.)
-                .with_scale(Vec3::new(15., 120., 0.)),
+                .with_scale(Vec3::new(15., PLAYER_SIZE, 0.)),
         ))
         .insert(Player)
         .insert(Direction { x: 0., y: 0. })
@@ -101,6 +103,23 @@ fn players_handle_kb_events(
             -1.
         } else {
             0.
+        }
+    }
+}
+
+fn players_handle_collision(
+    windows: Query<&mut Window>,
+    mut query: Query<&mut Transform, With<Player>>,
+) {
+    let win_h = windows.single().unwrap().resolution.height();
+
+    for (mut transform, old_transform) in query.iter_mut() {
+        let translation = &mut transform.translation;
+
+        if translation.y - PLAYER_SIZE / 2. < -win_h / 2. {
+            translation.y = -win_h / 2. + PLAYER_SIZE / 2.;
+        } else if translation.y + PLAYER_SIZE / 2. > win_h / 2. {
+            translation.y = win_h / 2. - PLAYER_SIZE / 2.;
         }
     }
 }
