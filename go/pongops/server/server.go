@@ -31,15 +31,17 @@ func runServer() {
 		}
 	}(conn)
 
+	reader := bufio.NewReader(conn)
+
 	for {
 		/* Receive player's direction from client */
-		message, err := bufio.NewReader(conn).ReadBytes('\n')
+		message, err := reader.ReadString('\n')
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Received message '%s'\n", string(message))
+		fmt.Printf("Received message '%s'\n", message)
 
-		n, err := fmt.Fprintf(conn, "%s", string(message))
+		n, err := fmt.Fprintf(conn, "%s", message)
 		if n == 0 {
 			fmt.Println("Sent empty message")
 		}
