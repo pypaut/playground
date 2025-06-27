@@ -6,7 +6,7 @@ use std::{
 
 use serde_json;
 
-use lib::Direction;
+use lib::Vec2d;
 
 fn main() {
     serve();
@@ -25,15 +25,25 @@ fn serve() {
 }
 
 fn handle_connection(mut stream: TcpStream) {
-    let mut buffer: &mut [u8] = &mut [0; 512];
-    stream.read(&mut buffer).unwrap();
-    let message = str::from_utf8(buffer).unwrap();
-    println!("Message from client: {}", message);
+    let mut position = Vec2d { x: 0., y: 0. };
 
-    let dir: Direction = serde_json::from_str(&message[..17]).unwrap();
-    println!("{:?}", dir);
+    loop {
+        // Receive direction
+        let mut buffer: &mut [u8] = &mut [0; 512];
+        stream.read(&mut buffer).unwrap();
+        let message = str::from_utf8(buffer).unwrap();
+        println!("Message from client: {}", message);
 
-    let serialized = serde_json::to_string(&dir).unwrap();
-    let buffer = serialized.as_bytes();
-    stream.write_all(buffer).unwrap();
+        let dir: Vec2d = serde_json::from_str(&message[..17]).unwrap();
+        println!("{:?}", dir);
+
+        // Update dir
+        position.x += dir.x;
+        position.y += dir.y;
+
+        // Send position
+        let serialized = serde_json::to_string(&dir).unwrap();
+        let buffer = serialized.as_bytes();
+        stream.write_all(buffer).unwrap();
+    }
 }

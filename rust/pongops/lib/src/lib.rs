@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Direction {
+pub struct Vec2d {
     pub x: f32,
     pub y: f32,
 }
