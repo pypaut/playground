@@ -30,16 +30,16 @@ fn handle_connection(mut stream: TcpStream) {
         // Receive direction
         let mut buffer: &mut [u8] = &mut [0; 512];
         stream.read(&mut buffer).unwrap();
-        let message = str::from_utf8(buffer).unwrap();
-
-        let dir: Vec2d = serde_json::from_str(&message[..17]).unwrap();
+        let buffer_str = str::from_utf8(buffer).unwrap();
+        let buffer_str_trimmed = buffer_str.trim_matches(char::from(0));
+        let dir: Vec2d = serde_json::from_str(buffer_str_trimmed).unwrap();
 
         // Update dir
         position.x += dir.x;
         position.y += dir.y;
 
         // Send position
-        let serialized = serde_json::to_string(&dir).unwrap();
+        let serialized = serde_json::to_string(&position).unwrap();
         let buffer = serialized.as_bytes();
         stream.write_all(buffer).unwrap();
     }
@@ -51,11 +51,8 @@ mod tests {
     use std::thread::{sleep, spawn};
     use std::time::Duration;
 
-    // TODO : a single test actually tries the connection
-    // Other tests will require better refactorization for clear unit testing
-
     #[test]
-    fn position_is_updated() {
+    fn test_server() {
         // Run server
         let _ = spawn( || {
             serve();
@@ -67,23 +64,34 @@ mod tests {
         // Connect to server
         let mut stream = TcpStream::connect(("127.0.0.1", 7878)).unwrap();
 
-        // Send direction
-        let dir = Vec2d { x: 0., y: 1. };
-        let serialized = serde_json::to_string(&dir).unwrap();
-        let buffer = serialized.as_bytes();
-        stream.write_all(buffer).unwrap();
+        // Send direction and check new position
+        let directions = [
+            Vec2d { x: 0., y: 0. }, Vec2d { x: 0., y: 1. }, Vec2d { x: -1., y: -1. },
+        ];
+        let mut expected_pos = Vec2d { x: 0., y: 0. };
 
-        // Receive position
-        let mut buffer: &mut [u8] = &mut [0; 512];
-        stream.read(&mut buffer).unwrap();
-        let buffer_str = str::from_utf8(&buffer).unwrap()[..17].to_string();
+        for dir in directions.iter() {
+            // Send direction
+            let serialized = serde_json::to_string(dir).unwrap();
+            let buffer = serialized.as_bytes();
+            stream.write_all(buffer).unwrap();
 
-        // Deserialize to pos
-        let pos: Vec2d = serde_json::from_str(&buffer_str).unwrap();
+            // Receive position
+            let mut buffer: &mut [u8] = &mut [0; 512];
+            stream.read(&mut buffer).unwrap();
+            let buffer_str = str::from_utf8(&buffer).unwrap().to_string();
+            let buffer_str_trimmed = buffer_str.trim_matches(char::from(0));
 
-        // Test values
-        let init_pos = Vec2d { x: 0., y: 0. };
-        assert_eq!(pos.x, init_pos.x + dir.x);
-        assert_eq!(pos.y, init_pos.y + dir.y);
+            // Deserialize to pos
+            let pos: Vec2d = serde_json::from_str(&buffer_str_trimmed).unwrap();
+
+            // Update expected position
+            expected_pos.x += dir.x;
+            expected_pos.y += dir.y;
+
+            // Test values
+            assert_eq!(pos.x, expected_pos.x);
+            assert_eq!(pos.y, expected_pos.y);
+        }
     }
 }
