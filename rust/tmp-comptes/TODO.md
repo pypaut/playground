@@ -1,0 +1,6 @@
+- [ ] datastore to interact with database (https://docs.rs/postgres/latest/postgres/)
+- [ ] adapt cli to use datastore
+- [ ] "interactive" mode?
+- [ ] make cli usable
+- [ ] grpc api
+- [ ] web app
