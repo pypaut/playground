@@ -21,6 +21,13 @@ CREATE TABLE expenses (
     budget_id integer references budgets(id)
 );
 
+CREATE TABLE incomes (
+    id serial primary key,
+    label varchar(80) not null,
+    amount decimal default 0.0,
+    date timestamp
+);
+
 INSERT INTO tags (label, description, icon) VALUES
     ('Factures', 'Paiements récurrents, charges fixes, abonnements', '🧾'),
     ('Épargnes', 'On met de côté', '💰'),
@@ -36,3 +43,7 @@ INSERT INTO budgets (label, amount, date, tag_id) VALUES
 INSERT INTO expenses (label, amount, date, budget_id) VALUES
     ('Loyer', 1200.0, '2025-07-02', 4),
     ('Leclerc', 47.81, '2025-07-08', 1);
+
+INSERT INTO incomes (label, amount, date) VALUES
+    ('Salaire 1', 2000.42, '2025-07-01'),
+    ('Salaire 2', 2100.81, '2025-07-01');
