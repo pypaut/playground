@@ -4,17 +4,26 @@ use serde::Serialize;
 use std::fmt;
 
 pub struct Budget {
+    pub id: i32,
     pub label: String,
     pub amount: f32,
     pub date: DateTime<Local>,
-    pub tag: String,
+    pub tag_id: i32,
 }
 
 #[derive(Serialize)]
 pub struct Expense {
+    pub id: i32,
     pub label: String,
     pub amount: f32,
-    pub budget: String,
+    pub date: DateTime<Local>,
+    pub budget_id: i32,
+}
+
+pub struct Income {
+    pub id: i32,
+    pub label: String,
+    pub amount: f32,
     pub date: DateTime<Local>,
 }
 
