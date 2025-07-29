@@ -4,7 +4,7 @@ use serde::Serialize;
 use std::fmt;
 
 pub struct Budget {
-    pub id: i32,
+    pub id: i32 ,
     pub label: String,
     pub amount: f32,
     pub date: DateTime<Local>,
