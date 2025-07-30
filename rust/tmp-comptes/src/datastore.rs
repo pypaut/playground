@@ -1,7 +1,7 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 use chrono::{DateTime, Local, TimeZone};
 use postgres::{Client, NoTls};
-use crate::models::Budget;
+use crate::models::{Budget, Expense, Income, Tag};
 
 pub struct Datastore {
     pub client: Client,
@@ -29,7 +29,54 @@ impl Datastore {
             })
         }
         
-        return budgets;
+        budgets
+    }
+    
+    pub fn list_expenses(&mut self) -> Vec<Expense> {
+        let mut expenses: Vec<Expense> = Vec::new();
+        for row in self.client.query("SELECT * FROM expenses", &[]).unwrap() {
+            let date_system: SystemTime = row.get(3);
+            let date: DateTime<Local> = system_time_to_date_time(date_system);
+            expenses.push(Expense{
+                id: row.get(0),
+                label: row.get(1),
+                amount: row.get(2),
+                date,
+                budget_id: row.get(4)
+            })
+        }
+
+        expenses
+    }
+    
+    pub fn list_incomes(&mut self) -> Vec<Income> {
+        let mut incomes: Vec<Income> = Vec::new();
+        for row in self.client.query("SELECT * FROM incomes", &[]).unwrap() {
+            let date_system: SystemTime = row.get(3);
+            let date: DateTime<Local> = system_time_to_date_time(date_system);
+            incomes.push(Income{
+                id: row.get(0),
+                label: row.get(1),
+                amount: row.get(2),
+                date,
+            })
+        }
+
+        incomes
+    }
+
+    pub fn list_tags(&mut self) -> Vec<Tag> {
+        let mut tags: Vec<Tag> = Vec::new();
+        for row in self.client.query("SELECT * FROM tags", &[]).unwrap() {
+            tags.push(Tag{
+                id: row.get(0),
+                label: row.get(1),
+                description: row.get(2),
+                icon: row.get(3),
+            })
+        }
+
+        tags
     }
 }
 

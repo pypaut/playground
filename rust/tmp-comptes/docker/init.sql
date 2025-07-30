@@ -16,7 +16,7 @@ CREATE TABLE budgets (
 CREATE TABLE expenses (
     id serial primary key,
     label varchar(80) not null,
-    amount decimal default 0.0,
+    amount real default 0.0,
     date timestamp,
     budget_id integer references budgets(id)
 );
@@ -24,7 +24,7 @@ CREATE TABLE expenses (
 CREATE TABLE incomes (
     id serial primary key,
     label varchar(80) not null,
-    amount decimal default 0.0,
+    amount real default 0.0,
     date timestamp
 );
 

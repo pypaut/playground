@@ -21,6 +21,7 @@ pub struct Expense {
     pub budget_id: i32,
 }
 
+#[derive(Debug)]
 pub struct Income {
     pub id: i32,
     pub label: String,
@@ -28,11 +29,12 @@ pub struct Income {
     pub date: DateTime<Local>,
 }
 
+#[derive(Debug)]
 pub(crate) struct Tag {
+    pub id: i32,
     pub label: String,
     pub icon: String,
     pub description: String,
-    pub color: String,
 }
 
 // Pretty print

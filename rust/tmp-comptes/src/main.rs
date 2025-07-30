@@ -20,8 +20,19 @@ use crate::datastore::Datastore;
 
 fn main() {
     let mut ds: Datastore = datastore::new_datastore();
+
     let b = ds.list_budgets();
     println!("{:?}", b);
+
+    let e = ds.list_expenses();
+    println!("{:?}", e);
+
+    let t = ds.list_tags();
+    println!("{:?}", t);
+
+    let i = ds.list_incomes();
+    println!("{:?}", i);
+
     // Hardcoded values (for now)
     // let tags: [Tag; 4] = [
     //     Tag {
