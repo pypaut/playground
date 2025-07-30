@@ -3,6 +3,7 @@ use chrono::Local;
 use serde::Serialize;
 use std::fmt;
 
+#[derive(Debug)]
 pub struct Budget {
     pub id: i32 ,
     pub label: String,

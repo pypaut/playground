@@ -8,7 +8,7 @@ CREATE TABLE tags (
 CREATE TABLE budgets (
     id serial primary key,
     label varchar(80) not null,
-    amount decimal default 0.0,
+    amount real default 0.0,
     date timestamp,
     tag_id integer references tags(id)
 );

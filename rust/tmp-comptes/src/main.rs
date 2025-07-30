@@ -19,7 +19,9 @@ use crate::datastore::Datastore;
 /// - use postgres instead of hardcoded slices
 
 fn main() {
-    let ds: Datastore = datastore::new_datastore();
+    let mut ds: Datastore = datastore::new_datastore();
+    let b = ds.list_budgets();
+    println!("{:?}", b);
     // Hardcoded values (for now)
     // let tags: [Tag; 4] = [
     //     Tag {
