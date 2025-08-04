@@ -5,6 +5,7 @@ use crate::models::{Budget, Expense, Tag};
 use chrono::Local;
 use std::io;
 use std::io::Write;
+use comfy_table::Table;
 use crate::datastore::Datastore;
 
 /// Manage budget and expenses.
@@ -21,17 +22,47 @@ use crate::datastore::Datastore;
 fn main() {
     let mut ds: Datastore = datastore::new_datastore();
 
-    let b = ds.list_budgets();
-    println!("{:?}", b);
+    // let b = ds.list_budgets();
+    // println!("{:?}", b);
 
-    let e = ds.list_expenses();
-    println!("{:?}", e);
+    // let e = ds.list_expenses();
+    // println!("{:?}", e);
 
-    let t = ds.list_tags();
-    println!("{:?}", t);
+    // let t = ds.list_tags();
+    // println!("{:?}", t);
 
-    let i = ds.list_incomes();
-    println!("{:?}", i);
+    // println!("{:?}", i);
+    let incomes = ds.list_incomes();
+    let budgets = ds.list_budgets();
+    let expenses = ds.list_expenses();
+
+    let mut incomes_table = Table::new();
+    incomes_table.set_header(vec!["INCOMES"]);
+
+    let mut budgets_table = Table::new();
+    budgets_table.set_header(vec!["BUDGETS", "Budget", "Expenses"]);
+
+    let mut total = 0.;
+    for i in incomes.iter() {
+        incomes_table.add_row(vec![i.label.clone(), i.amount.to_string()]);
+        total += i.amount;
+    }
+    incomes_table.add_row(vec!["TOTAL".to_string(), total.to_string()]);
+
+    for b in budgets.iter() {
+        let mut budget_expenses = 0.;
+        for exp in expenses.iter() {
+            if exp.budget == b.label {
+                budget_expenses += exp.amount;
+            }
+        }
+        budgets_table.add_row(
+            vec![b.label.clone(), b.amount.to_string(), budget_expenses.to_string()],
+        );
+    }
+
+    println!("{incomes_table}");
+    println!("{budgets_table}");
 
     // Hardcoded values (for now)
     // let tags: [Tag; 4] = [

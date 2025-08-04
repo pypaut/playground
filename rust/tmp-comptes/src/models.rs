@@ -5,25 +5,22 @@ use std::fmt;
 
 #[derive(Debug)]
 pub struct Budget {
-    pub id: i32 ,
     pub label: String,
     pub amount: f32,
     pub date: DateTime<Local>,
-    pub tag_id: i32,
+    pub tag: String,
 }
 
 #[derive(Serialize)]
 pub struct Expense {
-    pub id: i32,
     pub label: String,
     pub amount: f32,
     pub date: DateTime<Local>,
-    pub budget_id: i32,
+    pub budget: String,
 }
 
 #[derive(Debug)]
 pub struct Income {
-    pub id: i32,
     pub label: String,
     pub amount: f32,
     pub date: DateTime<Local>,
@@ -31,7 +28,6 @@ pub struct Income {
 
 #[derive(Debug)]
 pub(crate) struct Tag {
-    pub id: i32,
     pub label: String,
     pub icon: String,
     pub description: String,
