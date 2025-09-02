@@ -1,10 +1,14 @@
-use bevy::{color::palettes::basic::PURPLE, prelude::*, app::AppExit};
+use bevy::{color::palettes::basic::PURPLE, prelude::*, app::AppExit, window::WindowMode};
 use bevy_rapier2d::prelude::*;
 
 const BALL_RADIUS: f32 = 15.;
 const BALL_SPEED: f32 = 300.;
+
 const PLAYER_SIZE: f32 = 120.;
 const PLAYER_SPEED: f32 = 500.;
+
+const WIN_H: f32 = 720.;
+const WIN_W: f32 = 1280.;
 
 #[derive(Component)]
 struct Player;
@@ -32,7 +36,24 @@ struct Buttons {
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        // .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            window: WindowDescriptor {
+                title: "Breakout".to_string(),
+                width: 1280.,
+                height: 720.,
+                // mode: WindowMode::BorderlessFullscreen,
+                ..default()
+            },
+            ..default()
+        }))
+        // .add_plugins(DefaultPlugins.set(WindowPlugin {
+        //     primary_window: Some(Window {
+        //         mode: WindowMode::Fullscreen(MonitorSelection::Primary, VideoModeSelection::Current),
+        //         ..default()
+        //     }),
+        //     ..default()
+        // }))
         .add_plugins(RapierDebugRenderPlugin::default())
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_systems(Startup, setup)
@@ -61,24 +82,25 @@ fn setup(
         .insert(MeshMaterial2d(materials.add(Color::from(PURPLE))));
 
     // Bottom wall
+    // I don't really get how the coordinates work
     commands
-        .spawn(Collider::cuboid(1000.0, 50.0))
-        .insert(Transform::from_xyz(0.0, -400.0, 0.0));
+        .spawn(Collider::cuboid(WIN_W, 35.))
+        .insert(Transform::from_xyz(0.0, -WIN_H/2., 0.0));
 
     // Top wall
     commands
-        .spawn(Collider::cuboid(1000.0, 50.0))
-        .insert(Transform::from_xyz(0.0, 400.0, 0.0));
+        .spawn(Collider::cuboid(WIN_W, 35.))
+        .insert(Transform::from_xyz(0.0, WIN_H/2., 0.0));
 
     // Left wall
     commands
-        .spawn(Collider::cuboid(50.0, 1000.0))
-        .insert(Transform::from_xyz(-500.0, 0.0, 0.0));
+        .spawn(Collider::cuboid(35., WIN_H))
+        .insert(Transform::from_xyz(-WIN_W/2., 0.0, 0.0));
 
     // Right wall
     commands
-        .spawn(Collider::cuboid(50.0, 1000.0))
-        .insert(Transform::from_xyz(500.0, 0.0, 0.0));
+        .spawn(Collider::cuboid(35., WIN_H))
+        .insert(Transform::from_xyz(WIN_W/2., 0.0, 0.0));
 
     // Player 1
     // commands
