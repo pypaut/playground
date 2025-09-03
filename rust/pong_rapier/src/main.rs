@@ -37,26 +37,27 @@ struct Buttons {
 fn main() {
     App::new()
         // .add_plugins(DefaultPlugins)
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            window: WindowDescriptor {
-                title: "Breakout".to_string(),
-                width: 1280.,
-                height: 720.,
-                // mode: WindowMode::BorderlessFullscreen,
-                ..default()
-            },
-            ..default()
-        }))
         // .add_plugins(DefaultPlugins.set(WindowPlugin {
-        //     primary_window: Some(Window {
-        //         mode: WindowMode::Fullscreen(MonitorSelection::Primary, VideoModeSelection::Current),
+        //     window: Window {
+        //         title: "Pong".to_string(),
+        //         width: 1280.,
+        //         height: 720.,
+        //         // mode: WindowMode::BorderlessFullscreen,
         //         ..default()
-        //     }),
+        //     },
         //     ..default()
         // }))
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                mode: WindowMode::Fullscreen(MonitorSelection::Primary, VideoModeSelection::Current),
+                ..default()
+            }),
+            ..default()
+        }))
         .add_plugins(RapierDebugRenderPlugin::default())
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_systems(Startup, setup)
+        .add_systems(Update, maintain_velocity_after_collision)
         // .add_systems(Update, print_ball_altitude)
         .run();
 }
@@ -72,12 +73,23 @@ fn setup(
     // Ball
     commands
         .spawn(RigidBody::Dynamic)
+        .insert(Ball)
         .insert(Collider::ball(5.0))
         .insert(Restitution::coefficient(1.0))
+        .insert(Friction::coefficient(0.0))
         .insert(Transform::from_xyz(0.0, 0.0, 0.0))
         .insert(Ball)
         .insert(Direction { x: 0., y: 0. })
-        .insert(GravityScale(1.0))
+        // .insert(ExternalForce{
+        //     force: Vec2::new(1000.0, 0.0), // poussée vers la droite
+        //     torque: 0.0,
+        // })
+        // .insert(Velocity::default())
+        .insert(Velocity { 
+            linvel: Vect { x: 500., y: 200. },
+            angvel: 0.,
+        })
+        .insert(GravityScale(0.0))
         .insert(Mesh2d(meshes.add(Circle::default())))
         .insert(MeshMaterial2d(materials.add(Color::from(PURPLE))));
 
@@ -123,6 +135,22 @@ fn ball_update(
     }
 }
 
+fn maintain_velocity_after_collision(
+    mut events: EventReader<CollisionEvent>,
+    mut velocities: Query<&mut Velocity, With<Ball>>,
+) {
+    for event in events.read() {
+        if let CollisionEvent::Started(e1, e2, _) = event {
+            println!("Hehe");
+            for entity in [*e1, *e2] {
+                if let Ok(mut velocity) = velocities.get_mut(entity) {
+                    // Réimposer la vitesse constante (ex: 400 vers la droite)
+                    velocity.linvel = Vec2::new(400.0, 0.0);
+                }
+            }
+        }
+    }
+}
 // fn print_ball_altitude(positions: Query<&Transform, With<RigidBody>>) {
 //     for transform in positions.iter() {
 //         println!("Ball altitude: {}", transform.translation.y);
