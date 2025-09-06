@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"image/color"
 	"image/png"
 	"log"
 	"os"
@@ -49,14 +48,18 @@ func NewGame() *Game {
 	}
 
 	// Ball
-	bImg := ebiten.NewImage(BallSize, BallSize)
-	bImg.Fill(color.White)
+	ballImg := loadSprite("assets/ball.png")
+	s = ballImg.Bounds().Size()
+	ballSize := float64(s.X) * BallScale
 
 	ball := &Ball{
-		Img:  bImg,
-		Opt:  &ebiten.DrawImageOptions{},
-		PosX: (WinW - BallSize) / 2,
-		PosY: (WinH - BallSize) / 2,
+		Img: ballImg,
+		Opt: &ebiten.DrawImageOptions{},
+
+		PosX: (WinW - ballSize) / 2,
+		PosY: (WinH - ballSize) / 2,
+		Size: ballSize,
+
 		DirX: 0,
 		DirY: 0,
 	}
@@ -78,6 +81,7 @@ func (g *Game) Update() error {
 	}
 
 	g.Ball.Opt.GeoM.Reset()
+	g.Ball.Opt.GeoM.Scale(BallScale, BallScale)
 	g.Ball.Opt.GeoM.Translate(g.Ball.PosX, g.Ball.PosY)
 
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
@@ -94,13 +98,13 @@ func (g *Game) Update() error {
 	g.Ball.PosY += g.Ball.DirY * BallSpeed
 
 	// Bottom/top walls collision
-	if g.Ball.PosY < 0 || g.Ball.PosY+BallSize > WinH {
-		g.Ball.PosY = clamp(g.Ball.PosY, 0, float64(WinH-BallSize))
+	if g.Ball.PosY < 0 || g.Ball.PosY+g.Ball.Size > WinH {
+		g.Ball.PosY = clamp(g.Ball.PosY, 0, WinH-g.Ball.Size)
 		g.Ball.DirY *= -1
 	}
 
 	// Left/right walls collision
-	if g.Ball.PosX < 0 || g.Ball.PosX+BallSize > WinW {
+	if g.Ball.PosX < 0 || g.Ball.PosX+g.Ball.Size > WinW {
 		return fmt.Errorf("Game over!")
 	}
 
