@@ -12,8 +12,8 @@ type Ball struct {
 
 func (b *Ball) Collides(p *Player) bool {
 	tooHigh := b.PosY+BallSize < p.PosY
-	tooLow := b.PosY > p.PosY+PlayerHeight
-	tooRight := b.PosX > p.PosX+PlayerWidth
+	tooLow := b.PosY > p.PosY+p.Height
+	tooRight := b.PosX > p.PosX+p.Width
 	tooLeft := b.PosX+BallSize < p.PosX
 
 	if tooHigh || tooLow || tooRight || tooLeft {

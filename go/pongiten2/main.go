@@ -13,8 +13,7 @@ const PlayerSpeed = 10
 const BallSpeed = 10
 
 const BallSize = 15
-const PlayerWidth = 15
-const PlayerHeight = 100
+const PlayerScale = 4.0
 
 func main() {
 	ebiten.SetWindowSize(WinW, WinH)
