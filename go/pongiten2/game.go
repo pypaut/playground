@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Game struct {
@@ -15,6 +16,7 @@ type Game struct {
 	Ball    *Ball
 
 	IsRunning bool
+	IsPaused  bool
 }
 
 func NewGame() *Game {
@@ -72,6 +74,14 @@ func NewGame() *Game {
 }
 
 func (g *Game) Update() error {
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		g.IsPaused = !g.IsPaused
+	}
+
+	if g.IsPaused {
+		return nil
+	}
+
 	if err := g.Player1.Update(); err != nil {
 		return err
 	}
@@ -84,7 +94,7 @@ func (g *Game) Update() error {
 	g.Ball.Opt.GeoM.Scale(BallScale, BallScale)
 	g.Ball.Opt.GeoM.Translate(g.Ball.PosX, g.Ball.PosY)
 
-	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+	if ebiten.IsKeyPressed(ebiten.KeySpace) && !g.IsRunning {
 		g.IsRunning = true
 		g.Ball.DirX = 0.5
 		g.Ball.DirY = 0.5
