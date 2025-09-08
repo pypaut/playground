@@ -17,6 +17,8 @@ type Game struct {
 
 	IsRunning bool
 	IsPaused  bool
+
+	Menu *PauseMenu
 }
 
 func NewGame() *Game {
@@ -70,6 +72,7 @@ func NewGame() *Game {
 		Player1: player1,
 		Player2: player2,
 		Ball:    ball,
+		Menu:    NewPauseMenu(),
 	}
 }
 
@@ -79,6 +82,7 @@ func (g *Game) Update() error {
 	}
 
 	if g.IsPaused {
+		g.Menu.Update()
 		return nil
 	}
 
@@ -135,6 +139,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.Player1.Img, g.Player1.Opt)
 	screen.DrawImage(g.Player2.Img, g.Player2.Opt)
 	screen.DrawImage(g.Ball.Img, g.Ball.Opt)
+
+	if g.IsPaused {
+		g.Menu.Draw(screen)
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
