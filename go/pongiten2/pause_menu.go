@@ -2,7 +2,6 @@ package main
 
 import (
 	"image"
-	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -16,7 +15,12 @@ type PauseMenu struct {
 	QuitButtonOpt                  *ebiten.DrawImageOptions
 	QuitButtonPosX, QuitButtonPosY float64
 
-	QuitButtonIsHovered bool
+	QuitButtonIsHovered  bool
+	QuitButtonWasClicked bool
+
+	resumeButton Button
+
+	isEnabled bool
 }
 
 func NewPauseMenu() *PauseMenu {
@@ -30,17 +34,8 @@ func NewPauseMenu() *PauseMenu {
 	bgOpt := &ebiten.DrawImageOptions{}
 	bgOpt.GeoM.Translate(bgPosX, bgPosY)
 
-	quitButtonImg := ebiten.NewImage(bgSize.X/3, bgSize.Y/5)
-	quitButtonImg.Fill(image.Black)
-
-	buttonSize := quitButtonImg.Bounds().Size()
-	buttonPosX := float64(bgSize.X-buttonSize.X) / 2
-	buttonPosY := float64(bgSize.Y-buttonSize.Y) / 2
-
-	quitButtonOpt := &ebiten.DrawImageOptions{}
-	quitButtonOpt.GeoM.Translate(buttonPosX, buttonPosY)
-
-	backgroundImg.DrawImage(quitButtonImg, quitButtonOpt)
+	bgPos := image.Point{X: int(bgPosX), Y: int(bgPosY)}
+	resumeButton := NewResumeButton(bgSize, bgPos)
 
 	return &PauseMenu{
 		BackgroundImage: backgroundImg,
@@ -48,35 +43,30 @@ func NewPauseMenu() *PauseMenu {
 		BackgroundPosX:  bgPosX,
 		BackgroundPosY:  bgPosY,
 
-		QuitButtonImage: quitButtonImg,
-		QuitButtonOpt:   quitButtonOpt,
-		QuitButtonPosX:  buttonPosX,
-		QuitButtonPosY:  buttonPosY,
+		resumeButton: resumeButton,
 	}
 }
 
 func (pm *PauseMenu) Update() {
-	// Check if is hovered
-	mouseX, mouseY := ebiten.CursorPosition()
-	buttonSize := pm.QuitButtonImage.Bounds().Size()
-	posX := int(pm.BackgroundPosX + pm.QuitButtonPosX)
-	posY := int(pm.BackgroundPosY + pm.QuitButtonPosY)
+	pm.isEnabled = pm.resumeButton.Update()
+	if !pm.isEnabled {
+		println("false")
+	}
+}
 
-	if posX < mouseX && mouseX < posX+buttonSize.X &&
-		posY < mouseY && mouseY < posY+buttonSize.Y {
-		pm.QuitButtonIsHovered = true
+func (pm *PauseMenu) IsEnabled() bool {
+	return pm.isEnabled
+}
+
+func (pm *PauseMenu) Toggle() {
+	if pm.isEnabled {
+		pm.isEnabled = false
 	} else {
-		pm.QuitButtonIsHovered = false
+		pm.isEnabled = true
 	}
 }
 
 func (pm *PauseMenu) Draw(screen *ebiten.Image) {
-	if pm.QuitButtonIsHovered {
-		pm.QuitButtonImage.Fill(color.RGBA{R: 50, G: 50, B: 50, A: 255})
-	} else {
-		pm.QuitButtonImage.Fill(image.Black)
-	}
-
-	pm.BackgroundImage.DrawImage(pm.QuitButtonImage, pm.QuitButtonOpt)
+	pm.resumeButton.Draw(pm.BackgroundImage)
 	screen.DrawImage(pm.BackgroundImage, pm.BackgroundOpt)
 }

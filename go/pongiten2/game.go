@@ -78,10 +78,10 @@ func NewGame() *Game {
 
 func (g *Game) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		g.IsPaused = !g.IsPaused
+		g.Menu.Toggle()
 	}
 
-	if g.IsPaused {
+	if g.Menu.IsEnabled() {
 		g.Menu.Update()
 		return nil
 	}
@@ -140,7 +140,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.Player2.Img, g.Player2.Opt)
 	screen.DrawImage(g.Ball.Img, g.Ball.Opt)
 
-	if g.IsPaused {
+	if g.Menu.IsEnabled() {
 		g.Menu.Draw(screen)
 	}
 }
