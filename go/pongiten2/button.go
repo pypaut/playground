@@ -59,45 +59,6 @@ func NewButton(
 	}
 }
 
-func NewResumeButton(menuSize image.Point, menuPos image.Point) Button {
-	buttonSizeX := menuSize.X / 3
-	buttonSizeY := menuSize.Y / 5
-
-	defaultImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
-	defaultImg.Fill(image.Black)
-
-	hoveredImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
-	hoveredImg.Fill(color.RGBA{R: 50, G: 50, B: 50, A: 255})
-
-	clickedImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
-	clickedImg.Fill(color.RGBA{R: 50, G: 100, B: 100, A: 255})
-
-	buttonSize := defaultImg.Bounds().Size()
-	buttonPosX := float64(menuSize.X-buttonSize.X) / 2
-	buttonPosY := float64(menuSize.Y-buttonSize.Y) / 2
-	buttonPosXAbsolute := float64(menuPos.X) + buttonPosX
-	buttonPosYAbsolute := float64(menuPos.Y) + buttonPosY
-
-	buttonOpt := &ebiten.DrawImageOptions{}
-	buttonOpt.GeoM.Translate(buttonPosX, buttonPosY)
-
-	return &button{
-		DefaultImage: defaultImg,
-		Opt:          buttonOpt,
-		HoveredImage: hoveredImg,
-		ClickedImage: clickedImg,
-
-		PosX: buttonPosX,
-		PosY: buttonPosY,
-
-		PosXAbsolute: buttonPosXAbsolute,
-		PosYAbsolute: buttonPosYAbsolute,
-
-		SizeX: float64(buttonSizeX),
-		SizeY: float64(buttonSizeY),
-	}
-}
-
 func (b *button) Update() (wasClicked bool) {
 	// Check if is hovered
 	mouseX, mouseY := ebiten.CursorPosition()
