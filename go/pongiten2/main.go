@@ -15,6 +15,12 @@ const BallSpeed = 10
 const PlayerScale = 4.0
 const BallScale = 0.8
 
+const MenuWidth = WinW / 2
+const MenuHeight = WinH / 2
+
+const MenuPosX = (WinW - MenuWidth) / 2
+const MenuPosY = (WinH - MenuHeight) / 2
+
 func main() {
 	ebiten.SetWindowSize(WinW, WinH)
 	ebiten.SetWindowTitle("Pong")

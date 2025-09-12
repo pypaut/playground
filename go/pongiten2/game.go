@@ -18,7 +18,7 @@ type Game struct {
 	IsRunning bool
 	IsPaused  bool
 
-	Menu *PauseMenu
+	PauseMenu *PauseMenu
 }
 
 func NewGame() *Game {
@@ -69,20 +69,20 @@ func NewGame() *Game {
 	}
 
 	return &Game{
-		Player1: player1,
-		Player2: player2,
-		Ball:    ball,
-		Menu:    NewPauseMenu(),
+		Player1:   player1,
+		Player2:   player2,
+		Ball:      ball,
+		PauseMenu: NewPauseMenu(),
 	}
 }
 
 func (g *Game) Update() error {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		g.Menu.Toggle()
+		g.PauseMenu.Toggle()
 	}
 
-	if g.Menu.IsEnabled() {
-		if err := g.Menu.Update(); err != nil {
+	if g.PauseMenu.IsEnabled() {
+		if err := g.PauseMenu.Update(); err != nil {
 			return err
 		}
 
@@ -143,8 +143,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.Player2.Img, g.Player2.Opt)
 	screen.DrawImage(g.Ball.Img, g.Ball.Opt)
 
-	if g.Menu.IsEnabled() {
-		g.Menu.Draw(screen)
+	if g.PauseMenu.IsEnabled() {
+		g.PauseMenu.Draw(screen)
 	}
 }
 
