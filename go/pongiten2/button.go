@@ -27,6 +27,38 @@ type button struct {
 	SizeX, SizeY               float64
 }
 
+func NewButton(
+	buttonPos image.Point,
+	buttonSize image.Point,
+	menuSize image.Point,
+	menuPos image.Point,
+	defaultImg *ebiten.Image,
+	hoverImg *ebiten.Image,
+	clickImg *ebiten.Image,
+) Button {
+	buttonPosXAbsolute := float64(menuPos.X + buttonPos.X)
+	buttonPosYAbsolute := float64(menuPos.Y + buttonPos.Y)
+
+	buttonOpt := &ebiten.DrawImageOptions{}
+	buttonOpt.GeoM.Translate(float64(buttonPos.X), float64(buttonPos.Y))
+
+	return &button{
+		DefaultImage: defaultImg,
+		Opt:          buttonOpt,
+		HoveredImage: hoverImg,
+		ClickedImage: clickImg,
+
+		PosX: float64(buttonPos.X),
+		PosY: float64(buttonPos.Y),
+
+		PosXAbsolute: buttonPosXAbsolute,
+		PosYAbsolute: buttonPosYAbsolute,
+
+		SizeX: float64(buttonSize.X),
+		SizeY: float64(buttonSize.Y),
+	}
+}
+
 func NewResumeButton(menuSize image.Point, menuPos image.Point) Button {
 	buttonSizeX := menuSize.X / 3
 	buttonSizeY := menuSize.Y / 5

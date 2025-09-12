@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image/color"
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -34,15 +35,40 @@ func NewPauseMenu() *PauseMenu {
 	bgOpt := &ebiten.DrawImageOptions{}
 	bgOpt.GeoM.Translate(bgPosX, bgPosY)
 
+	buttonSizeX := bgSize.X / 3
+	buttonSizeY := bgSize.Y / 5
+
+	defaultImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
+	defaultImg.Fill(image.Black)
+
+	hoveredImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
+	hoveredImg.Fill(color.RGBA{R: 50, G: 50, B: 50, A: 255})
+
+	clickedImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
+	clickedImg.Fill(color.RGBA{R: 50, G: 100, B: 100, A: 255})
+
 	bgPos := image.Point{X: int(bgPosX), Y: int(bgPosY)}
-	resumeButton := NewResumeButton(bgSize, bgPos)
+
+	resumeButtonPos := image.Point{
+		X: (bgSize.X-buttonSizeX)/2,
+		Y: (bgSize.Y-buttonSizeY)/2,
+	}
+
+	resumeButton := NewButton(
+		resumeButtonPos,
+		defaultImg.Bounds().Size(),
+		bgSize,
+		bgPos,
+		defaultImg,
+		hoveredImg,
+		clickedImg,
+	)
 
 	return &PauseMenu{
 		BackgroundImage: backgroundImg,
 		BackgroundOpt:   bgOpt,
 		BackgroundPosX:  bgPosX,
 		BackgroundPosY:  bgPosY,
-
 		resumeButton: resumeButton,
 	}
 }
