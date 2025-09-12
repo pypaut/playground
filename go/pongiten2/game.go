@@ -82,7 +82,10 @@ func (g *Game) Update() error {
 	}
 
 	if g.Menu.IsEnabled() {
-		g.Menu.Update()
+		if err := g.Menu.Update(); err != nil {
+			return err
+		}
+
 		return nil
 	}
 
