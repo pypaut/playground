@@ -9,7 +9,7 @@ import (
 )
 
 type Button interface {
-	Update() bool
+	Update() (wasClicked bool)
 	Draw(menu *ebiten.Image)
 }
 
@@ -66,7 +66,7 @@ func NewResumeButton(menuSize image.Point, menuPos image.Point) Button {
 	}
 }
 
-func (b *button) Update() bool {
+func (b *button) Update() (wasClicked bool) {
 	// Check if is hovered
 	mouseX, mouseY := ebiten.CursorPosition()
 
@@ -91,7 +91,7 @@ func (b *button) Update() bool {
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 		if b.IsClicked && b.IsHovered {
 			b.IsClicked = false
-			return false
+			return true
 		}
 
 		if b.IsClicked {
@@ -99,7 +99,7 @@ func (b *button) Update() bool {
 		}
 	}
 
-	return true
+	return false
 }
 
 func (b *button) Draw(menu *ebiten.Image) {

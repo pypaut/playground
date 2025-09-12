@@ -48,9 +48,8 @@ func NewPauseMenu() *PauseMenu {
 }
 
 func (pm *PauseMenu) Update() {
-	pm.isEnabled = pm.resumeButton.Update()
-	if !pm.isEnabled {
-		println("false")
+	if pm.resumeButton.Update() {
+		pm.isEnabled = false
 	}
 }
 
