@@ -139,29 +139,13 @@ func (g *Game) Update() error {
 		return nil
 	}
 
-	g.Ball.PosX += g.Ball.DirX * BallSpeed
-	g.Ball.PosY += g.Ball.DirY * BallSpeed
-
-	// Bottom/top walls collision
-	if g.Ball.PosY < 0 || g.Ball.PosY+g.Ball.Size > WinH {
-		g.Ball.PosY = clamp(g.Ball.PosY, 0, WinH-g.Ball.Size)
-		g.Ball.DirY *= -1
-	}
-
-	// Left/right walls collision
-	if g.Ball.PosX < 0 || g.Ball.PosX+g.Ball.Size > WinW {
+	switch g.Ball.Update(g.Player1, g.Player2) {
+	case BallUpdateOutputGameOver:
 		g.GameOverMenu.Toggle()
+	case BallUpdateOutputNone:
 		return nil
-	}
-
-	oldPosX := g.Ball.PosX
-	oldPosY := g.Ball.PosY
-
-	// Check player collision
-	if g.Ball.Collides(g.Player1) || g.Ball.Collides(g.Player2) {
-		g.Ball.PosX = oldPosX
-		g.Ball.PosY = oldPosY
-		g.Ball.DirX *= -1
+	default:
+		return nil
 	}
 
 	return nil
