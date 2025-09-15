@@ -85,8 +85,16 @@ func (g *Game) Update() error {
 	}
 
 	if g.PauseMenu.IsEnabled() {
-		if err := g.PauseMenu.Update(); err != nil {
-			return err
+		switch g.PauseMenu.Update() {
+		case PauseOutputResume:
+			g.PauseMenu.Toggle()
+		case PauseOutputQuit:
+			return errors.New("quit from pause menu")
+		case PauseOutputNothing:
+			return nil
+		default:
+			fmt.Printf("unhandled default case for PauseMenu.Update()\n")
+			return nil
 		}
 
 		return nil
@@ -94,15 +102,16 @@ func (g *Game) Update() error {
 
 	if g.GameOverMenu.IsEnabled() {
 		switch g.GameOverMenu.Update() {
-		case TryAgain:
+		case GameOverOutputTryAgain:
 			g.Ball.Reset()
 			g.HasStarted = false
-		case Quit:
+		case GameOverOutputQuit:
 			return errors.New("quit from game over menu")
-		case Nothing:
+		case GameOverOutputNothing:
 			return nil
 		default:
 			fmt.Printf("unhandled default case for GameOverMenu.Update()\n")
+			return nil
 		}
 
 		return nil
@@ -143,7 +152,6 @@ func (g *Game) Update() error {
 	if g.Ball.PosX < 0 || g.Ball.PosX+g.Ball.Size > WinW {
 		g.GameOverMenu.Toggle()
 		return nil
-		// return fmt.Errorf("Game over!")
 	}
 
 	oldPosX := g.Ball.PosX

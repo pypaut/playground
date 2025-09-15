@@ -9,9 +9,9 @@ import (
 type GameOverOutput int
 
 const (
-	Nothing GameOverOutput = iota
-	TryAgain
-	Quit
+	GameOverOutputNothing GameOverOutput = iota
+	GameOverOutputTryAgain
+	GameOverOutputQuit
 )
 
 type GameOverMenu struct {
@@ -45,14 +45,14 @@ func NewGameOverMenu() *GameOverMenu {
 func (m *GameOverMenu) Update() GameOverOutput {
 	if m.tryAgainButton.Update() {
 		m.isEnabled = false
-		return TryAgain
+		return GameOverOutputTryAgain
 	}
 
 	if m.quitButton.Update() {
-		return Quit
+		return GameOverOutputQuit
 	}
 
-	return Nothing
+	return GameOverOutputNothing
 }
 
 func (m *GameOverMenu) IsEnabled() bool {

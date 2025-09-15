@@ -1,10 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
+)
+
+type PauseOutput int
+
+const (
+	PauseOutputResume PauseOutput = iota
+	PauseOutputQuit
+	PauseOutputNothing
 )
 
 type PauseMenu struct {
@@ -35,16 +42,16 @@ func NewPauseMenu() *PauseMenu {
 	}
 }
 
-func (pm *PauseMenu) Update() error {
+func (pm *PauseMenu) Update() PauseOutput {
 	if pm.resumeButton.Update() {
-		pm.isEnabled = false
+		return PauseOutputResume
 	}
 
 	if pm.quitButton.Update() {
-		return fmt.Errorf("quit button was pressed")
+		return PauseOutputQuit
 	}
 
-	return nil
+	return PauseOutputNothing
 }
 
 func (pm *PauseMenu) IsEnabled() bool {
