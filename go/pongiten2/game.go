@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"image/png"
 	"log"
@@ -15,10 +16,11 @@ type Game struct {
 	Player2 *Player
 	Ball    *Ball
 
-	IsRunning bool
-	IsPaused  bool
+	HasStarted bool
+	// GameOver   bool
 
-	PauseMenu *PauseMenu
+	PauseMenu    *PauseMenu
+	GameOverMenu *GameOverMenu
 }
 
 func NewGame() *Game {
@@ -69,10 +71,11 @@ func NewGame() *Game {
 	}
 
 	return &Game{
-		Player1:   player1,
-		Player2:   player2,
-		Ball:      ball,
-		PauseMenu: NewPauseMenu(),
+		Player1:      player1,
+		Player2:      player2,
+		Ball:         ball,
+		PauseMenu:    NewPauseMenu(),
+		GameOverMenu: NewGameOverMenu(),
 	}
 }
 
@@ -84,6 +87,22 @@ func (g *Game) Update() error {
 	if g.PauseMenu.IsEnabled() {
 		if err := g.PauseMenu.Update(); err != nil {
 			return err
+		}
+
+		return nil
+	}
+
+	if g.GameOverMenu.IsEnabled() {
+		switch g.GameOverMenu.Update() {
+		case TryAgain:
+			g.Ball.Reset()
+			g.HasStarted = false
+		case Quit:
+			return errors.New("quit from game over menu")
+		case Nothing:
+			return nil
+		default:
+			fmt.Printf("unhandled default case for GameOverMenu.Update()\n")
 		}
 
 		return nil
@@ -101,13 +120,13 @@ func (g *Game) Update() error {
 	g.Ball.Opt.GeoM.Scale(BallScale, BallScale)
 	g.Ball.Opt.GeoM.Translate(g.Ball.PosX, g.Ball.PosY)
 
-	if ebiten.IsKeyPressed(ebiten.KeySpace) && !g.IsRunning {
-		g.IsRunning = true
+	if ebiten.IsKeyPressed(ebiten.KeySpace) && !g.HasStarted {
+		g.HasStarted = true
 		g.Ball.DirX = 0.5
 		g.Ball.DirY = 0.5
 	}
 
-	if !g.IsRunning {
+	if !g.HasStarted {
 		return nil
 	}
 
@@ -122,7 +141,9 @@ func (g *Game) Update() error {
 
 	// Left/right walls collision
 	if g.Ball.PosX < 0 || g.Ball.PosX+g.Ball.Size > WinW {
-		return fmt.Errorf("Game over!")
+		g.GameOverMenu.Toggle()
+		return nil
+		// return fmt.Errorf("Game over!")
 	}
 
 	oldPosX := g.Ball.PosX
@@ -145,6 +166,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	if g.PauseMenu.IsEnabled() {
 		g.PauseMenu.Draw(screen)
+	}
+
+	if g.GameOverMenu.IsEnabled() {
+		g.GameOverMenu.Draw(screen)
 	}
 }
 

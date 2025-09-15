@@ -52,11 +52,7 @@ func (pm *PauseMenu) IsEnabled() bool {
 }
 
 func (pm *PauseMenu) Toggle() {
-	if pm.isEnabled {
-		pm.isEnabled = false
-	} else {
-		pm.isEnabled = true
-	}
+	pm.isEnabled = !pm.isEnabled
 }
 
 func (pm *PauseMenu) Draw(screen *ebiten.Image) {

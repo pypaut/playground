@@ -24,3 +24,12 @@ func (b *Ball) Collides(p *Player) bool {
 
 	return true
 }
+
+func (b *Ball) Reset() {
+	b.PosX = (WinW - b.Size) / 2
+	b.PosY = (WinH - b.Size) / 2
+	b.DirX = 0
+	b.DirY = 0
+	b.Opt.GeoM.Reset()
+	b.Opt.GeoM.Translate(b.PosX, b.PosY)
+}
