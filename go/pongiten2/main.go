@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -20,6 +21,9 @@ const MenuHeight = WinH / 2
 
 const MenuPosX = (WinW - MenuWidth) / 2
 const MenuPosY = (WinH - MenuHeight) / 2
+
+//go:embed assets/kongtext.ttf
+var kongTTF []byte
 
 func main() {
 	ebiten.SetWindowSize(WinW, WinH)

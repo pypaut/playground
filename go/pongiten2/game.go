@@ -1,14 +1,19 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"image/color"
 	"image/png"
 	"log"
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"golang.org/x/image/font"
+	"golang.org/x/text/language"
 )
 
 type Game struct {
@@ -20,6 +25,10 @@ type Game struct {
 
 	PauseMenu    *PauseMenu
 	GameOverMenu *GameOverMenu
+
+	FontFace   font.Face
+	FontColor  color.Color
+	FaceSource *text.GoTextFaceSource
 }
 
 func NewGame() *Game {
@@ -69,12 +78,20 @@ func NewGame() *Game {
 		DirY: 0,
 	}
 
+	var kongFaceSource *text.GoTextFaceSource
+	textFaceSource, err := text.NewGoTextFaceSource(bytes.NewReader(kongTTF))
+	if err != nil {
+		log.Fatal(err)
+	}
+	kongFaceSource = textFaceSource
+
 	return &Game{
 		Player1:      player1,
 		Player2:      player2,
 		Ball:         ball,
 		PauseMenu:    NewPauseMenu(),
 		GameOverMenu: NewGameOverMenu(),
+		FaceSource:   kongFaceSource,
 	}
 }
 
@@ -153,6 +170,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.Player1.Img, g.Player1.Opt)
 	screen.DrawImage(g.Player2.Img, g.Player2.Opt)
 	screen.DrawImage(g.Ball.Img, g.Ball.Opt)
+
+	textOpt := &text.DrawOptions{
+		DrawImageOptions: ebiten.DrawImageOptions{},
+		LayoutOptions:    text.LayoutOptions{},
+	}
+
+	textOpt.GeoM.Reset()
+	textOpt.GeoM.Translate(WinW-WinW/5, WinH-WinH/15)
+	f := &text.GoTextFace{
+		Source:    g.FaceSource,
+		Direction: text.DirectionRightToLeft,
+		Size:      24,
+		Language:  language.English,
+	}
+	text.Draw(screen, "hehehe that's my text", f, textOpt)
 
 	if g.PauseMenu.IsEnabled() {
 		g.PauseMenu.Draw(screen)
