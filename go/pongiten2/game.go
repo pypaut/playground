@@ -17,7 +17,6 @@ type Game struct {
 	Ball    *Ball
 
 	HasStarted bool
-	// GameOver   bool
 
 	PauseMenu    *PauseMenu
 	GameOverMenu *GameOverMenu
@@ -103,8 +102,7 @@ func (g *Game) Update() error {
 	if g.GameOverMenu.IsEnabled() {
 		switch g.GameOverMenu.Update() {
 		case GameOverOutputTryAgain:
-			g.Ball.Reset()
-			g.HasStarted = false
+			g.Reset()
 		case GameOverOutputQuit:
 			return errors.New("quit from game over menu")
 		case GameOverOutputNothing:
@@ -163,6 +161,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	if g.GameOverMenu.IsEnabled() {
 		g.GameOverMenu.Draw(screen)
 	}
+}
+
+func (g *Game) Reset() {
+	g.Ball.Reset()
+	g.Player1.Reset()
+	g.Player2.Reset()
+	g.HasStarted = false
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

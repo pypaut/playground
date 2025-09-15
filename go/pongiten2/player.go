@@ -33,6 +33,10 @@ func (p *Player) Update() error {
 	return nil
 }
 
+func (p *Player) Reset() {
+	p.PosY = float64(WinH-p.Height) / 2
+}
+
 func clamp(value float64, min float64, max float64) float64 {
 	if value < min {
 		return min
