@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"image/color"
 	"image/png"
 	"log"
 	"os"
@@ -12,7 +11,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	"golang.org/x/image/font"
 	"golang.org/x/text/language"
 )
 
@@ -26,9 +24,16 @@ type Game struct {
 	PauseMenu    *PauseMenu
 	GameOverMenu *GameOverMenu
 
-	FontFace   font.Face
-	FontColor  color.Color
 	FaceSource *text.GoTextFaceSource
+	TextFace   *text.GoTextFace
+
+	LeftTextOpt   *text.DrawOptions
+	CenterTextOpt *text.DrawOptions
+	RightTextOpt  *text.DrawOptions
+
+	LeftTextString   string
+	CenterTextString string
+	RightTextString  string
 }
 
 func NewGame() *Game {
@@ -78,20 +83,63 @@ func NewGame() *Game {
 		DirY: 0,
 	}
 
-	var kongFaceSource *text.GoTextFaceSource
-	textFaceSource, err := text.NewGoTextFaceSource(bytes.NewReader(kongTTF))
+	// Text
+	kongFaceSource, err := text.NewGoTextFaceSource(bytes.NewReader(kongTTF))
 	if err != nil {
 		log.Fatal(err)
 	}
-	kongFaceSource = textFaceSource
+
+	textFace := &text.GoTextFace{
+		Source:    kongFaceSource,
+		Direction: text.DirectionLeftToRight,
+		Size:      24,
+		Language:  language.English,
+	}
+
+	leftTextOpt := &text.DrawOptions{
+		DrawImageOptions: ebiten.DrawImageOptions{},
+		LayoutOptions: text.LayoutOptions{
+			PrimaryAlign: text.AlignCenter,
+		},
+	}
+
+	leftTextOpt.GeoM.Reset()
+	leftTextOpt.GeoM.Translate(player1.PosX, WinH/10)
+
+	rightTextOpt := &text.DrawOptions{
+		DrawImageOptions: ebiten.DrawImageOptions{},
+		LayoutOptions: text.LayoutOptions{
+			PrimaryAlign: text.AlignCenter,
+		},
+	}
+
+	rightTextOpt.GeoM.Reset()
+	rightTextOpt.GeoM.Translate(player2.PosX, WinH/10)
+
+	centerTextOpt := &text.DrawOptions{
+		DrawImageOptions: ebiten.DrawImageOptions{},
+		LayoutOptions: text.LayoutOptions{
+			PrimaryAlign: text.AlignCenter,
+		},
+	}
+
+	centerTextOpt.GeoM.Reset()
+	centerTextOpt.GeoM.Translate(WinW/2, WinH/10)
 
 	return &Game{
-		Player1:      player1,
-		Player2:      player2,
-		Ball:         ball,
-		PauseMenu:    NewPauseMenu(),
-		GameOverMenu: NewGameOverMenu(),
-		FaceSource:   kongFaceSource,
+		Player1:          player1,
+		Player2:          player2,
+		Ball:             ball,
+		PauseMenu:        NewPauseMenu(),
+		GameOverMenu:     NewGameOverMenu(),
+		FaceSource:       kongFaceSource,
+		TextFace:         textFace,
+		LeftTextOpt:      leftTextOpt,
+		LeftTextString:   "Controls: E/D",
+		CenterTextOpt:    centerTextOpt,
+		CenterTextString: "Press [SPACE] to start the game!",
+		RightTextOpt:     rightTextOpt,
+		RightTextString:  "Controls: I/K",
 	}
 }
 
@@ -171,20 +219,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(g.Player2.Img, g.Player2.Opt)
 	screen.DrawImage(g.Ball.Img, g.Ball.Opt)
 
-	textOpt := &text.DrawOptions{
-		DrawImageOptions: ebiten.DrawImageOptions{},
-		LayoutOptions:    text.LayoutOptions{},
+	if !g.HasStarted {
+		text.Draw(screen, g.LeftTextString, g.TextFace, g.LeftTextOpt)
+		text.Draw(screen, g.CenterTextString, g.TextFace, g.CenterTextOpt)
+		text.Draw(screen, g.RightTextString, g.TextFace, g.RightTextOpt)
 	}
 
-	textOpt.GeoM.Reset()
-	textOpt.GeoM.Translate(WinW-WinW/5, WinH-WinH/15)
-	f := &text.GoTextFace{
-		Source:    g.FaceSource,
-		Direction: text.DirectionRightToLeft,
-		Size:      24,
-		Language:  language.English,
+	if g.PauseMenu.IsEnabled() {
+		text.Draw(screen, g.LeftTextString, g.TextFace, g.LeftTextOpt)
+		text.Draw(screen, g.RightTextString, g.TextFace, g.RightTextOpt)
 	}
-	text.Draw(screen, "hehehe that's my text", f, textOpt)
 
 	if g.PauseMenu.IsEnabled() {
 		g.PauseMenu.Draw(screen)
