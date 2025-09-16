@@ -31,7 +31,7 @@ func NewGameOverMenu() *GameOverMenu {
 	bgOpt := &ebiten.DrawImageOptions{}
 	bgOpt.GeoM.Translate(MenuPosX, MenuPosY)
 
-	tryAgainButton := CreateResumeButton()
+	tryAgainButton := CreateTryAgainButton()
 	quitButton := CreateQuitButton()
 
 	return &GameOverMenu{

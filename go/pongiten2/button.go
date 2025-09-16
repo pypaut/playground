@@ -6,6 +6,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 )
 
 type Button struct {
@@ -13,6 +14,9 @@ type Button struct {
 	hoverImage   *ebiten.Image
 	clickImage   *ebiten.Image
 	opt          *ebiten.DrawImageOptions
+
+	label    string
+	labelOpt *text.DrawOptions
 
 	isHovered bool
 	isClicked bool
@@ -28,12 +32,22 @@ func NewButton(
 	defaultImg *ebiten.Image,
 	hoverImg *ebiten.Image,
 	clickImg *ebiten.Image,
+	label string,
 ) *Button {
 	buttonPosXAbsolute := float64(MenuPosX + buttonPos.X)
 	buttonPosYAbsolute := float64(MenuPosY + buttonPos.Y)
 
 	buttonOpt := &ebiten.DrawImageOptions{}
 	buttonOpt.GeoM.Translate(float64(buttonPos.X), float64(buttonPos.Y))
+
+	labelOpt := &text.DrawOptions{
+		DrawImageOptions: ebiten.DrawImageOptions{},
+		LayoutOptions: text.LayoutOptions{
+			PrimaryAlign:   text.AlignCenter,
+			SecondaryAlign: text.AlignCenter,
+		},
+	}
+	labelOpt.GeoM.Translate(float64(buttonSize.X/2), float64(buttonSize.Y/2))
 
 	return &Button{
 		defaultImage: defaultImg,
@@ -49,6 +63,9 @@ func NewButton(
 
 		sizeX: float64(buttonSize.X),
 		sizeY: float64(buttonSize.Y),
+
+		label:    label,
+		labelOpt: labelOpt,
 	}
 }
 
@@ -99,6 +116,7 @@ func (b *Button) Draw(menu *ebiten.Image) {
 		toDraw = b.clickImage
 	}
 
+	text.Draw(toDraw, b.label, TextFace, b.labelOpt)
 	menu.DrawImage(toDraw, b.opt)
 }
 
@@ -126,6 +144,35 @@ func CreateResumeButton() *Button {
 		defaultImg,
 		hoveredImg,
 		clickedImg,
+		"Resume",
+	)
+}
+
+func CreateTryAgainButton() *Button {
+	buttonSizeX := MenuWidth / 3
+	buttonSizeY := MenuHeight / 5
+
+	defaultImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
+	defaultImg.Fill(image.Black)
+
+	hoveredImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
+	hoveredImg.Fill(color.RGBA{R: 50, G: 50, B: 50, A: 255})
+
+	clickedImg := ebiten.NewImage(buttonSizeX, buttonSizeY)
+	clickedImg.Fill(color.RGBA{R: 50, G: 100, B: 100, A: 255})
+
+	buttonPos := image.Point{
+		X: (MenuWidth - buttonSizeX) / 2,
+		Y: (MenuHeight - buttonSizeY) / 5,
+	}
+
+	return NewButton(
+		buttonPos,
+		defaultImg.Bounds().Size(),
+		defaultImg,
+		hoveredImg,
+		clickedImg,
+		"Try again",
 	)
 }
 
@@ -153,5 +200,6 @@ func CreateQuitButton() *Button {
 		defaultImg,
 		hoveredImg,
 		clickedImg,
+		"Quit",
 	)
 }

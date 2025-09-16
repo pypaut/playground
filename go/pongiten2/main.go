@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	_ "embed"
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"golang.org/x/text/language"
 )
 
 const WinW = 1920
@@ -25,9 +28,23 @@ const MenuPosY = (WinH - MenuHeight) / 2
 //go:embed assets/kongtext.ttf
 var kongTTF []byte
 
+var TextFace *text.GoTextFace
+
 func main() {
 	ebiten.SetWindowSize(WinW, WinH)
 	ebiten.SetWindowTitle("Pong")
+
+	kongFaceSource, err := text.NewGoTextFaceSource(bytes.NewReader(kongTTF))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	TextFace = &text.GoTextFace{
+		Source:    kongFaceSource,
+		Direction: text.DirectionLeftToRight,
+		Size:      24,
+		Language:  language.English,
+	}
 
 	game := NewGame()
 

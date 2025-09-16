@@ -43,6 +43,7 @@ func NewGame() *Game {
 	playerWidth := float64(s.X * PlayerScale)
 	playerHeight := float64(s.Y * PlayerScale)
 
+	// Player 1
 	player1 := &Player{
 		Img:     playerImg,
 		Opt:     &ebiten.DrawImageOptions{},
