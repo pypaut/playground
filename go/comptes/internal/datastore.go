@@ -51,3 +51,88 @@ func (d *Datastore) ListBudgets() (budgets []*Budget, err error) {
 
 	return
 }
+
+func (d *Datastore) ListTags() (tags []*Tag, err error) {
+	rows, err := d.dbpool.Query(context.Background(), "select * from tags")
+	if err != nil {
+		return nil, fmt.Errorf("could not list tags: %w", err)
+	}
+
+	for rows.Next() {
+		var tag Tag
+		err := rows.Scan(
+			&tag.Label,
+			&tag.Description,
+			&tag.Icon,
+		)
+
+		if err != nil {
+			return nil, fmt.Errorf("could not scan tags: %w", err)
+		}
+
+		tags = append(tags, &tag)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("could not iterate tags: %w", err)
+	}
+
+	return
+}
+
+func (d *Datastore) ListExpenses() (expenses []*Expense, err error) {
+	rows, err := d.dbpool.Query(context.Background(), "select * from expenses")
+	if err != nil {
+		return nil, fmt.Errorf("could not list expenses: %w", err)
+	}
+
+	for rows.Next() {
+		var expense Expense
+		err := rows.Scan(
+			&expense.Label,
+			&expense.Amount,
+			&expense.Date,
+			&expense.Label,
+		)
+
+		if err != nil {
+			return nil, fmt.Errorf("could not scan expense: %w", err)
+		}
+
+		expenses = append(expenses, &expense)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("could not iterate expenses: %w", err)
+	}
+
+	return
+}
+
+func (d *Datastore) ListIncomes() (incomes []*Income, err error) {
+	rows, err := d.dbpool.Query(context.Background(), "select * from incomes")
+	if err != nil {
+		return nil, fmt.Errorf("could not list incomes: %w", err)
+	}
+
+	for rows.Next() {
+		var income Income
+		err := rows.Scan(
+			&income.Label,
+			&income.Amount,
+			&income.Date,
+		)
+
+		if err != nil {
+			return nil, fmt.Errorf("could not scan income: %w", err)
+		}
+
+		incomes = append(incomes, &income)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("could not iterate incomes: %w", err)
+	}
+
+	return
+}
