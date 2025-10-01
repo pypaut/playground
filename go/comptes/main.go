@@ -19,12 +19,27 @@ func main() {
 	}
 
 	incomesTable := buildIncomesTable(datastore)
-	budgetsTable := buildBudgetsTable(datastore)
+	budgetsTables := buildBudgetsTables(datastore)
 	expensesTable := buildExpensesTable(datastore)
 
 	incomesTable.Render()
-	budgetsTable.Render()
+	for _, t := range budgetsTables {
+		t.Render()
+	}
 	expensesTable.Render()
+}
+
+func buildBudgetsTables(datastore *internal.Datastore) (budgetsTables []table.Writer) {
+	tags, err := datastore.ListTags()
+	if err != nil {
+		panic(err)
+	}
+
+	for _, tag := range tags {
+		budgetsTables = append(budgetsTables, buildBudgetsTableForTag(datastore, tag.Label))
+	}
+
+	return
 }
 
 func buildIncomesTable(datastore *internal.Datastore) (incomesTable table.Writer) {
@@ -58,6 +73,26 @@ func buildBudgetsTable(datastore *internal.Datastore) (budgetsTable table.Writer
 
 	for _, budget := range budgets {
 		budgetsTable.AppendRow(table.Row{budget.Label, budget.Amount})
+	}
+
+	return
+}
+
+func buildBudgetsTableForTag(
+	datastore *internal.Datastore, tagLabel string,
+) (budgetsTable table.Writer) {
+	budgetsTable = table.NewWriter()
+	budgetsTable.SetOutputMirror(os.Stdout)
+
+	budgets, err := datastore.ListBudgetsForTag(tagLabel)
+	if err != nil {
+		panic(err)
+	}
+
+	budgetsTable.AppendHeader(table.Row{tagLabel, "Budget", "Amount"})
+
+	for _, budget := range budgets {
+		budgetsTable.AppendRow(table.Row{"", budget.Label, budget.Amount})
 	}
 
 	return

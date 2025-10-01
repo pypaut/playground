@@ -32,10 +32,39 @@ func (d *Datastore) ListBudgets() (budgets []*Budget, err error) {
 	for rows.Next() {
 		var budget Budget
 		err := rows.Scan(
-			&budget.Tag,
+			&budget.Label,
 			&budget.Amount,
 			&budget.Date,
+			&budget.Tag,
+		)
+
+		if err != nil {
+			return nil, fmt.Errorf("could not scan budget: %w", err)
+		}
+
+		budgets = append(budgets, &budget)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("could not iterate budgets: %w", err)
+	}
+
+	return
+}
+
+func (d *Datastore) ListBudgetsForTag(tagLabel string) (budgets []*Budget, err error) {
+	rows, err := d.dbpool.Query(context.Background(), fmt.Sprintf("select * from budgets where tag like '%s'", tagLabel))
+	if err != nil {
+		return nil, fmt.Errorf("could not list budgets: %w", err)
+	}
+
+	for rows.Next() {
+		var budget Budget
+		err := rows.Scan(
 			&budget.Label,
+			&budget.Amount,
+			&budget.Date,
+			&budget.Tag,
 		)
 
 		if err != nil {
@@ -92,7 +121,7 @@ func (d *Datastore) ListExpenses() (expenses []*Expense, err error) {
 			&expense.Label,
 			&expense.Amount,
 			&expense.Date,
-			&expense.Label,
+			&expense.Budget,
 		)
 
 		if err != nil {
