@@ -60,6 +60,86 @@ func TestListBudgets(t *testing.T) {
 	}
 }
 
+func TestListBudgetsForTag(t *testing.T) {
+	cfg, err := LoadConfig("../config.yml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ds, err := NewDatastore(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cases := []struct {
+		tag             string
+		expectedBudgets []*Budget
+	}{
+		{
+			tag: "Épargnes",
+			expectedBudgets: []*Budget{
+				{
+					Label:  "Épargne chats",
+					Amount: 4500,
+					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+					Tag:    "Épargnes",
+				},
+			},
+		},
+		{
+			tag: "Factures",
+			expectedBudgets: []*Budget{
+				{
+					Label:  "Loyer",
+					Amount: 120000,
+					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+					Tag:    "Factures",
+				},
+			},
+		},
+		{
+			tag: "Dépenses courantes",
+			expectedBudgets: []*Budget{
+				{
+					Label:  "Courses",
+					Amount: 45000,
+					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+					Tag:    "Dépenses courantes",
+				},
+			},
+		},
+		{
+			tag: "Dépenses variables",
+			expectedBudgets: []*Budget{
+				{
+					Label:  "Cadeau pour jsp qui",
+					Amount: 3900,
+					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+					Tag:    "Dépenses variables",
+				},
+			},
+		},
+	}
+
+	for _, c := range cases {
+		budgets, err := ds.ListBudgetsForTag(c.tag)
+		if err != nil {
+			t.Fatalf("ListBudgets: %v", err)
+		}
+
+		if len(budgets) != len(c.expectedBudgets) {
+			t.Fatalf("ListBudgets: got %d budgets, want %d", len(budgets), len(c.expectedBudgets))
+		}
+
+		for i := range budgets {
+			if !reflect.DeepEqual(budgets[i], c.expectedBudgets[i]) {
+				t.Fatalf("ListBudgets: got %v, want %v", budgets[i], c.expectedBudgets[i])
+			}
+		}
+
+	}
+}
+
 func TestListIncomes(t *testing.T) {
 	cfg, err := LoadConfig("../config.yml")
 	if err != nil {
