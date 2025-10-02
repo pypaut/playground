@@ -6,21 +6,21 @@ CREATE TABLE tags (
 
 CREATE TABLE budgets (
     label varchar(80) not null unique primary key,
-    amount real default 0.0,
+    amount integer default 0.0,
     date timestamp,
     tag varchar(80) references tags(label)
 );
 
 CREATE TABLE expenses (
     label varchar(80) not null unique primary key,
-    amount real default 0.0,
+    amount integer default 0.0,
     date timestamp,
     budget varchar(80) references budgets(label)
 );
 
 CREATE TABLE incomes (
     label varchar(80) not null unique primary key,
-    amount real default 0.0,
+    amount integer default 0.0,
     date timestamp
 );
 
@@ -31,15 +31,15 @@ INSERT INTO tags (label, description, icon) VALUES
     ('Dépenses variables', 'Dépenses variables', '💶');
 
 INSERT INTO budgets (label, amount, date, tag) VALUES
-    ('Courses', 450.0, '2025-07-01', 'Dépenses courantes'),
-    ('Épargne chats', 45.0, '2025-07-01', 'Épargnes'),
-    ('Cadeau pour jsp qui', 39., '2025-07-01', 'Dépenses variables'),
-    ('Loyer', 1200.0, '2025-07-01', 'Factures');
+    ('Courses', 45000, '2025-07-01', 'Dépenses courantes'),
+    ('Épargne chats', 4500, '2025-07-01', 'Épargnes'),
+    ('Cadeau pour jsp qui', 3900, '2025-07-01', 'Dépenses variables'),
+    ('Loyer', 120000, '2025-07-01', 'Factures');
 
 INSERT INTO expenses (label, amount, date, budget) VALUES
-    ('Loyer', 1200.0, '2025-07-02', 'Loyer'),
-    ('Leclerc', 47.81, '2025-07-08', 'Courses');
+    ('Loyer', 120000, '2025-07-02', 'Loyer'),
+    ('Leclerc', 4781, '2025-07-08', 'Courses');
 
 INSERT INTO incomes (label, amount, date) VALUES
-    ('Salaire 1', 2000.42, '2025-07-01'),
-    ('Salaire 2', 2100.81, '2025-07-01');
+    ('Salaire 1', 200042, '2025-07-01'),
+    ('Salaire 2', 210081, '2025-07-01');

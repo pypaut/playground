@@ -20,25 +20,25 @@ func TestListBudgets(t *testing.T) {
 	expectedBudgets := []*Budget{
 		{
 			Label:  "Courses",
-			Amount: 450.0,
+			Amount: 45000,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 			Tag:    "Dépenses courantes",
 		},
 		{
 			Label:  "Épargne chats",
-			Amount: 45.0,
+			Amount: 4500,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 			Tag:    "Épargnes",
 		},
 		{
 			Label:  "Cadeau pour jsp qui",
-			Amount: 39.0,
+			Amount: 3900,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 			Tag:    "Dépenses variables",
 		},
 		{
 			Label:  "Loyer",
-			Amount: 1200.0,
+			Amount: 120000,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 			Tag:    "Factures",
 		},
@@ -74,12 +74,12 @@ func TestListIncomes(t *testing.T) {
 	expectedIncomes := []*Income{
 		{
 			Label:  "Salaire 1",
-			Amount: 2000.42,
+			Amount: 200042,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 		},
 		{
 			Label:  "Salaire 2",
-			Amount: 2100.81,
+			Amount: 210081,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 		},
 	}
