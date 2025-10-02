@@ -2,6 +2,8 @@ package main
 
 import (
 	"comptes/internal"
+
+	"github.com/alecthomas/kong"
 )
 
 func main() {
@@ -15,16 +17,9 @@ func main() {
 		panic(err)
 	}
 
-	incomesTable := internal.BuildIncomesTable(datastore)
-	budgetsTables := internal.BuildBudgetsTables(datastore)
-	expensesTable := internal.BuildExpensesTable(datastore)
-	remainTable := internal.BuildRemainTable(datastore)
+	cli := internal.NewCli(datastore)
+	ctx := kong.Parse(cli)
+	err = ctx.Run(cli)
+	ctx.FatalIfErrorf(err)
 
-	incomesTable.Render()
-	for _, t := range budgetsTables {
-		t.Render()
-	}
-
-	remainTable.Render()
-	expensesTable.Render()
 }
