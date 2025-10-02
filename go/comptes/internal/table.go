@@ -84,11 +84,45 @@ func BuildExpensesTable(datastore *Datastore) (expensesTable table.Writer) {
 		panic(err)
 	}
 
-	expensesTable.AppendHeader(table.Row{"Expense", "Amount", "Date"})
+	expensesTable.AppendHeader(table.Row{"Date", "Expense", "Amount"})
 
 	for _, expense := range expenses {
-		expensesTable.AppendRow(table.Row{expense.Label, expense.Amount / 100, expense.Date})
+		expensesTable.AppendRow(table.Row{expense.Date.String(), expense.Label, expense.Amount / 100})
 	}
+
+	return
+}
+
+func BuildRemainTable(datastore *Datastore) (remainTable table.Writer) {
+	remainTable = table.NewWriter()
+	remainTable.SetOutputMirror(os.Stdout)
+
+	incomes, err := datastore.ListIncomes()
+	if err != nil {
+		panic(err)
+	}
+
+	totalIncomes := 0.
+
+	for _, i := range incomes {
+		totalIncomes += i.Amount
+	}
+
+	budgets, err := datastore.ListBudgets()
+	if err != nil {
+		panic(err)
+	}
+
+	totalBudgets := 0.
+
+	for _, b := range budgets {
+		totalBudgets += b.Amount
+	}
+
+	remain := totalIncomes - totalBudgets
+
+	remainTable.AppendHeader(table.Row{"Remain"})
+	remainTable.AppendRow(table.Row{remain / 100})
 
 	return
 }

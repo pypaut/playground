@@ -18,10 +18,13 @@ func main() {
 	incomesTable := internal.BuildIncomesTable(datastore)
 	budgetsTables := internal.BuildBudgetsTables(datastore)
 	expensesTable := internal.BuildExpensesTable(datastore)
+	remainTable := internal.BuildRemainTable(datastore)
 
 	incomesTable.Render()
 	for _, t := range budgetsTables {
 		t.Render()
 	}
+
+	remainTable.Render()
 	expensesTable.Render()
 }
