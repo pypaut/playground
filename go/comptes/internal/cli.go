@@ -57,11 +57,8 @@ func (cmd *ExpensesCmd) Run() error {
 
 func parseDate(year int, month int) string {
 	now := time.Now()
-	if year == 0 {
+	if year == 0 || month == 0 {
 		year = now.Year()
-	}
-
-	if month == 0 {
 		month = int(now.Month())
 	}
 
