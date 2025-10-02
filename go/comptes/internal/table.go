@@ -87,7 +87,7 @@ func BuildExpensesTable(datastore *Datastore) (expensesTable table.Writer) {
 	expensesTable.AppendHeader(table.Row{"Date", "Expense", "Amount"})
 
 	for _, expense := range expenses {
-		expensesTable.AppendRow(table.Row{expense.Date.String(), expense.Label, expense.Amount / 100})
+		expensesTable.AppendRow(table.Row{expense.Date.Format("2006-01-02"), expense.Label, expense.Amount / 100})
 	}
 
 	return
