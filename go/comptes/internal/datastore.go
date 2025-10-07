@@ -52,8 +52,13 @@ func (d *Datastore) ListBudgets() (budgets []*Budget, err error) {
 	return
 }
 
-func (d *Datastore) ListBudgetsForTag(tagLabel string) (budgets []*Budget, err error) {
-	rows, err := d.dbpool.Query(context.Background(), fmt.Sprintf("select * from budgets where tag like '%s'", tagLabel))
+func (d *Datastore) ListBudgetsForTag(tagLabel string, year, month int) (budgets []*Budget, err error) {
+	rows, err := d.dbpool.Query(
+		context.Background(),
+		fmt.Sprintf("select * from budgets where tag like '%s' and extract(year from date) = $1 and extract(month from date) = $2", tagLabel),
+		year,
+		month,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("could not list budgets: %w", err)
 	}
@@ -109,8 +114,13 @@ func (d *Datastore) ListTags() (tags []*Tag, err error) {
 	return
 }
 
-func (d *Datastore) ListExpenses() (expenses []*Expense, err error) {
-	rows, err := d.dbpool.Query(context.Background(), "select * from expenses")
+func (d *Datastore) ListExpenses(year, month int) (expenses []*Expense, err error) {
+	rows, err := d.dbpool.Query(
+		context.Background(),
+		"select * from expenses where extract(year from date) = $1 and extract(month from date) = $2",
+		year,
+		month,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("could not list expenses: %w", err)
 	}
@@ -138,8 +148,11 @@ func (d *Datastore) ListExpenses() (expenses []*Expense, err error) {
 	return
 }
 
-func (d *Datastore) ListIncomes() (incomes []*Income, err error) {
-	rows, err := d.dbpool.Query(context.Background(), "select * from incomes")
+func (d *Datastore) ListIncomes(year, month int) (incomes []*Income, err error) {
+	rows, err := d.dbpool.Query(
+		context.Background(),
+		"select * from incomes where extract(year from date) = $1 and extract(month from date) = $2", year, month,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("could not list incomes: %w", err)
 	}

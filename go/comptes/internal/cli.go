@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -29,12 +28,11 @@ type BudgetsCmd struct {
 }
 
 func (cmd *BudgetsCmd) Run() error {
-	date := parseDate(cmd.Year, cmd.Month)
-	fmt.Printf("Date: %v\n", date)
+	year, month := parseDate(cmd.Year, cmd.Month)
 
-	incomesTable := BuildIncomesTable(cmd.datastore)
-	budgetsTables := BuildBudgetsTables(cmd.datastore)
-	remainTable := BuildRemainTable(cmd.datastore)
+	incomesTable := BuildIncomesTable(cmd.datastore, year, month)
+	budgetsTables := BuildBudgetsTables(cmd.datastore, year, month)
+	remainTable := BuildRemainTable(cmd.datastore, year, month)
 
 	incomesTable.Render()
 	for _, t := range budgetsTables {
@@ -47,22 +45,28 @@ func (cmd *BudgetsCmd) Run() error {
 
 type ExpensesCmd struct {
 	datastore *Datastore
+
+	Year  int
+	Month int
 }
 
 func (cmd *ExpensesCmd) Run() error {
-	expensesTable := BuildExpensesTable(cmd.datastore)
+	year, month := parseDate(cmd.Year, cmd.Month)
+	expensesTable := BuildExpensesTable(cmd.datastore, year, month)
 	expensesTable.Render()
 	return nil
 }
 
-func parseDate(year int, month int) string {
+func parseDate(year int, month int) (int, int) {
 	now := time.Now()
 	if year == 0 || month == 0 {
 		year = now.Year()
 		month = int(now.Month())
 	}
 
-	return time.Date(
-		year, time.Month(month), 1, 0, 0, 0, 0, time.Local,
-	).Format("2006-01")
+	return year, month
+
+	// return time.Date(
+	// 	year, time.Month(month), 1, 0, 0, 0, 0, time.Local,
+	// ) // .Format("2006-01")
 }

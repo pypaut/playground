@@ -6,24 +6,24 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 )
 
-func BuildBudgetsTables(datastore *Datastore) (budgetsTables []table.Writer) {
+func BuildBudgetsTables(datastore *Datastore, year, month int) (budgetsTables []table.Writer) {
 	tags, err := datastore.ListTags()
 	if err != nil {
 		panic(err)
 	}
 
 	for _, tag := range tags {
-		budgetsTables = append(budgetsTables, BuildBudgetsTableForTag(datastore, tag.Label))
+		budgetsTables = append(budgetsTables, BuildBudgetsTableForTag(datastore, tag.Label, year, month))
 	}
 
 	return
 }
 
-func BuildIncomesTable(datastore *Datastore) (incomesTable table.Writer) {
+func BuildIncomesTable(datastore *Datastore, year, month int) (incomesTable table.Writer) {
 	incomesTable = table.NewWriter()
 	incomesTable.SetOutputMirror(os.Stdout)
 
-	incomes, err := datastore.ListIncomes()
+	incomes, err := datastore.ListIncomes(year, month)
 	if err != nil {
 		panic(err)
 	}
@@ -56,12 +56,12 @@ func BuildBudgetsTable(datastore *Datastore) (budgetsTable table.Writer) {
 }
 
 func BuildBudgetsTableForTag(
-	datastore *Datastore, tagLabel string,
+	datastore *Datastore, tagLabel string, year, month int,
 ) (budgetsTable table.Writer) {
 	budgetsTable = table.NewWriter()
 	budgetsTable.SetOutputMirror(os.Stdout)
 
-	budgets, err := datastore.ListBudgetsForTag(tagLabel)
+	budgets, err := datastore.ListBudgetsForTag(tagLabel, year, month)
 	if err != nil {
 		panic(err)
 	}
@@ -75,11 +75,11 @@ func BuildBudgetsTableForTag(
 	return
 }
 
-func BuildExpensesTable(datastore *Datastore) (expensesTable table.Writer) {
+func BuildExpensesTable(datastore *Datastore, year, month int) (expensesTable table.Writer) {
 	expensesTable = table.NewWriter()
 	expensesTable.SetOutputMirror(os.Stdout)
 
-	expenses, err := datastore.ListExpenses()
+	expenses, err := datastore.ListExpenses(year, month)
 	if err != nil {
 		panic(err)
 	}
@@ -93,11 +93,11 @@ func BuildExpensesTable(datastore *Datastore) (expensesTable table.Writer) {
 	return
 }
 
-func BuildRemainTable(datastore *Datastore) (remainTable table.Writer) {
+func BuildRemainTable(datastore *Datastore, year, month int) (remainTable table.Writer) {
 	remainTable = table.NewWriter()
 	remainTable.SetOutputMirror(os.Stdout)
 
-	incomes, err := datastore.ListIncomes()
+	incomes, err := datastore.ListIncomes(year, month)
 	if err != nil {
 		panic(err)
 	}
