@@ -37,11 +37,11 @@ func BuildIncomesTable(datastore *Datastore, year, month int) (incomesTable tabl
 	return
 }
 
-func BuildBudgetsTable(datastore *Datastore) (budgetsTable table.Writer) {
+func BuildBudgetsTable(datastore *Datastore, year, month int) (budgetsTable table.Writer) {
 	budgetsTable = table.NewWriter()
 	budgetsTable.SetOutputMirror(os.Stdout)
 
-	budgets, err := datastore.ListBudgets()
+	budgets, err := datastore.ListBudgets(year, month)
 	if err != nil {
 		panic(err)
 	}
@@ -108,7 +108,7 @@ func BuildRemainTable(datastore *Datastore, year, month int) (remainTable table.
 		totalIncomes += i.Amount
 	}
 
-	budgets, err := datastore.ListBudgets()
+	budgets, err := datastore.ListBudgets(year, month)
 	if err != nil {
 		panic(err)
 	}

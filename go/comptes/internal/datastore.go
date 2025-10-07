@@ -23,8 +23,13 @@ func NewDatastore(cfg *Config) (*Datastore, error) {
 	}, nil
 }
 
-func (d *Datastore) ListBudgets() (budgets []*Budget, err error) {
-	rows, err := d.dbpool.Query(context.Background(), "select * from budgets")
+func (d *Datastore) ListBudgets(year, month int) (budgets []*Budget, err error) {
+	rows, err := d.dbpool.Query(
+		context.Background(),
+		"select * from budgets where extract(year from date) = $1 and extract(month from date) = $2",
+		year,
+		month,
+	)
 	if err != nil {
 		return nil, fmt.Errorf("could not list budgets: %w", err)
 	}
