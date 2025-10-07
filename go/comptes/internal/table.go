@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"math"
 	"os"
 
 	"github.com/jedib0t/go-pretty/v6/table"
@@ -123,6 +124,39 @@ func BuildRemainTable(datastore *Datastore, year, month int) (remainTable table.
 
 	remainTable.AppendHeader(table.Row{"Remain"})
 	remainTable.AppendRow(table.Row{remain / 100})
+
+	return
+}
+
+func BuildProportionsTable(datastore *Datastore, year, month int) (proportionsTable table.Writer) {
+	proportionsTable = table.NewWriter()
+	proportionsTable.SetOutputMirror(os.Stdout)
+	incomes, err := datastore.ListIncomes(year, month)
+	if err != nil {
+		panic(err)
+	}
+
+	totalIncomes := 0.
+	for _, i := range incomes {
+		totalIncomes += i.Amount
+	}
+
+	proportionsTable.AppendHeader(table.Row{"Tag", "Proportion"})
+	tags, err := datastore.ListTags()
+	for _, tag := range tags {
+		budgetsForTag, err := datastore.ListBudgetsForTag(tag.Label, year, month)
+		if err != nil {
+			panic(err)
+		}
+
+		totalBudgetForTag := 0.0
+		for _, b := range budgetsForTag {
+			totalBudgetForTag += b.Amount
+		}
+
+		prop := (totalBudgetForTag * 100) / totalIncomes
+		proportionsTable.AppendRow(table.Row{tag.Label, math.Round(prop*100) / 100})
+	}
 
 	return
 }

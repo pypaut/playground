@@ -23,8 +23,9 @@ func NewCli(datastore *Datastore) *CLI {
 type BudgetsCmd struct {
 	datastore *Datastore
 
-	Year  int
-	Month int
+	Year        int
+	Month       int
+	Proportions bool
 }
 
 func (cmd *BudgetsCmd) Run() error {
@@ -37,6 +38,10 @@ func (cmd *BudgetsCmd) Run() error {
 	incomesTable.Render()
 	for _, t := range budgetsTables {
 		t.Render()
+	}
+	if cmd.Proportions {
+		proportionsTable := BuildProportionsTable(cmd.datastore, year, month)
+		proportionsTable.Render()
 	}
 	remainTable.Render()
 
