@@ -1,44 +1,50 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE tags (
-    label varchar(80) not null unique primary key,
+    id uuid PRIMARY KEY DEFAULT UUID_GENERATE_V4(),
+    label varchar(80) not null,
     description varchar(80),
     icon varchar(2)
 );
 
 CREATE TABLE budgets (
-    label varchar(80) not null unique primary key,
+    id uuid PRIMARY KEY DEFAULT UUID_GENERATE_V4(),
+    label varchar(80) not null,
     amount integer default 0.0,
     date timestamp,
-    tag varchar(80) references tags(label)
+    tag_id uuid references tags(id)
 );
 
 CREATE TABLE expenses (
-    label varchar(80) not null unique primary key,
+    id uuid PRIMARY KEY DEFAULT UUID_GENERATE_V4(),
+    label varchar(80) not null,
     amount integer default 0.0,
     date timestamp,
-    budget varchar(80) references budgets(label)
+    budget_id uuid references budgets(id)
 );
 
 CREATE TABLE incomes (
-    label varchar(80) not null unique primary key,
+    id uuid PRIMARY KEY DEFAULT UUID_GENERATE_V4(),
+    label varchar(80) not null,
     amount integer default 0.0,
     date timestamp
 );
 
-INSERT INTO tags (label, description, icon) VALUES
-    ('Factures', 'Paiements récurrents, charges fixes, abonnements', '🧾'),
-    ('Épargnes', 'On met de côté', '💰'),
-    ('Dépenses courantes', 'Dépenses usuelles', '💳'),
-    ('Dépenses variables', 'Dépenses variables', '💶');
+INSERT INTO tags (id, label, description, icon) VALUES
+    ('226cb277-5208-4a0d-8b9f-37f3630e288f', 'Factures', 'Paiements récurrents, charges fixes, abonnements', '🧾'),
+    ('f9383bb3-6aaf-41d7-906c-d1c580f23d49', 'Épargnes', 'On met de côté', '💰'),
+    ('74b344cb-7a16-4af8-8b82-17f477a4f30e', 'Dépenses courantes', 'Dépenses usuelles', '💳'),
+    ('a4f7f30c-ae34-4480-8e28-a9ab1741dfb3', 'Dépenses variables', 'Dépenses variables', '💶');
 
-INSERT INTO budgets (label, amount, date, tag) VALUES
-    ('Courses', 45000, '2025-07-01', 'Dépenses courantes'),
-    ('Épargne chats', 4500, '2025-07-01', 'Épargnes'),
-    ('Cadeau pour jsp qui', 3900, '2025-07-01', 'Dépenses variables'),
-    ('Loyer', 120000, '2025-07-01', 'Factures');
+INSERT INTO budgets (id, label, amount, date, tag_id) VALUES
+    ('a853f96f-e238-49ee-97f3-1e17f0336df9', 'Courses', 45000, '2025-07-01', '74b344cb-7a16-4af8-8b82-17f477a4f30e'),
+    ('d253c593-440d-4bac-ac67-e4ff69355339', 'Épargne chats', 4500, '2025-07-01', 'a4f7f30c-ae34-4480-8e28-a9ab1741dfb3'),
+    ('d3d63ae4-8680-40c6-9f00-af694d83ac6d', 'Cadeau pour jsp qui', 3900, '2025-07-01', 'a4f7f30c-ae34-4480-8e28-a9ab1741dfb3'),
+    ('a575ca9f-ddf1-4a52-a718-c018b5169757', 'Loyer', 120000, '2025-07-01', '226cb277-5208-4a0d-8b9f-37f3630e288f');
 
-INSERT INTO expenses (label, amount, date, budget) VALUES
-    ('Loyer', 120000, '2025-07-02', 'Loyer'),
-    ('Leclerc', 4781, '2025-07-08', 'Courses');
+INSERT INTO expenses (label, amount, date, budget_id) VALUES
+    ('Loyer', 120000, '2025-07-02', 'a575ca9f-ddf1-4a52-a718-c018b5169757'),
+    ('Leclerc', 4781, '2025-07-08', 'a853f96f-e238-49ee-97f3-1e17f0336df9');
 
 INSERT INTO incomes (label, amount, date) VALUES
     ('Salaire 1', 200042, '2025-07-01'),
