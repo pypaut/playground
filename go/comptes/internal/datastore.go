@@ -37,10 +37,11 @@ func (d *Datastore) ListBudgets(year, month int) (budgets []*Budget, err error) 
 	for rows.Next() {
 		var budget Budget
 		err := rows.Scan(
+			&budget.ID,
 			&budget.Label,
 			&budget.Amount,
 			&budget.Date,
-			&budget.Tag,
+			&budget.TagID,
 		)
 
 		if err != nil {
@@ -71,10 +72,11 @@ func (d *Datastore) ListBudgetsForTag(tagLabel string, year, month int) (budgets
 	for rows.Next() {
 		var budget Budget
 		err := rows.Scan(
+			&budget.ID,
 			&budget.Label,
 			&budget.Amount,
 			&budget.Date,
-			&budget.Tag,
+			&budget.TagID,
 		)
 
 		if err != nil {
@@ -100,6 +102,7 @@ func (d *Datastore) ListTags() (tags []*Tag, err error) {
 	for rows.Next() {
 		var tag Tag
 		err := rows.Scan(
+			&tag.ID,
 			&tag.Label,
 			&tag.Description,
 			&tag.Icon,
@@ -133,10 +136,11 @@ func (d *Datastore) ListExpenses(year, month int) (expenses []*Expense, err erro
 	for rows.Next() {
 		var expense Expense
 		err := rows.Scan(
+			&expense.ID,
 			&expense.Label,
 			&expense.Amount,
 			&expense.Date,
-			&expense.Budget,
+			&expense.BudgetID,
 		)
 
 		if err != nil {
@@ -168,10 +172,11 @@ func (d *Datastore) ListExpensesForBudget(year, month int, budget string) (expen
 	for rows.Next() {
 		var expense Expense
 		err := rows.Scan(
+			&expense.ID,
 			&expense.Label,
 			&expense.Amount,
 			&expense.Date,
-			&expense.Budget,
+			&expense.BudgetID,
 		)
 
 		if err != nil {
@@ -200,6 +205,7 @@ func (d *Datastore) ListIncomes(year, month int) (incomes []*Income, err error) 
 	for rows.Next() {
 		var income Income
 		err := rows.Scan(
+			&income.ID,
 			&income.Label,
 			&income.Amount,
 			&income.Date,

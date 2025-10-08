@@ -4,6 +4,8 @@ go 1.25.1
 
 require (
 	github.com/alecthomas/kong v1.12.1
+	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/jedib0t/go-pretty/v6 v6.6.8
 	go.yaml.in/yaml/v3 v3.0.4

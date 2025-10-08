@@ -38,7 +38,7 @@ INSERT INTO tags (id, label, description, icon) VALUES
 
 INSERT INTO budgets (id, label, amount, date, tag_id) VALUES
     ('a853f96f-e238-49ee-97f3-1e17f0336df9', 'Courses', 45000, '2025-07-01', '74b344cb-7a16-4af8-8b82-17f477a4f30e'),
-    ('d253c593-440d-4bac-ac67-e4ff69355339', 'Épargne chats', 4500, '2025-07-01', 'a4f7f30c-ae34-4480-8e28-a9ab1741dfb3'),
+    ('d253c593-440d-4bac-ac67-e4ff69355339', 'Épargne chats', 4500, '2025-07-01', 'f9383bb3-6aaf-41d7-906c-d1c580f23d49'),
     ('d3d63ae4-8680-40c6-9f00-af694d83ac6d', 'Cadeau pour jsp qui', 3900, '2025-07-01', 'a4f7f30c-ae34-4480-8e28-a9ab1741dfb3'),
     ('a575ca9f-ddf1-4a52-a718-c018b5169757', 'Loyer', 120000, '2025-07-01', '226cb277-5208-4a0d-8b9f-37f3630e288f');
 

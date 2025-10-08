@@ -4,6 +4,20 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/gofrs/uuid"
+)
+
+var (
+	tagDepensesCourantesUUID = uuid.FromStringOrNil("74b344cb-7a16-4af8-8b82-17f477a4f30e")
+	tagEpargneUUID           = uuid.FromStringOrNil("f9383bb3-6aaf-41d7-906c-d1c580f23d49")
+	tagDepensesVariablesUUID = uuid.FromStringOrNil("a4f7f30c-ae34-4480-8e28-a9ab1741dfb3")
+	tagFacturesUUID          = uuid.FromStringOrNil("226cb277-5208-4a0d-8b9f-37f3630e288f")
+
+	budgetCoursesUUID      = uuid.FromStringOrNil("a853f96f-e238-49ee-97f3-1e17f0336df9")
+	budgetEpargneChatsUUID = uuid.FromStringOrNil("d253c593-440d-4bac-ac67-e4ff69355339")
+	budgetCadeauUUID       = uuid.FromStringOrNil("d3d63ae4-8680-40c6-9f00-af694d83ac6d")
+	budgetLoyerUUID        = uuid.FromStringOrNil("a575ca9f-ddf1-4a52-a718-c018b5169757")
 )
 
 func TestListBudgets(t *testing.T) {
@@ -19,28 +33,32 @@ func TestListBudgets(t *testing.T) {
 
 	expectedBudgets := []*Budget{
 		{
+			ID:     budgetCoursesUUID,
 			Label:  "Courses",
 			Amount: 45000,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-			Tag:    "Dépenses courantes",
+			TagID:  tagDepensesCourantesUUID,
 		},
 		{
+			ID:     budgetEpargneChatsUUID,
 			Label:  "Épargne chats",
 			Amount: 4500,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-			Tag:    "Épargnes",
+			TagID:  tagEpargneUUID,
 		},
 		{
+			ID:     budgetCadeauUUID,
 			Label:  "Cadeau pour jsp qui",
 			Amount: 3900,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-			Tag:    "Dépenses variables",
+			TagID:  tagDepensesVariablesUUID,
 		},
 		{
+			ID:     budgetLoyerUUID,
 			Label:  "Loyer",
 			Amount: 120000,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-			Tag:    "Factures",
+			TagID:  tagFacturesUUID,
 		},
 	}
 
@@ -82,7 +100,7 @@ func TestListBudgetsForTag(t *testing.T) {
 					Label:  "Épargne chats",
 					Amount: 4500,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-					Tag:    "Épargnes",
+					TagID:  tagEpargneUUID,
 				},
 			},
 		},
@@ -93,7 +111,7 @@ func TestListBudgetsForTag(t *testing.T) {
 					Label:  "Loyer",
 					Amount: 120000,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-					Tag:    "Factures",
+					TagID:  tagFacturesUUID,
 				},
 			},
 		},
@@ -104,7 +122,7 @@ func TestListBudgetsForTag(t *testing.T) {
 					Label:  "Courses",
 					Amount: 45000,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-					Tag:    "Dépenses courantes",
+					TagID:  tagDepensesCourantesUUID,
 				},
 			},
 		},
@@ -115,7 +133,7 @@ func TestListBudgetsForTag(t *testing.T) {
 					Label:  "Cadeau pour jsp qui",
 					Amount: 3900,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-					Tag:    "Dépenses variables",
+					TagID:  tagDepensesCourantesUUID,
 				},
 			},
 		},
@@ -241,18 +259,21 @@ func TestListExpenses(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	budgetCoursesUUID := uuid.FromStringOrNil("a853f96f-e238-49ee-97f3-1e17f0336df9")
+	budgetLoyerUUID := uuid.FromStringOrNil("a575ca9f-ddf1-4a52-a718-c018b5169757")
+
 	expectedExpenses := []*Expense{
 		{
-			Label:  "Loyer",
-			Amount: 120000,
-			Date:   time.Date(2025, 07, 2, 0, 0, 0, 0, time.UTC),
-			Budget: "Loyer",
+			Label:    "Loyer",
+			Amount:   120000,
+			Date:     time.Date(2025, 07, 2, 0, 0, 0, 0, time.UTC),
+			BudgetID: budgetLoyerUUID,
 		},
 		{
-			Label:  "Leclerc",
-			Amount: 4781,
-			Date:   time.Date(2025, 07, 8, 0, 0, 0, 0, time.UTC),
-			Budget: "Courses",
+			Label:    "Leclerc",
+			Amount:   4781,
+			Date:     time.Date(2025, 07, 8, 0, 0, 0, 0, time.UTC),
+			BudgetID: budgetCoursesUUID,
 		},
 	}
 
