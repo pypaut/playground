@@ -67,10 +67,20 @@ func BuildBudgetsTableForTag(
 		panic(err)
 	}
 
-	budgetsTable.AppendHeader(table.Row{tagLabel, "Budget", "Amount"})
+	budgetsTable.AppendHeader(table.Row{tagLabel, "Budget", "Amount", "Spent"})
 
 	for _, budget := range budgets {
-		budgetsTable.AppendRow(table.Row{"", budget.Label, budget.Amount / 100})
+		expensesForBudget, err := datastore.ListExpensesForBudget(year, month, budget.Label)
+		if err != nil {
+			panic(err)
+		}
+
+		totalExpensesForBudget := 0.
+		for _, e := range expensesForBudget {
+			totalExpensesForBudget += e.Amount
+		}
+
+		budgetsTable.AppendRow(table.Row{"", budget.Label, budget.Amount / 100, totalExpensesForBudget / 100})
 	}
 
 	return

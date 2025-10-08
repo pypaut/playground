@@ -153,6 +153,41 @@ func (d *Datastore) ListExpenses(year, month int) (expenses []*Expense, err erro
 	return
 }
 
+func (d *Datastore) ListExpensesForBudget(year, month int, budget string) (expenses []*Expense, err error) {
+	rows, err := d.dbpool.Query(
+		context.Background(),
+		"select * from expenses where budget=$1 and extract(year from date) = $2 and extract(month from date) = $3",
+		budget,
+		year,
+		month,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("could not list expenses: %w", err)
+	}
+
+	for rows.Next() {
+		var expense Expense
+		err := rows.Scan(
+			&expense.Label,
+			&expense.Amount,
+			&expense.Date,
+			&expense.Budget,
+		)
+
+		if err != nil {
+			return nil, fmt.Errorf("could not scan expense: %w", err)
+		}
+
+		expenses = append(expenses, &expense)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("could not iterate expenses: %w", err)
+	}
+
+	return
+}
+
 func (d *Datastore) ListIncomes(year, month int) (incomes []*Income, err error) {
 	rows, err := d.dbpool.Query(
 		context.Background(),
