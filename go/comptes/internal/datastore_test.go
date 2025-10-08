@@ -44,7 +44,7 @@ func TestListBudgets(t *testing.T) {
 		},
 	}
 
-	budgets, err := ds.ListBudgets()
+	budgets, err := ds.ListBudgets(2025, 7)
 	if err != nil {
 		t.Fatalf("ListBudgets: %v", err)
 	}
@@ -122,7 +122,7 @@ func TestListBudgetsForTag(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		budgets, err := ds.ListBudgetsForTag(c.tag)
+		budgets, err := ds.ListBudgetsForTag(c.tag, 2025, 7)
 		if err != nil {
 			t.Fatalf("ListBudgets: %v", err)
 		}
@@ -164,7 +164,7 @@ func TestListIncomes(t *testing.T) {
 		},
 	}
 
-	incomes, err := ds.ListIncomes()
+	incomes, err := ds.ListIncomes(2025, 7)
 	if err != nil {
 		t.Fatalf("ListIncomes: %v", err)
 	}
@@ -256,7 +256,7 @@ func TestListExpenses(t *testing.T) {
 		},
 	}
 
-	expenses, err := ds.ListExpenses()
+	expenses, err := ds.ListExpenses(2025, 7)
 	if err != nil {
 		t.Fatalf("ListExpenses: %v", err)
 	}
