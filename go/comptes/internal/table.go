@@ -62,7 +62,12 @@ func BuildBudgetsTableForTag(
 	budgetsTable = table.NewWriter()
 	budgetsTable.SetOutputMirror(os.Stdout)
 
-	budgets, err := datastore.ListBudgetsForTag(tagLabel, year, month)
+	tag, err := datastore.GetTagByLabel(tagLabel)
+	if err != nil {
+		panic(err)
+	}
+
+	budgets, err := datastore.ListBudgetsForTagId(tag.ID, year, month)
 	if err != nil {
 		panic(err)
 	}
@@ -154,7 +159,7 @@ func BuildProportionsTable(datastore *Datastore, year, month int) (proportionsTa
 	proportionsTable.AppendHeader(table.Row{"Tag", "Proportion"})
 	tags, err := datastore.ListTags()
 	for _, tag := range tags {
-		budgetsForTag, err := datastore.ListBudgetsForTag(tag.Label, year, month)
+		budgetsForTag, err := datastore.ListBudgetsForTagId(tag.ID, year, month)
 		if err != nil {
 			panic(err)
 		}

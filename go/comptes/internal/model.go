@@ -15,7 +15,7 @@ type Budget struct {
 }
 
 type Income struct {
-	ID     int64     `json:"id"`
+	ID     uuid.UUID `json:"id"`
 	Label  string    `json:"label"`
 	Amount float64   `json:"amount"`
 	Date   time.Time `json:"date"`

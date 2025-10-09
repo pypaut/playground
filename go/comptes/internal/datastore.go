@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/gofrs/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -21,6 +23,25 @@ func NewDatastore(cfg *Config) (*Datastore, error) {
 	return &Datastore{
 		dbpool: dbpool,
 	}, nil
+}
+
+func (d *Datastore) AddBudget(budget *Budget) error {
+	query := `INSERT INTO budgets (label, amount, date, tag_id)
+VALUES (@label, @amount, @date, @tagId)`
+	args := pgx.NamedArgs{
+		"label":  budget.Label,
+		"amount": budget.Amount,
+		"date":   budget.Date,
+		"tagId":  budget.TagID.String(),
+	}
+
+	_, err := d.dbpool.Exec(context.Background(), query, args)
+	if err != nil {
+		return fmt.Errorf("error creating budget: %s", err)
+		// return err
+	}
+
+	return nil
 }
 
 func (d *Datastore) ListBudgets(year, month int) (budgets []*Budget, err error) {
@@ -58,10 +79,21 @@ func (d *Datastore) ListBudgets(year, month int) (budgets []*Budget, err error) 
 	return
 }
 
-func (d *Datastore) ListBudgetsForTag(tagLabel string, year, month int) (budgets []*Budget, err error) {
+func (d *Datastore) GetTagByLabel(tagLabel string) (*Tag, error) {
+	var tag Tag
+	err := d.dbpool.QueryRow(context.Background(), "select * from tags where label = $1", tagLabel).Scan(&tag)
+	if err != nil {
+		return nil, fmt.Errorf("could not get tag: %w", err)
+	}
+
+	return &tag, nil
+}
+
+func (d *Datastore) ListBudgetsForTagId(tagId uuid.UUID, year, month int) (budgets []*Budget, err error) {
 	rows, err := d.dbpool.Query(
 		context.Background(),
-		fmt.Sprintf("select * from budgets where tag like '%s' and extract(year from date) = $1 and extract(month from date) = $2", tagLabel),
+		"select * from budgets where tag_id=$1 and extract(year from date) = $2 and extract(month from date) = $3",
+		tagId.String(),
 		year,
 		month,
 	)

@@ -18,6 +18,9 @@ var (
 	budgetEpargneChatsUUID = uuid.FromStringOrNil("d253c593-440d-4bac-ac67-e4ff69355339")
 	budgetCadeauUUID       = uuid.FromStringOrNil("d3d63ae4-8680-40c6-9f00-af694d83ac6d")
 	budgetLoyerUUID        = uuid.FromStringOrNil("a575ca9f-ddf1-4a52-a718-c018b5169757")
+
+	expenseLoyerUUID   = uuid.FromStringOrNil("5a46c201-e9f5-4b0b-b336-0e64e5f96ac9")
+	expenseLeclercUUID = uuid.FromStringOrNil("74bddac0-b71b-4d7c-89c4-9eef8b7e2ad3")
 )
 
 func TestListBudgets(t *testing.T) {
@@ -90,13 +93,14 @@ func TestListBudgetsForTag(t *testing.T) {
 	}
 
 	cases := []struct {
-		tag             string
+		tagId           uuid.UUID
 		expectedBudgets []*Budget
 	}{
 		{
-			tag: "Épargnes",
+			tagId: tagEpargneUUID,
 			expectedBudgets: []*Budget{
 				{
+					ID:     budgetEpargneChatsUUID,
 					Label:  "Épargne chats",
 					Amount: 4500,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
@@ -105,9 +109,10 @@ func TestListBudgetsForTag(t *testing.T) {
 			},
 		},
 		{
-			tag: "Factures",
+			tagId: tagFacturesUUID,
 			expectedBudgets: []*Budget{
 				{
+					ID:     budgetLoyerUUID,
 					Label:  "Loyer",
 					Amount: 120000,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
@@ -116,9 +121,10 @@ func TestListBudgetsForTag(t *testing.T) {
 			},
 		},
 		{
-			tag: "Dépenses courantes",
+			tagId: tagDepensesCourantesUUID,
 			expectedBudgets: []*Budget{
 				{
+					ID:     budgetCoursesUUID,
 					Label:  "Courses",
 					Amount: 45000,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
@@ -127,20 +133,21 @@ func TestListBudgetsForTag(t *testing.T) {
 			},
 		},
 		{
-			tag: "Dépenses variables",
+			tagId: tagDepensesVariablesUUID,
 			expectedBudgets: []*Budget{
 				{
+					ID:     budgetCadeauUUID,
 					Label:  "Cadeau pour jsp qui",
 					Amount: 3900,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
-					TagID:  tagDepensesCourantesUUID,
+					TagID:  tagDepensesVariablesUUID,
 				},
 			},
 		},
 	}
 
 	for _, c := range cases {
-		budgets, err := ds.ListBudgetsForTag(c.tag, 2025, 7)
+		budgets, err := ds.ListBudgetsForTagId(c.tagId, 2025, 7)
 		if err != nil {
 			t.Fatalf("ListBudgets: %v", err)
 		}
@@ -171,11 +178,13 @@ func TestListIncomes(t *testing.T) {
 
 	expectedIncomes := []*Income{
 		{
+			ID:     uuid.FromStringOrNil("961a1dd1-ca6f-412a-83f0-9af6dcd85081"),
 			Label:  "Salaire 1",
 			Amount: 200042,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 		},
 		{
+			ID:     uuid.FromStringOrNil("247a13b0-32bc-4dd2-8250-b9beabfc939f"),
 			Label:  "Salaire 2",
 			Amount: 210081,
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
@@ -211,21 +220,25 @@ func TestListTags(t *testing.T) {
 
 	expectedTags := []*Tag{
 		{
+			ID:          tagFacturesUUID,
 			Label:       "Factures",
 			Description: "Paiements récurrents, charges fixes, abonnements",
 			Icon:        "🧾",
 		},
 		{
+			ID:          tagEpargneUUID,
 			Label:       "Épargnes",
 			Description: "On met de côté",
 			Icon:        "💰",
 		},
 		{
+			ID:          tagDepensesCourantesUUID,
 			Label:       "Dépenses courantes",
 			Description: "Dépenses usuelles",
 			Icon:        "💳",
 		},
 		{
+			ID:          tagDepensesVariablesUUID,
 			Label:       "Dépenses variables",
 			Description: "Dépenses variables",
 			Icon:        "💶",
@@ -259,17 +272,16 @@ func TestListExpenses(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	budgetCoursesUUID := uuid.FromStringOrNil("a853f96f-e238-49ee-97f3-1e17f0336df9")
-	budgetLoyerUUID := uuid.FromStringOrNil("a575ca9f-ddf1-4a52-a718-c018b5169757")
-
 	expectedExpenses := []*Expense{
 		{
+			ID:       expenseLoyerUUID,
 			Label:    "Loyer",
 			Amount:   120000,
 			Date:     time.Date(2025, 07, 2, 0, 0, 0, 0, time.UTC),
 			BudgetID: budgetLoyerUUID,
 		},
 		{
+			ID:       expenseLeclercUUID,
 			Label:    "Leclerc",
 			Amount:   4781,
 			Date:     time.Date(2025, 07, 8, 0, 0, 0, 0, time.UTC),
@@ -290,5 +302,44 @@ func TestListExpenses(t *testing.T) {
 		if !reflect.DeepEqual(expenses[i], expectedExpenses[i]) {
 			t.Fatalf("ListExpenses: got %v, want %v", expenses[i], expectedExpenses[i])
 		}
+	}
+}
+
+func TestAddBudget(t *testing.T) {
+	cfg, err := LoadConfig("../config.yml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ds, err := NewDatastore(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testBudget := &Budget{
+		Label:  "Épargne voiture",
+		Amount: 150,
+		Date:   time.Date(2025, 10, 9, 0, 0, 0, 0, time.UTC),
+		TagID:  tagEpargneUUID,
+	}
+
+	err = ds.AddBudget(testBudget)
+	if err != nil {
+		t.Fatalf("AddBudget: %s", err)
+	}
+
+	budgets, err := ds.ListBudgets(2025, 10)
+	if err != nil {
+		t.Fatalf("ListBudgets: %v", err)
+	}
+
+	if len(budgets) != 1 {
+		t.Fatalf("ListBudgets: got %d budgets, want 1", len(budgets))
+	}
+
+	if testBudget.Amount != budgets[0].Amount ||
+		testBudget.Date != budgets[0].Date ||
+		testBudget.TagID != budgets[0].TagID {
+		t.Fatalf("ListBudgets: got %v, want %v", budgets[0], testBudget)
 	}
 }
