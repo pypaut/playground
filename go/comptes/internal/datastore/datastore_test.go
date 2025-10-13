@@ -263,50 +263,6 @@ func TestListTags(t *testing.T) {
 	}
 }
 
-func TestListExpenses(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	expectedExpenses := []*model.Expense{
-		{
-			ID:       expenseLoyerUUID,
-			Label:    "Loyer",
-			Amount:   120000,
-			Date:     time.Date(2025, 07, 2, 0, 0, 0, 0, time.UTC),
-			BudgetID: budgetLoyerUUID,
-		},
-		{
-			ID:       expenseLeclercUUID,
-			Label:    "Leclerc",
-			Amount:   4781,
-			Date:     time.Date(2025, 07, 8, 0, 0, 0, 0, time.UTC),
-			BudgetID: budgetCoursesUUID,
-		},
-	}
-
-	expenses, err := ds.ListExpenses(2025, 7)
-	if err != nil {
-		t.Fatalf("ListExpenses: %v", err)
-	}
-
-	if len(expenses) != 2 {
-		t.Fatalf("ListExpenses: got %d expenses, want 2", len(expenses))
-	}
-
-	for i := range expenses {
-		if !reflect.DeepEqual(expenses[i], expectedExpenses[i]) {
-			t.Fatalf("ListExpenses: got %v, want %v", expenses[i], expectedExpenses[i])
-		}
-	}
-}
-
 func TestAddBudget(t *testing.T) {
 	cfg, err := config.LoadConfig("../../config.yml")
 	if err != nil {

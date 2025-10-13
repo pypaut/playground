@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/gofrs/uuid"
+	"github.com/jackc/pgx/v5"
 )
 
 func (d *Datastore) ListExpenses(year, month int) (expenses []*model.Expense, err error) {
@@ -77,4 +78,36 @@ func (d *Datastore) ListExpensesForBudget(year, month int, budgetId uuid.UUID) (
 	}
 
 	return
+}
+
+func (d *Datastore) AddExpense(expense *model.Expense) error {
+	query := `INSERT INTO expenses (label, amount, date, budget_id)
+VALUES (@label, @amount, @date, @budgetId)`
+	args := pgx.NamedArgs{
+		"label":    expense.Label,
+		"amount":   expense.Amount,
+		"date":     expense.Date,
+		"budgetId": expense.BudgetID.String(),
+	}
+
+	_, err := d.dbpool.Exec(context.Background(), query, args)
+	if err != nil {
+		return fmt.Errorf("error creating expense: %s", err)
+	}
+
+	return nil
+}
+
+func (d *Datastore) RemoveExpense(expenseId uuid.UUID) error {
+	query := `DELETE FROM expenses WHERE id=@expenseId`
+	args := pgx.NamedArgs{
+		"expenseId": expenseId,
+	}
+
+	_, err := d.dbpool.Exec(context.Background(), query, args)
+	if err != nil {
+		return fmt.Errorf("error removing expense: %s", err)
+	}
+
+	return nil
 }
