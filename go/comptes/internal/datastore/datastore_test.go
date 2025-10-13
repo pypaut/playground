@@ -1,6 +1,8 @@
-package internal
+package datastore
 
 import (
+	"comptes/internal/config"
+	"comptes/internal/model"
 	"reflect"
 	"testing"
 	"time"
@@ -24,7 +26,7 @@ var (
 )
 
 func TestListBudgets(t *testing.T) {
-	cfg, err := LoadConfig("../config.yml")
+	cfg, err := config.LoadConfig("../../config.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,7 +36,7 @@ func TestListBudgets(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expectedBudgets := []*Budget{
+	expectedBudgets := []*model.Budget{
 		{
 			ID:     budgetCoursesUUID,
 			Label:  "Courses",
@@ -82,7 +84,7 @@ func TestListBudgets(t *testing.T) {
 }
 
 func TestListBudgetsForTag(t *testing.T) {
-	cfg, err := LoadConfig("../config.yml")
+	cfg, err := config.LoadConfig("../../config.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -94,11 +96,11 @@ func TestListBudgetsForTag(t *testing.T) {
 
 	cases := []struct {
 		tagId           uuid.UUID
-		expectedBudgets []*Budget
+		expectedBudgets []*model.Budget
 	}{
 		{
 			tagId: tagEpargneUUID,
-			expectedBudgets: []*Budget{
+			expectedBudgets: []*model.Budget{
 				{
 					ID:     budgetEpargneChatsUUID,
 					Label:  "Épargne chats",
@@ -110,7 +112,7 @@ func TestListBudgetsForTag(t *testing.T) {
 		},
 		{
 			tagId: tagFacturesUUID,
-			expectedBudgets: []*Budget{
+			expectedBudgets: []*model.Budget{
 				{
 					ID:     budgetLoyerUUID,
 					Label:  "Loyer",
@@ -122,7 +124,7 @@ func TestListBudgetsForTag(t *testing.T) {
 		},
 		{
 			tagId: tagDepensesCourantesUUID,
-			expectedBudgets: []*Budget{
+			expectedBudgets: []*model.Budget{
 				{
 					ID:     budgetCoursesUUID,
 					Label:  "Courses",
@@ -134,7 +136,7 @@ func TestListBudgetsForTag(t *testing.T) {
 		},
 		{
 			tagId: tagDepensesVariablesUUID,
-			expectedBudgets: []*Budget{
+			expectedBudgets: []*model.Budget{
 				{
 					ID:     budgetCadeauUUID,
 					Label:  "Cadeau pour jsp qui",
@@ -166,7 +168,7 @@ func TestListBudgetsForTag(t *testing.T) {
 }
 
 func TestListIncomes(t *testing.T) {
-	cfg, err := LoadConfig("../config.yml")
+	cfg, err := config.LoadConfig("../../config.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -176,7 +178,7 @@ func TestListIncomes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expectedIncomes := []*Income{
+	expectedIncomes := []*model.Income{
 		{
 			ID:     uuid.FromStringOrNil("961a1dd1-ca6f-412a-83f0-9af6dcd85081"),
 			Label:  "Salaire 1",
@@ -208,7 +210,7 @@ func TestListIncomes(t *testing.T) {
 }
 
 func TestListTags(t *testing.T) {
-	cfg, err := LoadConfig("../config.yml")
+	cfg, err := config.LoadConfig("../../config.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -218,7 +220,7 @@ func TestListTags(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expectedTags := []*Tag{
+	expectedTags := []*model.Tag{
 		{
 			ID:          tagFacturesUUID,
 			Label:       "Factures",
@@ -262,7 +264,7 @@ func TestListTags(t *testing.T) {
 }
 
 func TestListExpenses(t *testing.T) {
-	cfg, err := LoadConfig("../config.yml")
+	cfg, err := config.LoadConfig("../../config.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -272,7 +274,7 @@ func TestListExpenses(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expectedExpenses := []*Expense{
+	expectedExpenses := []*model.Expense{
 		{
 			ID:       expenseLoyerUUID,
 			Label:    "Loyer",
@@ -306,7 +308,7 @@ func TestListExpenses(t *testing.T) {
 }
 
 func TestAddBudget(t *testing.T) {
-	cfg, err := LoadConfig("../config.yml")
+	cfg, err := config.LoadConfig("../../config.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -316,7 +318,7 @@ func TestAddBudget(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	testBudget := &Budget{
+	testBudget := &model.Budget{
 		Label:  "Épargne voiture",
 		Amount: 150,
 		Date:   time.Date(2025, 10, 9, 0, 0, 0, 0, time.UTC),
@@ -341,5 +343,50 @@ func TestAddBudget(t *testing.T) {
 		testBudget.Date != budgets[0].Date ||
 		testBudget.TagID != budgets[0].TagID {
 		t.Fatalf("ListBudgets: got %v, want %v", budgets[0], testBudget)
+	}
+}
+
+func TestGetTagByLabel(t *testing.T) {
+	cfg, err := config.LoadConfig("../../config.yml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ds, err := NewDatastore(cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	cases := []struct {
+		label      string
+		expectedId uuid.UUID
+	}{
+		{
+			label:      "Factures",
+			expectedId: tagFacturesUUID,
+		},
+		{
+			label:      "Épargnes",
+			expectedId: tagEpargneUUID,
+		},
+		{
+			label:      "Dépenses courantes",
+			expectedId: tagDepensesCourantesUUID,
+		},
+		{
+			label:      "Dépenses variables",
+			expectedId: tagDepensesVariablesUUID,
+		},
+	}
+
+	for _, c := range cases {
+		gotTag, err := ds.GetTagByLabel(c.label)
+		if err != nil {
+			t.Fatalf("GetTagByLabel error: %s", err)
+		}
+
+		if gotTag.ID != c.expectedId {
+			t.Fatalf("GetTagByLabel: got %v, want %v", gotTag.ID, c.expectedId)
+		}
 	}
 }

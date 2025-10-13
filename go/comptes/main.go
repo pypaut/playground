@@ -1,25 +1,27 @@
 package main
 
 import (
-	"comptes/internal"
+	"comptes/internal/cli"
+	"comptes/internal/config"
+	"comptes/internal/datastore"
 
 	"github.com/alecthomas/kong"
 )
 
 func main() {
-	cfg, err := internal.LoadConfig("config.yml")
+	cfg, err := config.LoadConfig("config.yml")
 	if err != nil {
 		panic(err)
 	}
 
-	datastore, err := internal.NewDatastore(cfg)
+	ds, err := datastore.NewDatastore(cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	cli := internal.NewCli(datastore)
-	ctx := kong.Parse(cli)
-	err = ctx.Run(cli)
+	c := cli.NewCli(ds)
+	ctx := kong.Parse(c)
+	err = ctx.Run(c)
 	ctx.FatalIfErrorf(err)
 
 }

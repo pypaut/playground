@@ -1,13 +1,14 @@
-package internal
+package table
 
 import (
+	"comptes/internal/datastore"
 	"math"
 	"os"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 )
 
-func BuildBudgetsTables(datastore *Datastore, year, month int) (budgetsTables []table.Writer) {
+func BuildBudgetsTables(datastore *datastore.Datastore, year, month int) (budgetsTables []table.Writer) {
 	tags, err := datastore.ListTags()
 	if err != nil {
 		panic(err)
@@ -20,7 +21,7 @@ func BuildBudgetsTables(datastore *Datastore, year, month int) (budgetsTables []
 	return
 }
 
-func BuildIncomesTable(datastore *Datastore, year, month int) (incomesTable table.Writer) {
+func BuildIncomesTable(datastore *datastore.Datastore, year, month int) (incomesTable table.Writer) {
 	incomesTable = table.NewWriter()
 	incomesTable.SetOutputMirror(os.Stdout)
 
@@ -38,7 +39,7 @@ func BuildIncomesTable(datastore *Datastore, year, month int) (incomesTable tabl
 	return
 }
 
-func BuildBudgetsTable(datastore *Datastore, year, month int) (budgetsTable table.Writer) {
+func BuildBudgetsTable(datastore *datastore.Datastore, year, month int) (budgetsTable table.Writer) {
 	budgetsTable = table.NewWriter()
 	budgetsTable.SetOutputMirror(os.Stdout)
 
@@ -57,7 +58,7 @@ func BuildBudgetsTable(datastore *Datastore, year, month int) (budgetsTable tabl
 }
 
 func BuildBudgetsTableForTag(
-	datastore *Datastore, tagLabel string, year, month int,
+	datastore *datastore.Datastore, tagLabel string, year, month int,
 ) (budgetsTable table.Writer) {
 	budgetsTable = table.NewWriter()
 	budgetsTable.SetOutputMirror(os.Stdout)
@@ -75,7 +76,7 @@ func BuildBudgetsTableForTag(
 	budgetsTable.AppendHeader(table.Row{tagLabel, "Budget", "Amount", "Spent"})
 
 	for _, budget := range budgets {
-		expensesForBudget, err := datastore.ListExpensesForBudget(year, month, budget.Label)
+		expensesForBudget, err := datastore.ListExpensesForBudget(year, month, budget.ID)
 		if err != nil {
 			panic(err)
 		}
@@ -91,7 +92,7 @@ func BuildBudgetsTableForTag(
 	return
 }
 
-func BuildExpensesTable(datastore *Datastore, year, month int) (expensesTable table.Writer) {
+func BuildExpensesTable(datastore *datastore.Datastore, year, month int) (expensesTable table.Writer) {
 	expensesTable = table.NewWriter()
 	expensesTable.SetOutputMirror(os.Stdout)
 
@@ -109,7 +110,7 @@ func BuildExpensesTable(datastore *Datastore, year, month int) (expensesTable ta
 	return
 }
 
-func BuildRemainTable(datastore *Datastore, year, month int) (remainTable table.Writer) {
+func BuildRemainTable(datastore *datastore.Datastore, year, month int) (remainTable table.Writer) {
 	remainTable = table.NewWriter()
 	remainTable.SetOutputMirror(os.Stdout)
 
@@ -143,7 +144,7 @@ func BuildRemainTable(datastore *Datastore, year, month int) (remainTable table.
 	return
 }
 
-func BuildProportionsTable(datastore *Datastore, year, month int) (proportionsTable table.Writer) {
+func BuildProportionsTable(datastore *datastore.Datastore, year, month int) (proportionsTable table.Writer) {
 	proportionsTable = table.NewWriter()
 	proportionsTable.SetOutputMirror(os.Stdout)
 	incomes, err := datastore.ListIncomes(year, month)

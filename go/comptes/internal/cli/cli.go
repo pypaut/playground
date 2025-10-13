@@ -1,6 +1,8 @@
-package internal
+package cli
 
 import (
+	"comptes/internal/datastore"
+	"comptes/internal/table"
 	"time"
 )
 
@@ -9,7 +11,7 @@ type CLI struct {
 	Expenses ExpensesCmd `cmd:"accounts" help:"Show expenses"`
 }
 
-func NewCli(datastore *Datastore) *CLI {
+func NewCli(datastore *datastore.Datastore) *CLI {
 	return &CLI{
 		Budgets: BudgetsCmd{
 			datastore: datastore,
@@ -21,7 +23,7 @@ func NewCli(datastore *Datastore) *CLI {
 }
 
 type BudgetsCmd struct {
-	datastore *Datastore
+	datastore *datastore.Datastore
 
 	Year        int
 	Month       int
@@ -31,16 +33,16 @@ type BudgetsCmd struct {
 func (cmd *BudgetsCmd) Run() error {
 	year, month := parseDate(cmd.Year, cmd.Month)
 
-	incomesTable := BuildIncomesTable(cmd.datastore, year, month)
-	budgetsTables := BuildBudgetsTables(cmd.datastore, year, month)
-	remainTable := BuildRemainTable(cmd.datastore, year, month)
+	incomesTable := table.BuildIncomesTable(cmd.datastore, year, month)
+	budgetsTables := table.BuildBudgetsTables(cmd.datastore, year, month)
+	remainTable := table.BuildRemainTable(cmd.datastore, year, month)
 
 	incomesTable.Render()
 	for _, t := range budgetsTables {
 		t.Render()
 	}
 	if cmd.Proportions {
-		proportionsTable := BuildProportionsTable(cmd.datastore, year, month)
+		proportionsTable := table.BuildProportionsTable(cmd.datastore, year, month)
 		proportionsTable.Render()
 	}
 	remainTable.Render()
@@ -49,7 +51,7 @@ func (cmd *BudgetsCmd) Run() error {
 }
 
 type ExpensesCmd struct {
-	datastore *Datastore
+	datastore *datastore.Datastore
 
 	Year  int
 	Month int
@@ -57,7 +59,7 @@ type ExpensesCmd struct {
 
 func (cmd *ExpensesCmd) Run() error {
 	year, month := parseDate(cmd.Year, cmd.Month)
-	expensesTable := BuildExpensesTable(cmd.datastore, year, month)
+	expensesTable := table.BuildExpensesTable(cmd.datastore, year, month)
 	expensesTable.Render()
 	return nil
 }
