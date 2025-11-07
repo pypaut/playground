@@ -4,8 +4,10 @@ import (
 	"comptes/internal/cli"
 	"comptes/internal/config"
 	"comptes/internal/datastore"
+	"database/sql"
 
 	"github.com/alecthomas/kong"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -19,7 +21,13 @@ func main() {
 		panic(err)
 	}
 
-	c := cli.NewCli(ds)
+	// For the goose command
+	sqlDb, err := sql.Open("postgres", cfg.Db.Connection)
+	if err != nil {
+		panic(err)
+	}
+
+	c := cli.NewCli(ds, sqlDb)
 	ctx := kong.Parse(c)
 	err = ctx.Run(c)
 	ctx.FatalIfErrorf(err)

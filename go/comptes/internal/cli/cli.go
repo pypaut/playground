@@ -3,21 +3,28 @@ package cli
 import (
 	"comptes/internal/datastore"
 	"comptes/internal/table"
+	"database/sql"
 	"time"
+
+	"github.com/pressly/goose/v3"
 )
 
 type CLI struct {
 	Budgets  BudgetsCmd  `cmd:"budgets" help:"Show budgets"`
 	Expenses ExpensesCmd `cmd:"accounts" help:"Show expenses"`
+	Goose    GooseCmd    `cmd:"goose" help:"Manage Goose commands"`
 }
 
-func NewCli(datastore *datastore.Datastore) *CLI {
+func NewCli(datastore *datastore.Datastore, sqlDb *sql.DB) *CLI {
 	return &CLI{
 		Budgets: BudgetsCmd{
 			datastore: datastore,
 		},
 		Expenses: ExpensesCmd{
 			datastore: datastore,
+		},
+		Goose: GooseCmd{
+			db: sqlDb,
 		},
 	}
 }
@@ -72,8 +79,43 @@ func parseDate(year int, month int) (int, int) {
 	}
 
 	return year, month
+}
 
-	// return time.Date(
-	// 	year, time.Month(month), 1, 0, 0, 0, 0, time.Local,
-	// ) // .Format("2006-01")
+type GooseAction string
+
+const (
+	GooseActionUp     GooseAction = "up"
+	GooseActionDown   GooseAction = "down"
+	GooseActionStatus GooseAction = "status"
+)
+
+type GooseCmd struct {
+	db *sql.DB
+
+	Action GooseAction
+}
+
+func (cmd *GooseCmd) Run() error {
+	if err := goose.SetDialect("postgres"); err != nil {
+		panic(err)
+	}
+
+	switch cmd.Action {
+	case GooseActionUp:
+		if err := goose.Up(cmd.db, "./migrations"); err != nil {
+			panic(err)
+		}
+
+	case GooseActionDown:
+		if err := goose.Down(cmd.db, "./migrations"); err != nil {
+			panic(err)
+		}
+
+	case GooseActionStatus:
+		if err := goose.Status(cmd.db, "./migrations"); err != nil {
+			panic(err)
+		}
+	}
+
+	return nil
 }

@@ -26,14 +26,14 @@ tasks:
   goose-up:
     desc: "Run goose up"
     cmds:
-      - goose postgres "postgres://user:pass@localhost:9001/db?sslmode=disable" up -dir migrations/
+      - go run main.go goose --action up
 
   goose-down:
     desc: "Run goose down"
     cmds:
-      - goose postgres "postgres://user:pass@localhost:9001/db?sslmode=disable" down -dir migrations/
+      - go run main.go goose --action down
 
   goose-status:
     desc: "Run goose status"
     cmds:
-      - goose postgres "postgres://user:pass@localhost:9001/db?sslmode=disable" status -dir migrations/
+      - go run main.go goose --action status
