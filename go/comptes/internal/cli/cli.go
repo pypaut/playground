@@ -3,9 +3,9 @@ package cli
 import (
 	"comptes/internal/datastore"
 	"comptes/internal/table"
-	"database/sql"
 	"time"
 
+	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 )
 
@@ -15,7 +15,7 @@ type CLI struct {
 	Goose    GooseCmd    `cmd:"goose" help:"Manage Goose commands"`
 }
 
-func NewCli(datastore *datastore.Datastore, sqlDb *sql.DB) *CLI {
+func NewCli(datastore *datastore.Datastore) *CLI {
 	return &CLI{
 		Budgets: BudgetsCmd{
 			datastore: datastore,
@@ -24,7 +24,7 @@ func NewCli(datastore *datastore.Datastore, sqlDb *sql.DB) *CLI {
 			datastore: datastore,
 		},
 		Goose: GooseCmd{
-			db: sqlDb,
+			datastore: datastore,
 		},
 	}
 }
@@ -90,7 +90,7 @@ const (
 )
 
 type GooseCmd struct {
-	db *sql.DB
+	datastore *datastore.Datastore
 
 	Action GooseAction
 }
@@ -99,20 +99,22 @@ func (cmd *GooseCmd) Run() error {
 	if err := goose.SetDialect("postgres"); err != nil {
 		panic(err)
 	}
+	sqlDB := stdlib.OpenDBFromPool(cmd.datastore.GetPool())
+	defer sqlDB.Close()
 
 	switch cmd.Action {
 	case GooseActionUp:
-		if err := goose.Up(cmd.db, "./migrations"); err != nil {
+		if err := goose.Up(sqlDB, "./migrations"); err != nil {
 			panic(err)
 		}
 
 	case GooseActionDown:
-		if err := goose.Down(cmd.db, "./migrations"); err != nil {
+		if err := goose.Down(sqlDB, "./migrations"); err != nil {
 			panic(err)
 		}
 
 	case GooseActionStatus:
-		if err := goose.Status(cmd.db, "./migrations"); err != nil {
+		if err := goose.Status(sqlDB, "./migrations"); err != nil {
 			panic(err)
 		}
 	}

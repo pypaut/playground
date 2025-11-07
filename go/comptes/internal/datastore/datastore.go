@@ -23,3 +23,7 @@ func NewDatastore(cfg *config.Config) (*Datastore, error) {
 		dbpool: dbpool,
 	}, nil
 }
+
+func (d *Datastore) GetPool() *pgxpool.Pool {
+	return d.dbpool
+}
