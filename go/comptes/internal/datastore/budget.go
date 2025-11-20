@@ -122,3 +122,39 @@ func (d *Datastore) ListBudgetsForTagId(tagId uuid.UUID, year, month int) (budge
 
 	return
 }
+
+func (d *Datastore) UpdateBudget(budget *model.Budget) error {
+	query := `UPDATE budgets SET label=@label, amount=@amount, date=@date, tag_id=@tagId WHERE id=@id`
+	args := pgx.NamedArgs{
+		"id":     budget.ID.String(),
+		"label":  budget.Label,
+		"amount": budget.Amount,
+		"date":   budget.Date,
+		"tagId":  budget.TagID.String(),
+	}
+
+	_, err := d.dbpool.Exec(context.Background(), query, args)
+	if err != nil {
+		return fmt.Errorf("error updating budget: %s", err)
+	}
+
+	return nil
+}
+
+func (d *Datastore) GetBudgetByLabelAndDate(budgetLabel string, year int, month int) (*model.Budget, error) {
+	var budget model.Budget
+
+	query := `SELECT * FROM budgets WHERE label=$1 and extract(year from date) = $2 and extract(month from date) = $3`
+	err := d.dbpool.QueryRow(context.Background(), query, budgetLabel, year, month).Scan(
+		&budget.ID,
+		&budget.Label,
+		&budget.Amount,
+		&budget.Date,
+		&budget.TagID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &budget, err
+}

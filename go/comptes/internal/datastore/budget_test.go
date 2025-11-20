@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gofrs/uuid"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestListBudgets(t *testing.T) {
@@ -154,7 +155,7 @@ func TestAddBudget(t *testing.T) {
 
 	testBudget := &model.Budget{
 		Label:  "Épargne voiture",
-		Amount: 150,
+		Amount: 15000,
 		Date:   time.Date(2025, 10, 9, 0, 0, 0, 0, time.UTC),
 		TagID:  tagEpargneUUID,
 	}
@@ -173,11 +174,9 @@ func TestAddBudget(t *testing.T) {
 		t.Fatalf("ListBudgets: got %d budgets, want 1", len(budgets))
 	}
 
-	if testBudget.Amount != budgets[0].Amount ||
-		testBudget.Date != budgets[0].Date ||
-		testBudget.TagID != budgets[0].TagID {
-		t.Fatalf("ListBudgets: got %v, want %v", budgets[0], testBudget)
-	}
+	assert.Equal(t, testBudget.Amount, budgets[0].Amount)
+	assert.Equal(t, testBudget.Date, budgets[0].Date)
+	assert.Equal(t, testBudget.TagID, budgets[0].TagID)
 }
 
 func TestRemoveBudgetWithExpenses(t *testing.T) {
@@ -237,5 +236,54 @@ func TestGetBudget(t *testing.T) {
 
 	if !reflect.DeepEqual(expectedBudget, gotBudget) {
 		t.Fatalf("expected %v, got %v", expectedBudget, gotBudget)
+	}
+}
+
+func TestGetBudgetByLabelAndDate(t *testing.T) {
+	loadFixtures()
+
+	expectedBudget := &model.Budget{
+		ID:     budgetEpargneChatsUUID,
+		Label:  "Épargne chats",
+		Amount: 4500,
+		Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+		TagID:  tagEpargneUUID,
+	}
+
+	gotBudget, err := ds.GetBudgetByLabelAndDate(expectedBudget.Label, 2025, 7)
+	if err != nil {
+		t.Fatalf("GetBudget: %s", err)
+	}
+
+	if !reflect.DeepEqual(expectedBudget, gotBudget) {
+		t.Fatalf("expected %v, got %v", expectedBudget, gotBudget)
+	}
+}
+
+func TestUpdateBudget(t *testing.T) {
+	loadFixtures()
+
+	budgetToUpdate, err := ds.GetBudget(budgetLoyerUUID)
+	if err != nil {
+		t.Fatalf("GetBudget: %s", err)
+	}
+
+	budgetToUpdate.Label = "Nouveau libellé"
+	budgetToUpdate.Amount = 150000
+	budgetToUpdate.Date = time.Date(2025, 8, 1, 0, 0, 0, 0, time.UTC)
+	budgetToUpdate.TagID = tagFacturesUUID
+
+	err = ds.UpdateBudget(budgetToUpdate)
+	if err != nil {
+		t.Fatalf("UpdateBudget: %s", err)
+	}
+
+	updatedBudget, err := ds.GetBudget(budgetToUpdate.ID)
+	if err != nil {
+		t.Fatalf("GetBudget after update: %s", err)
+	}
+
+	if !reflect.DeepEqual(updatedBudget, budgetToUpdate) {
+		t.Fatalf("UpdateBudget: expected %v, got %v", budgetToUpdate, updatedBudget)
 	}
 }

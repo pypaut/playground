@@ -4,7 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE tags (
     id uuid PRIMARY KEY DEFAULT UUID_GENERATE_V4(),
-    label varchar(80) not null,
+    label varchar(80) not null UNIQUE,
     description varchar(80),
     icon varchar(2)
 );
