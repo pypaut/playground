@@ -4,6 +4,9 @@ import (
 	"comptes/internal/model"
 	"context"
 	"fmt"
+
+	"github.com/gofrs/uuid"
+	"github.com/jackc/pgx/v5"
 )
 
 func (d *Datastore) ListIncomes(year, month int) (incomes []*model.Income, err error) {
@@ -36,4 +39,50 @@ func (d *Datastore) ListIncomes(year, month int) (incomes []*model.Income, err e
 	}
 
 	return
+}
+
+func (d *Datastore) GetIncome(incomeId uuid.UUID) (*model.Income, error) {
+	var income model.Income
+	err := d.dbpool.QueryRow(context.Background(), "select * from incomes where id = $1", incomeId).Scan(
+		&income.ID,
+		&income.Label,
+		&income.Amount,
+		&income.Date,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("could not get income: %w", err)
+	}
+
+	return &income, nil
+}
+
+func (d *Datastore) AddIncome(income *model.Income) error {
+	query := `INSERT INTO incomes (label, amount, date)
+VALUES (@label, @amount, @date)`
+	args := pgx.NamedArgs{
+		"label":  income.Label,
+		"amount": income.Amount,
+		"date":   income.Date,
+	}
+
+	_, err := d.dbpool.Exec(context.Background(), query, args)
+	if err != nil {
+		return fmt.Errorf("error creating income: %s", err)
+	}
+
+	return nil
+}
+
+func (d *Datastore) RemoveIncome(incomeId uuid.UUID) error {
+	query := `DELETE FROM incomes WHERE id=@incomeId`
+	args := pgx.NamedArgs{
+		"incomeId": incomeId,
+	}
+
+	_, err := d.dbpool.Exec(context.Background(), query, args)
+	if err != nil {
+		return fmt.Errorf("error removing income: %s", err)
+	}
+
+	return nil
 }

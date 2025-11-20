@@ -111,3 +111,37 @@ func (d *Datastore) RemoveExpense(expenseId uuid.UUID) error {
 
 	return nil
 }
+
+func (d *Datastore) GetExpense(expenseId uuid.UUID) (*model.Expense, error) {
+	var expense model.Expense
+	err := d.dbpool.QueryRow(context.Background(), "select * from expenses where id = $1", expenseId).Scan(
+		&expense.ID,
+		&expense.Label,
+		&expense.Amount,
+		&expense.Date,
+		&expense.BudgetID,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("could not get expense: %w", err)
+	}
+
+	return &expense, nil
+}
+
+func (d *Datastore) UpdateExpense(expense *model.Expense) error {
+	query := `UPDATE expenses SET label=@label, amount=@amount, date=@date, budget_id=@budgetId WHERE id=@id`
+	args := pgx.NamedArgs{
+		"id":       expense.ID.String(),
+		"label":    expense.Label,
+		"amount":   expense.Amount,
+		"date":     expense.Date,
+		"budgetId": expense.BudgetID.String(),
+	}
+
+	_, err := d.dbpool.Exec(context.Background(), query, args)
+	if err != nil {
+		return fmt.Errorf("error updating expense: %s", err)
+	}
+
+	return nil
+}

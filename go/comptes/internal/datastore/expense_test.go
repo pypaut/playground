@@ -1,7 +1,6 @@
 package datastore
 
 import (
-	"comptes/internal/config"
 	"comptes/internal/model"
 	"reflect"
 	"testing"
@@ -9,15 +8,6 @@ import (
 )
 
 func TestListExpenses(t *testing.T) {
-	// cfg, err := config.LoadConfig("../../config.yml")
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
-
-	// ds, err := NewDatastore(cfg)
-	// if err != nil {
-	// 	t.Fatal(err)
-	// }
 	loadFixtures()
 
 	expectedExpenses := []*model.Expense{
@@ -54,15 +44,7 @@ func TestListExpenses(t *testing.T) {
 }
 
 func TestAddExpenses(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
 	testExpense := &model.Expense{
 		Label:    "Repas Geoffrey travail",
@@ -71,7 +53,7 @@ func TestAddExpenses(t *testing.T) {
 		BudgetID: budgetCoursesUUID,
 	}
 
-	err = ds.AddExpense(testExpense)
+	err := ds.AddExpense(testExpense)
 	if err != nil {
 		t.Fatalf("AddBudget: %s", err)
 	}
@@ -93,17 +75,9 @@ func TestAddExpenses(t *testing.T) {
 }
 
 func TestRemoveExpenses(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = ds.RemoveExpense(expenseLoyerUUID)
+	err := ds.RemoveExpense(expenseLoyerUUID)
 	if err != nil {
 		t.Fatalf("RemoveExpense: %s", err)
 	}
@@ -115,5 +89,53 @@ func TestRemoveExpenses(t *testing.T) {
 
 	if len(expenses) != 1 {
 		t.Fatalf("ListExpenses: got %d expenses, want 1", len(expenses))
+	}
+}
+
+func TestGetExpense(t *testing.T) {
+	loadFixtures()
+
+	expectedExpense := &model.Expense{
+		ID:       expenseLoyerUUID,
+		Label:    "Loyer",
+		Amount:   120000,
+		Date:     time.Date(2025, 07, 2, 0, 0, 0, 0, time.UTC),
+		BudgetID: budgetLoyerUUID,
+	}
+
+	gotExpense, err := ds.GetExpense(expectedExpense.ID)
+	if err != nil {
+		t.Fatalf("GetExpense: %s", err)
+	}
+
+	if !reflect.DeepEqual(expectedExpense, gotExpense) {
+		t.Fatalf("expected %v, got %v", expectedExpense, gotExpense)
+	}
+}
+
+func TestUpdateExpense(t *testing.T) {
+	loadFixtures()
+
+	expenseToUpdate, err := ds.GetExpense(expenseLoyerUUID)
+	if err != nil {
+		t.Fatalf("GetExpense: %s", err)
+	}
+
+	expenseToUpdate.Label = "Nouveau libellé"
+	expenseToUpdate.Amount = 150000
+	expenseToUpdate.Date = time.Date(2025, 8, 1, 0, 0, 0, 0, time.UTC)
+
+	err = ds.UpdateExpense(expenseToUpdate)
+	if err != nil {
+		t.Fatalf("UpdateExpense: %s", err)
+	}
+
+	updatedExpense, err := ds.GetExpense(expenseToUpdate.ID)
+	if err != nil {
+		t.Fatalf("GetExpense after update: %s", err)
+	}
+
+	if !reflect.DeepEqual(updatedExpense, expenseToUpdate) {
+		t.Fatalf("UpdateExpense: expected %v, got %v", expenseToUpdate, updatedExpense)
 	}
 }

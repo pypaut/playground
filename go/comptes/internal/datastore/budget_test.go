@@ -41,6 +41,13 @@ func TestListBudgets(t *testing.T) {
 			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 			TagID:  tagFacturesUUID,
 		},
+		{
+			ID:     budgetNoelUUID,
+			Label:  "Cadeaux Noël",
+			Amount: 20000,
+			Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+			TagID:  tagDepensesVariablesUUID,
+		},
 	}
 
 	budgets, err := ds.ListBudgets(2025, 7)
@@ -48,8 +55,8 @@ func TestListBudgets(t *testing.T) {
 		t.Fatalf("ListBudgets: %v", err)
 	}
 
-	if len(budgets) != 4 {
-		t.Fatalf("ListBudgets: got %d budgets, want 4", len(budgets))
+	if len(budgets) != 5 {
+		t.Fatalf("ListBudgets: got %d budgets, want 5", len(budgets))
 	}
 
 	for i := range budgets {
@@ -109,6 +116,13 @@ func TestListBudgetsForTag(t *testing.T) {
 					ID:     budgetCadeauUUID,
 					Label:  "Cadeau pour jsp qui",
 					Amount: 3900,
+					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+					TagID:  tagDepensesVariablesUUID,
+				},
+				{
+					ID:     budgetNoelUUID,
+					Label:  "Cadeaux Noël",
+					Amount: 20000,
 					Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
 					TagID:  tagDepensesVariablesUUID,
 				},
