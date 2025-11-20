@@ -1,0 +1,11 @@
+- id: 5a46c201-e9f5-4b0b-b336-0e64e5f96ac9
+  label: Loyer
+  amount: 120000
+  date: "2025-07-02"
+  budget_id: a575ca9f-ddf1-4a52-a718-c018b5169757
+
+- id: 74bddac0-b71b-4d7c-89c4-9eef8b7e2ad3
+  label: Leclerc
+  amount: 4781
+  date: "2025-07-08"
+  budget_id: a853f96f-e238-49ee-97f3-1e17f0336df9

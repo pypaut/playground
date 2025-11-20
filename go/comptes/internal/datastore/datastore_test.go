@@ -1,7 +1,6 @@
 package datastore
 
 import (
-	"comptes/internal/config"
 	"comptes/internal/model"
 	"reflect"
 	"testing"
@@ -26,15 +25,7 @@ var (
 )
 
 func TestListBudgets(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
 	expectedBudgets := []*model.Budget{
 		{
@@ -84,15 +75,7 @@ func TestListBudgets(t *testing.T) {
 }
 
 func TestListBudgetsForTag(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
 	cases := []struct {
 		tagId           uuid.UUID
@@ -168,15 +151,7 @@ func TestListBudgetsForTag(t *testing.T) {
 }
 
 func TestListIncomes(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
 	expectedIncomes := []*model.Income{
 		{
@@ -210,15 +185,7 @@ func TestListIncomes(t *testing.T) {
 }
 
 func TestListTags(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
 	expectedTags := []*model.Tag{
 		{
@@ -264,15 +231,7 @@ func TestListTags(t *testing.T) {
 }
 
 func TestAddBudget(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
 	testBudget := &model.Budget{
 		Label:  "Épargne voiture",
@@ -281,7 +240,7 @@ func TestAddBudget(t *testing.T) {
 		TagID:  tagEpargneUUID,
 	}
 
-	err = ds.AddBudget(testBudget)
+	err := ds.AddBudget(testBudget)
 	if err != nil {
 		t.Fatalf("AddBudget: %s", err)
 	}
@@ -303,15 +262,7 @@ func TestAddBudget(t *testing.T) {
 }
 
 func TestGetTagByLabel(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	loadFixtures()
 
 	cases := []struct {
 		label      string

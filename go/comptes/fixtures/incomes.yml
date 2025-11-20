@@ -1,0 +1,9 @@
+- id: 961a1dd1-ca6f-412a-83f0-9af6dcd85081
+  label: Salaire 1
+  amount: 200042
+  date: "2025-07-01"
+
+- id: 247a13b0-32bc-4dd2-8250-b9beabfc939f
+  label: Salaire 2
+  amount: 210081
+  date: "2025-07-01"

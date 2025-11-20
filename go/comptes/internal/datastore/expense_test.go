@@ -9,15 +9,16 @@ import (
 )
 
 func TestListExpenses(t *testing.T) {
-	cfg, err := config.LoadConfig("../../config.yml")
-	if err != nil {
-		t.Fatal(err)
-	}
+	// cfg, err := config.LoadConfig("../../config.yml")
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
 
-	ds, err := NewDatastore(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
+	// ds, err := NewDatastore(cfg)
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
+	loadFixtures()
 
 	expectedExpenses := []*model.Expense{
 		{

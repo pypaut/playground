@@ -1,0 +1,19 @@
+- id: 226cb277-5208-4a0d-8b9f-37f3630e288f
+  label: Factures
+  description: Paiements récurrents, charges fixes, abonnements
+  icon: 🧾
+
+- id: f9383bb3-6aaf-41d7-906c-d1c580f23d49
+  label: Épargnes
+  description: On met de côté
+  icon: 💰
+
+- id: 74b344cb-7a16-4af8-8b82-17f477a4f30e
+  label: Dépenses courantes
+  description: Dépenses usuelles
+  icon: 💳
+
+- id: a4f7f30c-ae34-4480-8e28-a9ab1741dfb3
+  label: Dépenses variables
+  description: Dépenses variables
+  icon: 💶

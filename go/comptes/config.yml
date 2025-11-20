@@ -1,2 +1,2 @@
 db:
-  connection: "postgres://user:pass@localhost:9001/db?sslmode=disable"
+  connection: "postgres://test:test@localhost:9001/test?sslmode=disable"
