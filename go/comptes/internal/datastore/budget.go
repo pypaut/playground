@@ -27,6 +27,31 @@ VALUES (@label, @amount, @date, @tagId)`
 	return nil
 }
 
+func (d *Datastore) GetBudget(budgetID uuid.UUID) (*model.Budget, error) {
+	var budget model.Budget
+
+	query := `SELECT * FROM budgets WHERE id=$1`
+	err := d.dbpool.QueryRow(context.Background(), query, budgetID.String()).Scan(
+		&budget.ID,
+		&budget.Label,
+		&budget.Amount,
+		&budget.Date,
+		&budget.TagID,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &budget, err
+}
+
+func (d *Datastore) RemoveBudget(budgetID uuid.UUID) error {
+	query := `DELETE FROM budgets WHERE id=$1`
+	_, err := d.dbpool.Exec(context.Background(), query, budgetID.String())
+
+	return err
+}
+
 func (d *Datastore) ListBudgets(year, month int) (budgets []*model.Budget, err error) {
 	rows, err := d.dbpool.Query(
 		context.Background(),

@@ -21,3 +21,9 @@
   amount: 120000
   date: "2025-07-01"
   tag_id: 226cb277-5208-4a0d-8b9f-37f3630e288f
+
+- id: 0217689a-588c-4ff0-a43a-3464f1cf69a1
+  label: Cadeaux Noël
+  amount: 20000
+  date: "2025-07-01"
+  tag_id: a4f7f30c-ae34-4480-8e28-a9ab1741dfb3

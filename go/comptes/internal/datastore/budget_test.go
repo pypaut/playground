@@ -166,3 +166,62 @@ func TestAddBudget(t *testing.T) {
 	}
 }
 
+func TestRemoveBudgetWithExpenses(t *testing.T) {
+	loadFixtures()
+	budgetId := uuid.FromStringOrNil("a853f96f-e238-49ee-97f3-1e17f0336df9")
+
+	_, err := ds.GetBudget(budgetId)
+	if err != nil {
+		t.Fatalf("GetBudget: %s", err)
+	}
+
+	err = ds.RemoveBudget(budgetId)
+	if err == nil {
+		t.Fatalf("RemoveBudget: err should not be nil")
+	}
+}
+
+func TestRemoveBudgetWithoutExpenses(t *testing.T) {
+	loadFixtures()
+	budgetId := uuid.FromStringOrNil("0217689a-588c-4ff0-a43a-3464f1cf69a1")
+
+	_, err := ds.GetBudget(budgetId)
+	if err != nil {
+		t.Fatalf("GetBudget: %s", err)
+	}
+
+	err = ds.RemoveBudget(budgetId)
+	if err != nil {
+		t.Fatalf("RemoveBudget: %v", err)
+	}
+
+	budgetAfter, err := ds.GetBudget(budgetId)
+	if budgetAfter != nil {
+		t.Fatalf("expected nil budget, got %v", budgetAfter)
+	}
+
+	if err == nil {
+		t.Fatalf("err should not be nil")
+	}
+}
+
+func TestGetBudget(t *testing.T) {
+	loadFixtures()
+
+	expectedBudget := &model.Budget{
+		ID:     budgetEpargneChatsUUID,
+		Label:  "Épargne chats",
+		Amount: 4500,
+		Date:   time.Date(2025, 07, 1, 0, 0, 0, 0, time.UTC),
+		TagID:  tagEpargneUUID,
+	}
+
+	gotBudget, err := ds.GetBudget(expectedBudget.ID)
+	if err != nil {
+		t.Fatalf("GetBudget: %s", err)
+	}
+
+	if !reflect.DeepEqual(expectedBudget, gotBudget) {
+		t.Fatalf("expected %v, got %v", expectedBudget, gotBudget)
+	}
+}
