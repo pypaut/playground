@@ -62,30 +62,10 @@ func ComputePart2(path string) (count int) {
 
 	// Iterate on each range
 	for r := range strings.SplitSeq(strInput, ",") {
-		limitLeft, limitRight := getLimits(r)
+		ids := invalidIds(r)
 
-		// Check each ID in the current range
-		for id := limitLeft; id <= limitRight; id++ {
-			count += computeSingleId(id)
-		}
-	}
-
-	return count
-}
-
-func computeSingleId(id int) (count int) {
-	idStr := strconv.Itoa(id)
-	idLen := len(idStr)
-
-	// Check who can divide idLen
-	for i := 2; i <= idLen; i++ {
-		if idLen%i != 0 {
-			continue
-		}
-
-		if patternRepeats(idStr, i) {
+		for _, id := range ids {
 			count += id
-			continue
 		}
 	}
 
@@ -93,6 +73,10 @@ func computeSingleId(id int) (count int) {
 }
 
 func patternRepeats(id string, nbPats int) (repeats bool) {
+	if nbPats < 2 || len(id) < 2 {
+		return false
+	}
+
 	patLen := len(id) / nbPats
 	patterns := []string{}
 	for k := range nbPats {
@@ -122,6 +106,28 @@ func getLimits(rng string) (leftLimit, rightLimit int) {
 	rightLimit, err = strconv.Atoi(limits[1])
 	if err != nil {
 		panic(err)
+	}
+
+	return
+}
+
+func invalidIds(rng string) (invalidIds []int) {
+	leftLimit, rightLimit := getLimits(rng)
+
+	for id := leftLimit; id <= rightLimit; id++ {
+		idString := strconv.Itoa(id)
+		idLen := len(idString)
+
+		for i := 2; i <= idLen; i++ {
+			if idLen%i != 0 {
+				continue
+			}
+
+			if patternRepeats(idString, i) {
+				invalidIds = append(invalidIds, id)
+				break
+			}
+		}
 	}
 
 	return
