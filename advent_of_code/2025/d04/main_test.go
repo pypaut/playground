@@ -1,11 +1,21 @@
 package main
 
 import (
-	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestSample(t *testing.T) {
-	f, err := os.OpenFile("sample")
-	if
+func TestSamplePart1(t *testing.T) {
+	m := LoadMatrix("sample")
+	expected := 13
+	result := CountAccessibleRolls(m)
+	assert.Equal(t, expected, result)
+}
+
+func TestSamplePart2(t *testing.T) {
+	m := LoadMatrix("sample")
+	expected := 43
+	result := RemoveRolls(m)
+	assert.Equal(t, expected, result)
 }
