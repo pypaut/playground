@@ -8,7 +8,12 @@ import (
 
 func TestSample(t *testing.T) {
 	ranges, ids := LoadInput("sample")
+
 	expectedCount := 3
 	gotCount := CountFreshIngredients(ids, ranges)
+	assert.Equal(t, expectedCount, gotCount)
+
+	expectedCount = 14
+	gotCount = CountTotalFreshIDs(ranges)
 	assert.Equal(t, expectedCount, gotCount)
 }
