@@ -1,0 +1,111 @@
+[gd_scene load_steps=9 format=3 uid="uid://dv1uuf8ekm2l5"]
+
+[ext_resource type="Script" uid="uid://dl88vgpu4kdjq" path="res://scripts/player.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://b7o0vsd8tfamu" path="res://scripts/main.gd" id="1_h2yge"]
+[ext_resource type="Script" uid="uid://bml2gdq30gj6i" path="res://scripts/ball.gd" id="1_ig7tw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
+size = Vector2(30, 200)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_7dm0k"]
+a = Vector2(0, -1)
+b = Vector2(1920, -1)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_ig7tw"]
+a = Vector2(0, 1)
+b = Vector2(1920, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ig7tw"]
+size = Vector2(30, 30)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_0xm2m"]
+a = Vector2(-1, 0)
+b = Vector2(-1, 1080)
+
+[node name="Main" type="Sprite2D"]
+centered = false
+script = ExtResource("1_h2yge")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(50, 540)
+script = ExtResource("1_0xm2m")
+
+[node name="ColorRect" type="ColorRect" parent="Player"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -100.0
+offset_right = 15.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_7dm0k")
+
+[node name="CPU" type="AnimatableBody2D" parent="."]
+position = Vector2(1870, 540)
+
+[node name="ColorRect" type="ColorRect" parent="CPU"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -100.0
+offset_right = 15.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CPU"]
+shape = SubResource("RectangleShape2D_7dm0k")
+
+[node name="TopWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopWall"]
+shape = SubResource("SegmentShape2D_7dm0k")
+
+[node name="BotWall" type="StaticBody2D" parent="."]
+position = Vector2(0, 1080)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BotWall"]
+shape = SubResource("SegmentShape2D_ig7tw")
+
+[node name="Ball" type="CharacterBody2D" parent="."]
+position = Vector2(960, 540)
+script = ExtResource("1_ig7tw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
+shape = SubResource("RectangleShape2D_ig7tw")
+
+[node name="ColorRect" type="ColorRect" parent="Ball"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -15.0
+offset_top = -15.0
+offset_right = 15.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftWall" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("SegmentShape2D_0xm2m")
+
+[node name="RightWall" type="Area2D" parent="."]
+position = Vector2(1920, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("SegmentShape2D_0xm2m")
+
+[connection signal="body_entered" from="LeftWall" to="." method="_on_left_wall_body_entered"]
+[connection signal="body_entered" from="RightWall" to="." method="_on_right_wall_body_entered"]
