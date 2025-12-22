@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://sujd7jl1o21l"]
+[gd_scene load_steps=5 format=3 uid="uid://sujd7jl1o21l"]
 
 [ext_resource type="FontFile" uid="uid://c5ycbfo3vay41" path="res://assets/kongtext.ttf" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://kw33x4kh567" path="res://scripts/game.gd" id="1_yqjtg"]
+[ext_resource type="Script" uid="uid://ye0d06hyj8qg" path="res://scripts/continue_button.gd" id="3_lbhrr"]
+[ext_resource type="Script" uid="uid://ccxpo0xchsu4w" path="res://scripts/leave_button.gd" id="4_iywne"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_yqjtg")
@@ -34,9 +36,12 @@ offset_right = 160.0
 offset_bottom = -27.5
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_top = NodePath("../LeaveButton")
+focus_neighbor_bottom = NodePath("../LeaveButton")
 theme_override_fonts/font = ExtResource("1_uwrxv")
 theme_override_font_sizes/font_size = 32
 text = "Continue"
+script = ExtResource("3_lbhrr")
 
 [node name="LeaveButton" type="Button" parent="PauseMenu"]
 layout_mode = 1
@@ -51,9 +56,14 @@ offset_right = 160.0
 offset_bottom = 172.5
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_top = NodePath("../ContinueButton")
+focus_neighbor_bottom = NodePath("../ContinueButton")
 theme_override_fonts/font = ExtResource("1_uwrxv")
 theme_override_font_sizes/font_size = 32
 text = "Leave"
+script = ExtResource("4_iywne")
 
+[connection signal="mouse_entered" from="PauseMenu/ContinueButton" to="PauseMenu/ContinueButton" method="_on_mouse_entered"]
 [connection signal="pressed" from="PauseMenu/ContinueButton" to="." method="_on_continue_button_pressed"]
+[connection signal="mouse_entered" from="PauseMenu/LeaveButton" to="PauseMenu/LeaveButton" method="_on_mouse_entered"]
 [connection signal="pressed" from="PauseMenu/LeaveButton" to="." method="_on_leave_button_pressed"]

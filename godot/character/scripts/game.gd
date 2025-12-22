@@ -18,3 +18,4 @@ func _on_leave_button_pressed() -> void:
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("escape"):
 		$PauseMenu.show()
+		$PauseMenu/ContinueButton.grab_focus()
