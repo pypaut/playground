@@ -1,9 +1,75 @@
-[gd_scene load_steps=5 format=3 uid="uid://sujd7jl1o21l"]
+[gd_scene load_steps=13 format=3 uid="uid://sujd7jl1o21l"]
 
 [ext_resource type="FontFile" uid="uid://c5ycbfo3vay41" path="res://assets/kongtext.ttf" id="1_uwrxv"]
 [ext_resource type="Script" uid="uid://kw33x4kh567" path="res://scripts/game.gd" id="1_yqjtg"]
 [ext_resource type="Script" uid="uid://ye0d06hyj8qg" path="res://scripts/continue_button.gd" id="3_lbhrr"]
 [ext_resource type="Script" uid="uid://ccxpo0xchsu4w" path="res://scripts/leave_button.gd" id="4_iywne"]
+[ext_resource type="Texture2D" uid="uid://bty8ojqxefcqw" path="res://assets/warrior.png" id="5_iywne"]
+[ext_resource type="Script" uid="uid://sly3eskcl72y" path="res://scripts/player.gd" id="5_p57ef"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_iywne"]
+radius = 6.600006
+
+[sub_resource type="Animation" id="Animation_iywne"]
+resource_name = "idle"
+length = 1.2
+loop_mode = 1
+step = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_p57ef"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_u5sy4"]
+resource_name = "run"
+length = 0.7
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [6, 7, 8, 9, 10, 11, 13]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_u5sy4"]
+_data = {
+&"RESET": SubResource("Animation_p57ef"),
+&"idle": SubResource("Animation_iywne"),
+&"run": SubResource("Animation_u5sy4")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iywne"]
+size = Vector2(2257, 55)
 
 [node name="Game" type="Node"]
 script = ExtResource("1_yqjtg")
@@ -62,6 +128,33 @@ theme_override_fonts/font = ExtResource("1_uwrxv")
 theme_override_font_sizes/font_size = 32
 text = "Leave"
 script = ExtResource("4_iywne")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(1102, 917)
+scale = Vector2(5, 5)
+script = ExtResource("5_p57ef")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture_filter = 1
+texture = ExtResource("5_iywne")
+hframes = 6
+vframes = 17
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+position = Vector2(-7.6, 5.7999997)
+shape = SubResource("CapsuleShape2D_iywne")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Player"]
+libraries = {
+&"": SubResource("AnimationLibrary_u5sy4")
+}
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(1041.5, 1100)
+shape = SubResource("RectangleShape2D_iywne")
 
 [connection signal="mouse_entered" from="PauseMenu/ContinueButton" to="PauseMenu/ContinueButton" method="_on_mouse_entered"]
 [connection signal="pressed" from="PauseMenu/ContinueButton" to="." method="_on_continue_button_pressed"]
