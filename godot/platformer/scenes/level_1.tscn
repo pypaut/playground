@@ -1,0 +1,64 @@
+[gd_scene load_steps=6 format=3 uid="uid://bbvot6xuyplai"]
+
+[ext_resource type="PackedScene" uid="uid://ccsslfotw8rgs" path="res://scenes/block.tscn" id="1_014kd"]
+[ext_resource type="PackedScene" uid="uid://d0p1otycxko1e" path="res://scenes/character.tscn" id="2_bswci"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gkh53"]
+size = Vector2(6848, 192)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_014kd"]
+size = Vector2(352, 744)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bswci"]
+size = Vector2(352, 745)
+
+[node name="Level1" type="Node"]
+
+[node name="Ground" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(1536, 648)
+shape = SubResource("RectangleShape2D_gkh53")
+
+[node name="ColorRect" type="ColorRect" parent="Ground"]
+offset_left = -1888.0
+offset_top = 552.0
+offset_right = 4960.0
+offset_bottom = 744.0
+color = Color(0.46352357, 0.26287916, 0.12610552, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+position = Vector2(-2064, 372)
+shape = SubResource("RectangleShape2D_014kd")
+
+[node name="ColorRect" type="ColorRect" parent="LeftWall"]
+offset_left = -2240.0
+offset_right = -1888.0
+offset_bottom = 744.0
+color = Color(0.46352357, 0.26287916, 0.12610552, 1)
+
+[node name="RightBody" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightBody"]
+position = Vector2(5136, 372.5)
+shape = SubResource("RectangleShape2D_bswci")
+
+[node name="ColorRect" type="ColorRect" parent="RightBody"]
+offset_left = 4960.0
+offset_right = 5312.0
+offset_bottom = 744.0
+color = Color(0.46352357, 0.26287916, 0.12610552, 1)
+
+[node name="Block1" parent="." instance=ExtResource("1_014kd")]
+position = Vector2(376, 448)
+scale = Vector2(6, 2)
+
+[node name="Character" parent="." instance=ExtResource("2_bswci")]
+position = Vector2(568, 520)
+scale = Vector2(1.5, 1.5)
+
+[node name="Block2" parent="." instance=ExtResource("1_014kd")]
+position = Vector2(1055, 522)
+scale = Vector2(2, 3)
