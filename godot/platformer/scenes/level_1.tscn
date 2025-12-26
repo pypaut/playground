@@ -39,13 +39,13 @@ offset_right = -1888.0
 offset_bottom = 744.0
 color = Color(0.46352357, 0.26287916, 0.12610552, 1)
 
-[node name="RightBody" type="StaticBody2D" parent="."]
+[node name="RightWall" type="StaticBody2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightBody"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
 position = Vector2(5136, 372.5)
 shape = SubResource("RectangleShape2D_bswci")
 
-[node name="ColorRect" type="ColorRect" parent="RightBody"]
+[node name="ColorRect" type="ColorRect" parent="RightWall"]
 offset_left = 4960.0
 offset_right = 5312.0
 offset_bottom = 744.0

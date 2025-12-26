@@ -26,5 +26,8 @@ color = Color(0.2785888, 0.16865051, 0.40590695, 0.3764706)
 shape = SubResource("RectangleShape2D_dkjbp")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -2100
+limit_right = 5100
 limit_bottom = 600
+limit_smoothed = true
 position_smoothing_enabled = true
