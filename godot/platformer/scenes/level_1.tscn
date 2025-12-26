@@ -62,3 +62,11 @@ scale = Vector2(1.5, 1.5)
 [node name="Block2" parent="." instance=ExtResource("1_014kd")]
 position = Vector2(1055, 522)
 scale = Vector2(2, 3)
+
+[node name="Block3" parent="." instance=ExtResource("1_014kd")]
+position = Vector2(244, 352)
+scale = Vector2(7, 2)
+
+[node name="Block4" parent="." instance=ExtResource("1_014kd")]
+position = Vector2(460.00003, 277)
+scale = Vector2(7, 2)

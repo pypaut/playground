@@ -24,3 +24,7 @@ color = Color(0.2785888, 0.16865051, 0.40590695, 0.3764706)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_dkjbp")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_bottom = 600
+position_smoothing_enabled = true
