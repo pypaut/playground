@@ -17,7 +17,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotation.y = rotation.y - event.relative.x * 1/(CAMERA_SENSITIVITY*10)
 		# Rotate the camera only up and down
 		$Camera3D.rotation.x = $Camera3D.rotation.x - event.relative.y * 1/(CAMERA_SENSITIVITY*10)
-		print($Camera3D.rotation.x)
 		$Camera3D.rotation.x = clamp($Camera3D.rotation.x, -MAX_CAMERA_ANGLE, MAX_CAMERA_ANGLE)
 
 
