@@ -70,6 +70,41 @@ transform = Transform3D(70.66219, 0, 0, 0, 77.175735, 0, 0, 0, 51.0797, 62.82228
 size = Vector3(2, 2, 2)
 material = SubResource("StandardMaterial3D_nnsk1")
 
+[node name="House03" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(9.794659, 0, 14.162394, 0, 14.031951, 0, -10.18776, 0, 13.615928, 200.92776, 32.474213, -63.343903)
+size = Vector3(2, 4.6069946, 2)
+material = SubResource("StandardMaterial3D_nnsk1")
+
+[node name="House04" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(14.132439, 0, 0, 0, 14.031951, 0, 0, 0, 19.64604, -49.17772, 14.183604, -50.52823)
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_nnsk1")
+
+[node name="House05" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(14.132439, 0, 0, 0, 14.031951, 0, 0, 0, 19.64604, -49.17772, 14.183604, -100.15279)
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_nnsk1")
+
+[node name="House06" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(14.132439, 0, 0, 0, 14.031951, 0, 0, 0, 19.64604, 44.67183, 14.183604, -100.15279)
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_nnsk1")
+
+[node name="House07" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(14.132439, 0, 0, 0, 14.031951, 0, 0, 0, 19.64604, 44.67183, 14.183604, -41.535255)
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_nnsk1")
+
+[node name="House08" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(14.132439, 0, 0, 0, 14.031951, 0, 0, 0, 19.64604, 44.67183, 14.183604, 20.1269)
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_nnsk1")
+
+[node name="House09" type="CSGBox3D" parent="Ground"]
+transform = Transform3D(14.132439, 0, 0, 0, 14.031951, 0, 0, 0, 19.64604, 44.67183, 14.183604, 74.95941)
+size = Vector3(2, 2, 2)
+material = SubResource("StandardMaterial3D_nnsk1")
+
 [node name="FinalBlock" type="CSGBox3D" parent="Ground"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -395.4657, 2, -246.54607)
 size = Vector3(2, 2, 2)
@@ -100,7 +135,7 @@ transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 104.24716, -510.6581
 texture = ExtResource("2_rwgxs")
 
 [node name="Kira" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.629533, 2.6384687, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 80.600845, 2.6384687, -80.97859)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Kira"]
 shape = SubResource("CapsuleShape3D_4wyf3")
@@ -110,12 +145,6 @@ transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0, 1.1132936, 0.0093884
 texture = ExtResource("4_k0juu")
 
 [node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="Kira"]
-
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1.6855546, 0, 0, 0, 2.814636, -167.95337, 52.807415, 128.81284)
-
-[node name="MenuCamera" type="Camera3D" parent="."]
-transform = Transform3D(-0.22928824, 0.10555252, -0.9676185, 0.024337908, 0.99441373, 0.10270833, 0.9730543, 0, -0.23057629, -170.46231, 52.809196, 128.99966)
 
 [node name="Jack" type="Sprite3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -83.77919, 2.9060988, 0.5203419)
