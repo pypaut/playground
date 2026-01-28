@@ -33,7 +33,7 @@ func handle_kira(delta: float, character_pos: Vector3):
 	var kira_direction = $Kira.global_position.direction_to(character_pos)
 	$Kira.velocity = kira_direction * KIRA_SPEED * delta
 	$Kira.move_and_slide()
-	
+
 
 ###########
 # SIGNALS #

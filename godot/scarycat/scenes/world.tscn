@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3 uid="uid://bxh5pbksfqe8i"]
+[gd_scene load_steps=13 format=3 uid="uid://bxh5pbksfqe8i"]
 
 [ext_resource type="Script" uid="uid://tx7144v8lvk" path="res://scripts/world.gd" id="1_4wyf3"]
 [ext_resource type="PackedScene" uid="uid://cq6vwd7vo1k72" path="res://scenes/character.tscn" id="1_nnsk1"]
 [ext_resource type="Texture2D" uid="uid://bf5smkqc5dy6o" path="res://assets/nala.png" id="2_rwgxs"]
 [ext_resource type="Texture2D" uid="uid://5b18mgpswb5" path="res://assets/kira.png" id="4_k0juu"]
 [ext_resource type="Texture2D" uid="uid://bbfhddrgq1ldi" path="res://assets/jack.png" id="5_71j4m"]
+[ext_resource type="PackedScene" uid="uid://byqn75m5iamjd" path="res://scenes/dialogue.tscn" id="6_qfnet"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e5uuo"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -149,6 +150,10 @@ texture = ExtResource("4_k0juu")
 [node name="Jack" type="Sprite3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -83.77919, 2.9060988, 0.5203419)
 texture = ExtResource("5_71j4m")
+
+[node name="Dialogue" type="CanvasLayer" parent="."]
+
+[node name="Dialogue" parent="Dialogue" instance=ExtResource("6_qfnet")]
 
 [connection signal="screen_entered" from="Kira/VisibleOnScreenNotifier3D" to="." method="_on_visible_on_screen_notifier_3d_screen_entered"]
 [connection signal="screen_exited" from="Kira/VisibleOnScreenNotifier3D" to="." method="_on_visible_on_screen_notifier_3d_screen_exited"]
