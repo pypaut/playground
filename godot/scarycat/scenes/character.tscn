@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cq6vwd7vo1k72"]
+[gd_scene load_steps=5 format=3 uid="uid://cq6vwd7vo1k72"]
 
 [ext_resource type="Script" uid="uid://c0vgwpuxhgfh0" path="res://scripts/character.gd" id="1_agfs1"]
+[ext_resource type="PackedScene" uid="uid://byqn75m5iamjd" path="res://scenes/hud.tscn" id="2_rkhd4"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_dkjbp"]
 
@@ -16,6 +17,12 @@ shape = SubResource("CapsuleShape3D_dkjbp")
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1396182, 0)
 
+[node name="RayCast3D" type="RayCast3D" parent="Camera3D"]
+target_position = Vector3(0, 0, -5)
+collide_with_areas = true
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 2, 0)
 mesh = SubResource("CapsuleMesh_agfs1")
+
+[node name="HUD" parent="." instance=ExtResource("2_rkhd4")]
