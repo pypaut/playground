@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://byqn75m5iamjd"]
+[gd_scene load_steps=2 format=3 uid="uid://byqn75m5iamjd"]
+
+[ext_resource type="FontFile" uid="uid://bd36go1h5ov2c" path="res://assets/Born2bSportyV2.ttf" id="1_ahhtf"]
 
 [node name="HUD" type="Node2D"]
 
@@ -16,6 +18,7 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("1_ahhtf")
 theme_override_font_sizes/normal_font_size = 30
 text = "Will you make it out?"
 scroll_active = false
@@ -37,6 +40,7 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("1_ahhtf")
 theme_override_font_sizes/normal_font_size = 25
 text = "E"
 scroll_active = false

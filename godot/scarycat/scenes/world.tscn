@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://bxh5pbksfqe8i"]
+[gd_scene load_steps=16 format=3 uid="uid://bxh5pbksfqe8i"]
 
 [ext_resource type="Script" uid="uid://tx7144v8lvk" path="res://scripts/world.gd" id="1_4wyf3"]
 [ext_resource type="PackedScene" uid="uid://cq6vwd7vo1k72" path="res://scenes/character.tscn" id="1_nnsk1"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://5b18mgpswb5" path="res://assets/kira.png" id="4_k0juu"]
 [ext_resource type="Texture2D" uid="uid://bbfhddrgq1ldi" path="res://assets/jack.png" id="5_71j4m"]
 [ext_resource type="Script" uid="uid://dspmpohvr27ec" path="res://scripts/jack.gd" id="5_qfnet"]
+[ext_resource type="FontFile" uid="uid://bd36go1h5ov2c" path="res://assets/Born2bSportyV2.ttf" id="7_i7141"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_e5uuo"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -30,6 +31,9 @@ albedo_color = Color(0.22066021, 0.37687388, 0.1558845, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_qfnet"]
 size = Vector3(6.069702, 3.2976074, 0.32861328)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_qfnet"]
+viewport_path = NodePath("Jack/DialogueSprite/SubViewport")
 
 [node name="World" type="Node3D"]
 script = ExtResource("1_4wyf3")
@@ -160,6 +164,31 @@ texture = ExtResource("5_71j4m")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Jack"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06976318, -0.032104492, 0.06713867)
 shape = SubResource("BoxShape3D_qfnet")
+
+[node name="DialogueSprite" type="Sprite3D" parent="Jack"]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, -0.7316637, -0.88709164)
+texture = SubResource("ViewportTexture_qfnet")
+
+[node name="SubViewport" type="SubViewport" parent="Jack/DialogueSprite"]
+transparent_bg = true
+size = Vector2i(300, 100)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Jack/DialogueSprite/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_fonts/normal_font = ExtResource("7_i7141")
+theme_override_font_sizes/normal_font_size = 26
+bbcode_enabled = true
+text = "Hello there."
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="screen_entered" from="Kira/VisibleOnScreenNotifier3D" to="." method="_on_visible_on_screen_notifier_3d_screen_entered"]
 [connection signal="screen_exited" from="Kira/VisibleOnScreenNotifier3D" to="." method="_on_visible_on_screen_notifier_3d_screen_exited"]

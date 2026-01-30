@@ -7,7 +7,11 @@ const MAX_CAMERA_ANGLE = 1.5
 
 @onready var raycast: RayCast3D = $Camera3D/RayCast3D
 
+# Is not null when something is ready to be interacted
 var interactable = null
+
+# Is true when player pressed "interact" on an interactable
+var interacting = false
 
 ################
 ### BUILTINS ###
@@ -24,10 +28,14 @@ func _process(_delta: float):
 
 func _input(event):
 	"""
-	Handle "interact" input to start interaction
+	Handle "interact" input to start or stop interaction
 	"""
 	if interactable and event.is_action_pressed("interact"):
 		interactable.start_interact()
+		interacting = true
+	if interactable and interacting and event.is_action_pressed("back"):
+		interactable.stop_interact()
+		interacting = false
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -102,3 +110,4 @@ func reset_interaction():
 	if interactable != null and interactable.has_method("stop_interact"):
 		interactable.stop_interact()
 	interactable = null
+	interacting = false
