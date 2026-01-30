@@ -1,7 +1,10 @@
 extends Area3D
 
 
-# This method is only here for the "has_method()" call in the character script
-# This way I can recognize this node
-func jack():
-	pass
+# We check for the presence of this method to know if interactable
+func start_interact():
+	print("jack start interact")
+
+
+func stop_interact():
+	print("jack stop interact")

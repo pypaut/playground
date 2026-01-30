@@ -1,6 +1,5 @@
 extends CharacterBody3D
 
-
 const SPEED = 8.0
 const JUMP_VELOCITY = 10.0
 const CAMERA_SENSITIVITY = 10
@@ -8,7 +7,11 @@ const MAX_CAMERA_ANGLE = 1.5
 
 @onready var raycast: RayCast3D = $Camera3D/RayCast3D
 
-var is_interacting: bool = false
+var interactable = null
+
+################
+### BUILTINS ###
+################
 
 
 func _ready() -> void:
@@ -16,29 +19,21 @@ func _ready() -> void:
 
 
 func _process(_delta: float):
-	if raycast.is_colliding():
-		var interactable = raycast.get_collider()
-		if interactable and interactable.has_method("jack"):
-			$HUD/InteractionText.text = "E"
-			is_interacting = true
-		else:
-			$HUD/InteractionText.text = ""
-			is_interacting = false
-	else:
-		$HUD/InteractionText.text = ""
-		is_interacting = false
+	check_interaction()
 
 
 func _input(event):
-	if is_interacting and event.is_action_pressed("interact"):
-		var interactable = raycast.get_collider()
-
-		# Jack
-		if interactable and interactable.has_method("jack"):
-			$HUD/DialogueText.text = "I'm just resting here."
+	"""
+	Handle "interact" input to start interaction
+	"""
+	if interactable and event.is_action_pressed("interact"):
+		interactable.start_interact()
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	"""
+	Mouse movements
+	"""
 	if event is InputEventMouseMotion:
 		# Rotate the whole character left and right
 		rotation.y = rotation.y - event.relative.x * 1/(CAMERA_SENSITIVITY*10)
@@ -49,6 +44,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	"""
+	Gravity, keyboard movements
+	"""
 	# Add the gravity
 	if not is_on_floor():
 		velocity += get_gravity() * delta * 3.0
@@ -67,3 +65,40 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
 	move_and_slide()
+
+
+##############
+### CUSTOM ###
+##############
+
+
+func check_interaction():
+	"""
+	Use the raycast to check for interaction
+	"""
+	var is_colliding = raycast.is_colliding()
+
+	# No collisions at all, reset interaction
+	if not is_colliding:
+		reset_interaction()
+		return
+
+	if is_colliding:
+		interactable = raycast.get_collider()
+
+		# is null or is random object
+		if not interactable or not interactable.has_method("start_interact"):
+			reset_interaction()
+			return
+
+		$HUD/InteractionText.text = "E - " + interactable.get_name()
+		return
+
+
+func reset_interaction():
+	"""
+	"""
+	$HUD/InteractionText.text = ""
+	if interactable != null and interactable.has_method("stop_interact"):
+		interactable.stop_interact()
+	interactable = null
