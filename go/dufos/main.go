@@ -25,7 +25,7 @@ func main() {
 
 	ebiten.SetWindowSize(screenW*2, screenH*2)
 	ebiten.SetWindowTitle("Dofus")
-	if err := ebiten.RunGame(&Game{}); err != nil {
+	if err := ebiten.RunGame(&Game{CurrentMap: myMap}); err != nil {
 		log.Fatal(err)
 	}
 }

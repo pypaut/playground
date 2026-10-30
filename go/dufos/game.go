@@ -8,7 +8,8 @@ import (
 )
 
 type Game struct {
-	CameraPos Point
+	CurrentMap *Map
+	CameraPos  Point
 }
 
 func (g *Game) Update() error {
@@ -53,9 +54,9 @@ func (g *Game) drawGrid(screen *ebiten.Image) {
 	var strokeWidth float32 = 1.0
 
 	// Columns
-	for i := range 20 {
+	for i := range int(g.CurrentMap.Size.X) {
 		x1, y1 := g.isoToScreen(i, 0)
-		x2, y2 := g.isoToScreen(i, 19)
+		x2, y2 := g.isoToScreen(i, int(g.CurrentMap.Size.X)-1)
 		vector.StrokeLine(
 			screen,
 			float32(x1), float32(y1),
@@ -67,9 +68,9 @@ func (g *Game) drawGrid(screen *ebiten.Image) {
 	}
 
 	// Lines
-	for j := range 20 {
+	for j := range int(g.CurrentMap.Size.Y) {
 		x1, y1 := g.isoToScreen(0, j)
-		x2, y2 := g.isoToScreen(19, j)
+		x2, y2 := g.isoToScreen(int(g.CurrentMap.Size.Y)-1, j)
 		vector.StrokeLine(
 			screen,
 			float32(x1), float32(y1),
@@ -86,6 +87,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 	// Draw map tiles
 	opts := &ebiten.DrawImageOptions{}
+	tileImg := ebiten.NewImage(int(TileSize), int(TileSize))
+	tileImg.Fill(color.RGBA{R: 100, A: 255})
 
 	for _, p := range myMap.WalkableTiles {
 		opts.GeoM.Reset()
@@ -95,10 +98,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		x, y := g.isoToScreen(int(p.X), int(p.Y))
 
 		opts.GeoM.Translate(x, y)
-
-		tileImg := ebiten.NewImage(int(TileSize), int(TileSize))
-		tileImg.Fill(color.RGBA{R: 100, A: 255})
-
 		screen.DrawImage(tileImg, opts)
 	}
 
